@@ -1,0 +1,241 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none; /* 禁止拖拽选择 */
+}
+
+body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: url('https://www.openfrp.net/assets/background1.webp') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    transition: background 0.5s ease;
+    overflow: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    z-index: 10;
+    position: relative;
+    top: -180px; /* 进一步提升搜索框位置，更接近页面顶端 */
+}
+
+.time-display {
+    margin-bottom: 0.5rem; /* 进一步减少时间显示的底部边距 */
+    position: relative;
+    z-index: 3000 !important; /* 确保时间日期始终在最顶层 */
+}
+
+#time {
+    font-size: 3.3rem; /* 增加字体大小 (2.5rem + 0.8rem ≈ 8px增加) */
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin-bottom: 0.3rem;
+}
+
+#date {
+    font-size: 1.2rem; /* 减小字体大小 (1.5rem - 0.3rem ≈ 3px减少) */
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#search-input {
+    width: 100%;
+    height: 50px;
+    padding: 0 60px 0 45px; /* 增加左侧padding为logo留空间 */
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    font-size: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: all 0.3s ease;
+    color: #333;
+    user-select: text; /* 输入框允许选择文本 */
+}
+
+#search-input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 4px 25px rgba(76, 175, 80, 0.3);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+#search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: #4CAF50; /* 使用莫奈取色 */
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#search-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor; /* 使SVG颜色跟随currentColor */
+    stroke-width: 2;
+}
+
+#search-input:focus + #search-btn,
+#search-btn:hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+#search-btn:hover {
+    background: rgba(76, 175, 80, 0.2);
+    color: #45a049;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+    border-radius: 3px; /* 让favicon图标更美观 */
+    opacity: 1 !important; /* 确保必应图标始终显示 */
+    visibility: visible !important; /* 确保必应图标始终显示 */
+}
+
+/* 右键菜单样式 */
+.context-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* 添加半透明背景 */
+    backdrop-filter: blur(5px); /* 添加模糊效果 */
+    display: none;
+    z-index: 2000; /* 降低context-menu的z-index，但仍高于其他元素 */
+    align-items: center;
+    justify-content: center;
+}
+
+.context-menu.active {
+    display: flex;
+}
+
+.context-menu.active .time-display {
+    z-index: 3001 !important; /* 确保在快捷访问打开时时间日期显示在最顶层 */
+}
+
+.context-menu.active .search-box {
+    opacity: 0;
+    visibility: hidden; /* 打开快捷访问时隐藏搜索框 */
+}
+
+.menu-items {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr); /* 8列布局 */
+    grid-template-rows: repeat(3, 1fr); /* 3行布局 */
+    gap: 15px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow: auto;
+    padding: 20px;
+    z-index: 2001; /* 确保菜单项目在context-menu之上 */
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    color: white; /* 将字体设置为白色 */
+    position: relative;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+}
+
+.menu-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-item img {
+    width: 24px;
+    height: 24px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+}
+
+.menu-item span {
+    text-shadow: none; /* 移除文字阴影以解决重影问题 */
+    color: white; /* 确保文字为白色 */
+}
+
+@media (max-width: 768px) {
+    #time {
+        font-size: 2.3rem;
+    }
+    
+    #date {
+        font-size: 1rem; /* 移动端日期字体调整 */
+    }
+    
+    .container {
+        top: -150px; /* 移动端搜索框位置调整 */
+    }
+    
+    .menu-items {
+        grid-template-columns: repeat(3, 1fr); /* 移动端为3列，行数自适应 */
+        grid-template-rows: auto; /* 移动端行数自适应 */
+        max-width: 95%;
+    }
+    
+    .menu-item {
+        min-width: 60px;
+        padding: 10px 5px;
+        font-size: 0.8rem;
+    }
+    
+    .menu-icon, .menu-item img {
+        width: 20px;
+        height: 20px;
+        font-size: 1.2rem;
+    }
+}
