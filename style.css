@@ -126,6 +126,7 @@ body {
     visibility: hidden;
     transition: all 0.3s ease;
     user-select: text;
+    text-align: center;
 }
 
 /* 展开状态显示输入框 */
@@ -235,6 +236,7 @@ body {
     background: transparent;
     opacity: 1;
     visibility: visible;
+    text-align: center;
 }
 
 #search-input:focus {
