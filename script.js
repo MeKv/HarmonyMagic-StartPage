@@ -20,22 +20,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // 搜索框获得焦点时只显示搜索按钮，搜索图标始终显示
+    // 获取搜索框容器
+    const searchContainer = document.querySelector('.search-container-shortened');
+    
+    // 搜索框获得焦点时展开搜索框并显示搜索按钮
     searchInput.addEventListener('focus', function() {
+        searchContainer.classList.add('expanded');
         searchBtn.style.opacity = '1';
         searchBtn.style.visibility = 'visible';
     });
     
-    // 搜索框失去焦点且为空时只隐藏搜索按钮，搜索图标始终显示
+    // 搜索框失去焦点时收缩搜索框并隐藏搜索按钮（如果输入框为空）
     searchInput.addEventListener('blur', function() {
-        if (searchInput.value.trim() === '') {
-            setTimeout(() => {
-                if (document.activeElement !== searchBtn) {
+        // 使用setTimeout确保在点击搜索按钮等元素时不会立即收缩
+        setTimeout(() => {
+            if (document.activeElement !== searchBtn && document.activeElement !== searchInput) {
+                searchContainer.classList.remove('expanded');
+                if (searchInput.value.trim() === '') {
                     searchBtn.style.opacity = '0';
                     searchBtn.style.visibility = 'hidden';
                 }
-            }, 100);
-        }
+            }
+        }, 100);
+    });
+    
+    // 如果点击了搜索按钮，也要保持搜索框展开状态
+    searchBtn.addEventListener('focus', function() {
+        searchContainer.classList.add('expanded');
+    });
+    
+    searchBtn.addEventListener('blur', function() {
+        setTimeout(() => {
+            if (document.activeElement !== searchInput) {
+                if (searchInput.value.trim() === '') {
+                    searchContainer.classList.remove('expanded');
+                    searchBtn.style.opacity = '0';
+                    searchBtn.style.visibility = 'hidden';
+                }
+            }
+        }, 100);
     });
     
     // 执行搜索

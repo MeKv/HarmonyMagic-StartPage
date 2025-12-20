@@ -95,9 +95,14 @@ body {
 
 .search-container-shortened {
     position: relative;
-    width: 100%;
+    width: 150px; /* 默认宽度为原来的一半 (300px的一半) */
     max-width: 300px; /* 缩短的搜索框 */
     margin: 0 auto;
+    transition: width 0.3s ease;
+}
+
+.search-container-shortened.expanded {
+    width: 300px; /* 聚焦时扩展容器宽度 */
 }
 
 #search-input {
