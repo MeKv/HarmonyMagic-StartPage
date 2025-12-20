@@ -184,32 +184,57 @@ body {
 
 .search-container-shortened {
     position: relative;
-    width: 150px; /* 默认宽度为原来的一 half (300px的一 half) */
+    width: 50px; /* 圆形状态宽度 */
+    height: 50px; /* 圆形状态高度 */
     max-width: 300px; /* 缩短的搜索框 */
     margin: 0 auto;
-    transition: width 0.3s ease;
+    transition: all 0.3s ease;
     overflow: visible; /* 确保展开时内容可见 */
+    border-radius: 50%; /* 圆形状态 */
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* 中间搜索框未输入展开状态 */
 .search-container-shortened.expanded {
-    width: 300px; /* 聚焦时扩展容器宽度 */
+    width: 150px; /* 未输入展开宽度 */
+    border-radius: 30px;
     z-index: 2; /* 确保展开后的搜索框在其他元素之上 */
 }
 
+/* 中间搜索框输入展开状态 */
+.search-container-shortened.expanded.input-active {
+    width: 300px; /* 输入展开宽度 */
+}
+
 #search-input {
-    width: 100%;
-    height: 50px;
-    padding: 0 60px 0 45px; /* 增加左侧padding为logo留空间 */
-    border-radius: 30px;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
+    width: 0;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
     font-size: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     outline: none;
     transition: all 0.3s ease;
     color: #333;
     user-select: text; /* 输入框允许选择文本 */
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* 展开状态显示输入框 */
+.search-container-shortened.expanded #search-input {
+    width: calc(100% - 105px);
+    padding: 0 40px 0 45px;
+    border-radius: 30px;
+    border: none;
+    background: transparent;
+    opacity: 1;
+    visibility: visible;
 }
 
 #search-input:focus {
@@ -240,6 +265,12 @@ body {
     visibility: hidden;
 }
 
+/* 输入状态显示搜索按钮 */
+.search-container-shortened.expanded.input-active #search-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
 #search-btn svg {
     width: 20px;
     height: 20px;
@@ -261,15 +292,22 @@ body {
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 50%;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     width: 20px;
     height: 20px;
     z-index: 1;
     border-radius: 3px; /* 让favicon图标更美观 */
-    opacity: 1 !important; /* 确保必应图标始终显示 */
-    visibility: visible !important; /* 确保必应图标始终显示 */
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+}
+
+/* 展开状态调整图标位置 */
+.search-container-shortened.expanded .search-icon {
+    left: 12px;
+    transform: translateY(-50%);
 }
 
 /* 右键菜单样式 */

@@ -81,11 +81,20 @@ document.addEventListener('DOMContentLoaded', function() {
             box.classList.add('input-active');
         });
         
+        // 圆形搜索框输入事件
+        circleInput.addEventListener('input', function() {
+            if (circleInput.value.trim() !== '') {
+                box.classList.add('input-active');
+            } else {
+                box.classList.remove('input-active');
+            }
+        });
+        
         // 圆形搜索框输入框失焦事件
         circleInput.addEventListener('blur', function() {
+            box.classList.remove('input-active');
             setTimeout(() => {
                 if (document.activeElement !== circleBtn && document.activeElement !== circleInput) {
-                    box.classList.remove('input-active');
                     // 如果输入框为空，则收缩搜索框
                     if (circleInput.value.trim() === '') {
                         collapseSearchBox(box);
@@ -104,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         circleBtn.addEventListener('blur', function() {
             setTimeout(() => {
                 if (document.activeElement !== circleInput) {
-                    box.classList.remove('input-active');
                     if (circleInput.value.trim() === '') {
                         collapseSearchBox(box);
                         currentExpandedBox = null;
@@ -181,7 +189,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // 获取搜索框容器
     const searchContainer = document.querySelector('.search-container-shortened');
     
-    // 搜索框获得焦点时展开搜索框并显示搜索按钮
+    // 点击中间搜索框容器展开/收缩
+    searchContainer.addEventListener('click', function(e) {
+        // 如果点击的是输入框或按钮，不触发展开/收缩逻辑
+        if (e.target === searchInput || e.target === searchBtn || searchBtn.contains(e.target)) {
+            return;
+        }
+        
+        // 如果当前已经有展开的搜索框且不是当前点击的，则先关闭它
+        if (currentExpandedBox) {
+            collapseSearchBox(currentExpandedBox);
+            currentExpandedBox = null;
+        }
+        
+        // 切换中间搜索框的展开状态
+        if (searchContainer.classList.contains('expanded')) {
+            collapseCenterSearchBox();
+        } else {
+            expandCenterSearchBox();
+        }
+    });
+    
+    // 搜索框获得焦点时展开搜索框
     searchInput.addEventListener('focus', function() {
         // 如果有圆形搜索框展开，则关闭它
         if (currentExpandedBox) {
@@ -189,20 +218,27 @@ document.addEventListener('DOMContentLoaded', function() {
             currentExpandedBox = null;
         }
         
-        searchContainer.classList.add('expanded');
-        searchBtn.style.opacity = '1';
-        searchBtn.style.visibility = 'visible';
+        expandCenterSearchBox();
+        searchContainer.classList.add('input-active');
     });
     
-    // 搜索框失去焦点时收缩搜索框并隐藏搜索按钮（如果输入框为空）
+    // 搜索框输入事件
+    searchInput.addEventListener('input', function() {
+        if (searchInput.value.trim() !== '') {
+            searchContainer.classList.add('input-active');
+        } else {
+            searchContainer.classList.remove('input-active');
+        }
+    });
+    
+    // 搜索框失去焦点时收缩搜索框（如果输入框为空）
     searchInput.addEventListener('blur', function() {
+        searchContainer.classList.remove('input-active');
         // 使用setTimeout确保在点击搜索按钮等元素时不会立即收缩
         setTimeout(() => {
             if (document.activeElement !== searchBtn && document.activeElement !== searchInput) {
-                searchContainer.classList.remove('expanded');
                 if (searchInput.value.trim() === '') {
-                    searchBtn.style.opacity = '0';
-                    searchBtn.style.visibility = 'hidden';
+                    collapseCenterSearchBox();
                 }
             }
         }, 100);
@@ -210,20 +246,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 如果点击了搜索按钮，也要保持搜索框展开状态
     searchBtn.addEventListener('focus', function() {
-        searchContainer.classList.add('expanded');
+        searchContainer.classList.add('input-active');
     });
     
     searchBtn.addEventListener('blur', function() {
         setTimeout(() => {
             if (document.activeElement !== searchInput) {
                 if (searchInput.value.trim() === '') {
-                    searchContainer.classList.remove('expanded');
-                    searchBtn.style.opacity = '0';
-                    searchBtn.style.visibility = 'hidden';
+                    collapseCenterSearchBox();
                 }
             }
         }, 100);
     });
+    
+    // 展开中间搜索框
+    function expandCenterSearchBox() {
+        searchContainer.classList.add('expanded');
+        // 聚焦到输入框
+        setTimeout(() => {
+            searchInput.focus();
+        }, 300);
+    }
+    
+    // 收缩中间搜索框
+    function collapseCenterSearchBox() {
+        searchContainer.classList.remove('expanded', 'input-active');
+        searchInput.value = '';
+    }
     
     // 执行搜索
     function performSearch() {
@@ -271,16 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = searchUrl;
     }
     
-    // 为搜索按钮添加多种搜索引擎选项（右键菜单或下拉菜单）
-    const engines = ['bing', 'google', 'baidu'];
-    let engineIndex = 0; // 默认为bing
     
-    searchBtn.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        engineIndex = (engineIndex + 1) % engines.length;
-        currentEngine = engines[engineIndex];
-        // 搜索按钮使用SVG图标，无需修改文本
-    });
     
     // 添加时钟功能
     function updateClock() {
