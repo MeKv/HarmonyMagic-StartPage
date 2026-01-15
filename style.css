@@ -416,84 +416,19 @@ body {
         top: -150px;
     }
 
-    /* 移动端搜索框容器 */
+    /* 移动端搜索框容器 - 默认横向排列 */
     .search-boxes-container {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
         width: 100%;
         max-width: 100%;
-        gap: 8px;
+        gap: 5px;
     }
 
-    /* 默认布局：第一排左边3个，第二排中间搜索框，第三排右边3个 */
-    .search-box-circle.left-circle-1,
-    .search-box-circle.left-circle-2,
-    .search-box-circle.left-circle-3 {
-        order: 1;
-    }
-
-    .search-box-center {
-        order: 2;
-    }
-
-    .search-box-circle.right-circle-1,
-    .search-box-circle.right-circle-2,
-    .search-box-circle.right-circle-3 {
-        order: 3;
-    }
-
-    /* 左边搜索框展开时的布局 */
-    .search-boxes-container.left-expanded .search-box-circle.left-circle-1,
-    .search-boxes-container.left-expanded .search-box-circle.left-circle-2,
-    .search-boxes-container.left-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-    }
-
-    .search-boxes-container.left-expanded .search-box-center {
-        order: 3;
-    }
-
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-1,
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-2,
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-3 {
-        order: 3;
-    }
-
-    /* 中间搜索框展开时的布局 */
-    .search-boxes-container.center-expanded .search-box-circle.left-circle-1,
-    .search-boxes-container.center-expanded .search-box-circle.left-circle-2,
-    .search-boxes-container.center-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-    }
-
-    .search-boxes-container.center-expanded .search-box-center {
-        order: 2;
-    }
-
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-1,
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-2,
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-3 {
-        order: 3;
-    }
-
-    /* 右边搜索框展开时的布局 */
-    .search-boxes-container.right-expanded .search-box-circle.left-circle-1,
-    .search-boxes-container.right-expanded .search-box-circle.left-circle-2,
-    .search-boxes-container.right-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-    }
-
-    .search-boxes-container.right-expanded .search-box-center {
-        order: 1;
-    }
-
-    .search-boxes-container.right-expanded .search-box-circle.right-circle-1,
-    .search-boxes-container.right-expanded .search-box-circle.right-circle-2,
-    .search-boxes-container.right-expanded .search-box-circle.right-circle-3 {
-        order: 3;
-    }
-
+    /* 默认布局：横向排列 */
     .search-box-circle {
         margin: 3px;
         flex-shrink: 0;
@@ -512,6 +447,117 @@ body {
     .search-container-shortened.expanded.input-active {
         width: 280px;
         min-width: 240px;
+    }
+
+    /* 左边搜索框展开时的3排布局 */
+    .search-boxes-container.left-expanded {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        height: auto;
+        min-height: 180px;
+    }
+
+    .search-boxes-container.left-expanded .search-box-circle.left-circle-1,
+    .search-boxes-container.left-expanded .search-box-circle.left-circle-2,
+    .search-boxes-container.left-expanded .search-box-circle.left-circle-3 {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .search-boxes-container.left-expanded .search-box-center {
+        order: 2;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-1,
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-2,
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-3 {
+        order: 3;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    /* 中间搜索框展开时的3排布局 */
+    .search-boxes-container.center-expanded {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        height: auto;
+        min-height: 180px;
+    }
+
+    .search-boxes-container.center-expanded .search-box-circle.left-circle-1,
+    .search-boxes-container.center-expanded .search-box-circle.left-circle-2,
+    .search-boxes-container.center-expanded .search-box-circle.left-circle-3 {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .search-boxes-container.center-expanded .search-box-center {
+        order: 2;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-1,
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-2,
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-3 {
+        order: 3;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    /* 右边搜索框展开时的3排布局 */
+    .search-boxes-container.right-expanded {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        height: auto;
+        min-height: 180px;
+    }
+
+    .search-boxes-container.right-expanded .search-box-circle.left-circle-1,
+    .search-boxes-container.right-expanded .search-box-circle.left-circle-2,
+    .search-boxes-container.right-expanded .search-box-circle.left-circle-3 {
+        order: 1;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .search-boxes-container.right-expanded .search-box-center {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-boxes-container.right-expanded .search-box-circle.right-circle-1,
+    .search-boxes-container.right-expanded .search-box-circle.right-circle-2,
+    .search-boxes-container.right-expanded .search-box-circle.right-circle-3 {
+        order: 3;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
     }
 
     .menu-items {
