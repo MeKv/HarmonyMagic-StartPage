@@ -449,127 +449,63 @@ body {
         min-width: 240px;
     }
 
-    /* 左边搜索框展开时的3排布局 */
-    .search-boxes-container.left-expanded {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        height: auto;
-        min-height: 180px;
+    /* 搜索框展开时的3排布局 - 使用flex-wrap实现真正的三排 */
+    .search-boxes-container.left-expanded,
+    .search-boxes-container.center-expanded,
+    .search-boxes-container.right-expanded {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-content: flex-start !important;
+        justify-content: center !important;
+        height: 300px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 8px !important;
+        padding: 10px 0 !important;
     }
 
+    /* 第一排：左边三个球形搜索框（自动排列在第一行） */
     .search-boxes-container.left-expanded .search-box-circle.left-circle-1,
     .search-boxes-container.left-expanded .search-box-circle.left-circle-2,
-    .search-boxes-container.left-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
-    }
-
-    .search-boxes-container.left-expanded .center-0 {
-        order: 2;
-        width: 100%;
-        display: flex !important;
-        justify-content: center;
-    }
-
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-1,
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-2,
-    .search-boxes-container.left-expanded .search-box-circle.right-circle-3 {
-        order: 3;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
-    }
-
-    /* 中间搜索框展开时的3排布局 */
-    .search-boxes-container.center-expanded {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        height: auto;
-        min-height: 180px;
-    }
-
+    .search-boxes-container.left-expanded .search-box-circle.left-circle-3,
     .search-boxes-container.center-expanded .search-box-circle.left-circle-1,
     .search-boxes-container.center-expanded .search-box-circle.left-circle-2,
-    .search-boxes-container.center-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
-    }
-
-    .search-boxes-container.center-expanded .center-0 {
-        order: 2;
-        width: 100%;
-        display: flex !important;
-        justify-content: center;
-    }
-
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-1,
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-2,
-    .search-boxes-container.center-expanded .search-box-circle.right-circle-3 {
-        order: 3;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
-    }
-
-    /* 右边搜索框展开时的3排布局 */
-    .search-boxes-container.right-expanded {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        height: auto;
-        min-height: 180px;
-    }
-
+    .search-boxes-container.center-expanded .search-box-circle.left-circle-3,
     .search-boxes-container.right-expanded .search-box-circle.left-circle-1,
     .search-boxes-container.right-expanded .search-box-circle.left-circle-2,
     .search-boxes-container.right-expanded .search-box-circle.left-circle-3 {
-        order: 1;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        margin: 0;
     }
 
+    /* 第二排：中间的搜索框（占满一行，展开显示） */
+    .search-boxes-container.left-expanded .center-0,
+    .search-boxes-container.center-expanded .center-0,
     .search-boxes-container.right-expanded .center-0 {
+        width: 100% !important;
+        max-width: 320px;
+        height: 50px;
         order: 2;
-        width: 100%;
-        display: flex !important;
-        justify-content: center;
+        flex-shrink: 0;
     }
 
+    /* 第三排：右边三个球形搜索框（自动排列在第三行） */
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-1,
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-2,
+    .search-boxes-container.left-expanded .search-box-circle.right-circle-3,
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-1,
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-2,
+    .search-boxes-container.center-expanded .search-box-circle.right-circle-3,
     .search-boxes-container.right-expanded .search-box-circle.right-circle-1,
     .search-boxes-container.right-expanded .search-box-circle.right-circle-2,
     .search-boxes-container.right-expanded .search-box-circle.right-circle-3 {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
         order: 3;
-        display: flex !important;
-        justify-content: center;
-        flex-wrap: wrap;
-        width: auto !important;
-        min-width: 50px !important;
-        max-width: 50px !important;
+        margin: 0;
     }
 
     .menu-items {
