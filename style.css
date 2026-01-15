@@ -469,7 +469,7 @@ body {
         width: 100%;
     }
 
-    .search-boxes-container.left-expanded .search-box-center {
+    .search-boxes-container.left-expanded .center-0 {
         order: 2;
         width: 100%;
         display: flex;
@@ -506,7 +506,7 @@ body {
         width: 100%;
     }
 
-    .search-boxes-container.center-expanded .search-box-center {
+    .search-boxes-container.center-expanded .center-0 {
         order: 2;
         width: 100%;
         display: flex;
@@ -543,8 +543,8 @@ body {
         width: 100%;
     }
 
-    .search-boxes-container.right-expanded .search-box-center {
-        order: 1;
+    .search-boxes-container.right-expanded .center-0 {
+        order: 2;
         width: 100%;
         display: flex;
         justify-content: center;
