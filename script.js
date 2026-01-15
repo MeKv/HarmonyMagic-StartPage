@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 根据展开的搜索框设置布局类
         if (expandedBox.classList.contains('left-circle')) {
             searchBoxesContainer.classList.add('left-expanded');
-        } else if (expandedBox === centerSearchBox) {
+        } else if (expandedBox.classList.contains('center-0')) {
             searchBoxesContainer.classList.add('center-expanded');
         } else if (expandedBox.classList.contains('right-circle')) {
             searchBoxesContainer.classList.add('right-expanded');
@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentExpandedBox && currentExpandedBox !== box) {
                 collapseSearchBox(currentExpandedBox);
                 currentExpandedBox = null;
+                currentUninputExpandedBox = null;
                 setMobileLayout(null);
             }
 
@@ -87,21 +88,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 切换当前搜索框的展开状态
             if (box.classList.contains('expanded')) {
+                // 记录当前搜索框
+                const wasCurrentBox = (box === currentUninputExpandedBox);
+                
                 collapseSearchBox(box);
                 currentExpandedBox = null;
                 currentUninputExpandedBox = null;
                 setMobileLayout(null);
+                
+                // 如果是在移动端，需要确保其他搜索框也正确处理
+                if (isMobile() && wasCurrentBox) {
+                    // 强制重新计算布局
+                    setTimeout(() => {
+                        if (!currentUninputExpandedBox) {
+                            searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
+                        }
+                    }, 50);
+                }
             } else {
                 // 检查中间搜索框是否展开，如果是则收缩它
                 const centerBox = document.querySelector('.center-0');
-                if (centerBox.classList.contains('expanded')) {
+                if (centerBox.classList.contains('expanded') && centerBox !== box) {
                     collapseSearchBox(centerBox);
                     currentUninputExpandedBox = null;
                     setMobileLayout(null);
                 }
 
+                // 展开当前搜索框
                 expandSearchBox(box);
                 currentExpandedBox = box;
+                currentUninputExpandedBox = box;
 
                 // 移动端设置3排布局
                 setMobileLayout(box);
@@ -110,26 +126,38 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 圆形搜索框输入框聚焦事件
         circleInput.addEventListener('focus', function() {
+            // 确保当前搜索框处于正确的展开状态和布局中
             if (!box.classList.contains('expanded')) {
                 // 如果点击的是输入框且搜索框未展开，则展开它
                 if (currentExpandedBox && currentExpandedBox !== box) {
                     collapseSearchBox(currentExpandedBox);
                     currentExpandedBox = null;
+                    currentUninputExpandedBox = null;
                     setMobileLayout(null);
                 }
 
                 // 检查中间搜索框是否展开，如果是则收缩它
                 const centerBox = document.querySelector('.center-0');
-                if (centerBox.classList.contains('expanded')) {
+                if (centerBox.classList.contains('expanded') && centerBox !== box) {
                     collapseSearchBox(centerBox);
+                    currentUninputExpandedBox = null;
                     setMobileLayout(null);
                 }
 
                 expandSearchBox(box);
                 currentExpandedBox = box;
+                currentUninputExpandedBox = box;
 
                 // 移动端设置3排布局
                 setMobileLayout(box);
+            } else {
+                // 如果已经展开，确保移动端布局正确设置
+                if (isMobile()) {
+                    setMobileLayout(box);
+                }
+                // 确保状态正确
+                currentUninputExpandedBox = box;
+                currentExpandedBox = box;
             }
 
             // 添加输入状态样式
@@ -164,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 如果已经有其他搜索框处于未输入展开状态，则完全收缩当前搜索框
                             collapseSearchBox(box);
                             currentExpandedBox = null;
+                            currentUninputExpandedBox = null;
                             setMobileLayout(null);
                         }
                     }
@@ -193,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 如果已经有其他搜索框处于未输入展开状态，则完全收缩当前搜索框
                             collapseSearchBox(box);
                             currentExpandedBox = null;
+                            currentUninputExpandedBox = null;
                             setMobileLayout(null);
                         }
                     }
@@ -217,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 展开圆形搜索框
     function expandSearchBox(box) {
         box.classList.add('expanded');
+        currentUninputExpandedBox = box;
         // 聚焦到输入框
         const input = box.querySelector('.circle-search-input');
         setTimeout(() => {
@@ -227,6 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 收缩圆形搜索框
     function collapseSearchBox(box) {
         box.classList.remove('expanded', 'input-active');
+        if (currentUninputExpandedBox === box) {
+            currentUninputExpandedBox = null;
+        }
         const input = box.querySelector('.circle-search-input');
         input.value = '';
     }

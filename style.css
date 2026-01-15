@@ -463,16 +463,18 @@ body {
     .search-boxes-container.left-expanded .search-box-circle.left-circle-2,
     .search-boxes-container.left-expanded .search-box-circle.left-circle-3 {
         order: 1;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     .search-boxes-container.left-expanded .center-0 {
         order: 2;
         width: 100%;
-        display: flex;
+        display: flex !important;
         justify-content: center;
     }
 
@@ -480,10 +482,12 @@ body {
     .search-boxes-container.left-expanded .search-box-circle.right-circle-2,
     .search-boxes-container.left-expanded .search-box-circle.right-circle-3 {
         order: 3;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     /* 中间搜索框展开时的3排布局 */
@@ -500,16 +504,18 @@ body {
     .search-boxes-container.center-expanded .search-box-circle.left-circle-2,
     .search-boxes-container.center-expanded .search-box-circle.left-circle-3 {
         order: 1;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     .search-boxes-container.center-expanded .center-0 {
         order: 2;
         width: 100%;
-        display: flex;
+        display: flex !important;
         justify-content: center;
     }
 
@@ -517,10 +523,12 @@ body {
     .search-boxes-container.center-expanded .search-box-circle.right-circle-2,
     .search-boxes-container.center-expanded .search-box-circle.right-circle-3 {
         order: 3;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     /* 右边搜索框展开时的3排布局 */
@@ -537,16 +545,18 @@ body {
     .search-boxes-container.right-expanded .search-box-circle.left-circle-2,
     .search-boxes-container.right-expanded .search-box-circle.left-circle-3 {
         order: 1;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     .search-boxes-container.right-expanded .center-0 {
         order: 2;
         width: 100%;
-        display: flex;
+        display: flex !important;
         justify-content: center;
     }
 
@@ -554,10 +564,12 @@ body {
     .search-boxes-container.right-expanded .search-box-circle.right-circle-2,
     .search-boxes-container.right-expanded .search-box-circle.right-circle-3 {
         order: 3;
-        display: flex;
+        display: flex !important;
         justify-content: center;
         flex-wrap: wrap;
-        width: 100%;
+        width: auto !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
 
     .menu-items {
