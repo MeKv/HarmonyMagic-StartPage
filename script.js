@@ -314,6 +314,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     
+    // 时间日期模块点击事件 - 打开快捷访问菜单
+    const timeDisplay = document.querySelector('.time-display');
+
+    timeDisplay.addEventListener('click', function(e) {
+        // 阻止事件冒泡，防止干扰其他点击逻辑
+        e.stopPropagation();
+
+        // 隐藏搜索框部分，但保留时间日期
+        const searchBox = document.querySelector('.search-boxes-container');
+        searchBox.style.opacity = '0';
+        searchBox.style.visibility = 'hidden';
+
+        // 设置菜单位置
+        contextMenu.style.top = '0';
+        contextMenu.style.left = '0';
+        contextMenu.style.width = '100%';
+        contextMenu.style.height = '100%';
+
+        // 显示菜单
+        contextMenu.classList.add('active');
+
+        // 为菜单项添加点击事件（重新获取菜单项以确保包含所有动态添加的项）
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            const url = item.getAttribute('data-url');
+            item.onclick = function() {
+                window.open(url, '_blank');
+                contextMenu.classList.remove('active');
+                // 重新显示搜索框
+                searchBox.style.opacity = '1';
+                searchBox.style.visibility = 'visible';
+            };
+        });
+    });
+
     // 添加时钟功能
     function updateClock() {
         const now = new Date();

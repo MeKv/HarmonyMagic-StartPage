@@ -31,6 +31,12 @@ body {
     margin-bottom: 0.5rem; /* 进一步减少时间显示的底部边距 */
     position: relative;
     z-index: 3000 !important; /* 确保时间日期始终在最顶层 */
+    cursor: pointer; /* 添加可点击指针 */
+    transition: transform 0.2s ease; /* 添加过渡效果 */
+}
+
+.time-display:hover {
+    transform: scale(1.02); /* 悬停时轻微放大 */
 }
 
 #time {
