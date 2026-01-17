@@ -31,6 +31,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return window.innerWidth <= 768;
     }
 
+    // 移动端：设置容器位置
+    function setMobileContainerPosition() {
+        if (!isMobile()) return;
+
+        const container = document.querySelector('.container');
+        const viewportHeight = window.innerHeight;
+        const timeDisplay = document.querySelector('.time-display');
+        const searchBoxesContainer = document.querySelector('.search-boxes-container');
+
+        // 计算时间日期模块的高度
+        const timeHeight = timeDisplay.offsetHeight;
+
+        // 计算搜索框容器的高度（折叠状态）
+        const searchHeight = searchBoxesContainer.offsetHeight;
+
+        // 计算总高度，留出上下边距
+        const totalHeight = timeHeight + searchHeight;
+        const margin = Math.round(viewportHeight * 0.1);
+
+        // 计算需要的偏移量，确保内容在视口内居中显示
+        const topOffset = Math.round((viewportHeight - totalHeight) / 2 - margin);
+
+        // 设置容器的top值
+        container.style.top = `-${Math.max(topOffset, 20)}px`;
+    }
+
     // 移动端：设置布局类
     function setMobileLayout(expandedBox) {
         if (!isMobile()) return;
@@ -55,6 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isMobile()) {
             // 恢复桌面布局
             searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
+            // 恢复桌面端的top值
+            container.style.top = '';
+        } else {
+            // 移动端自适应位置
+            setMobileContainerPosition();
         }
     });
     
@@ -249,6 +280,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function expandSearchBox(box) {
         box.classList.add('expanded');
         currentUninputExpandedBox = box;
+        // 移动端重新计算位置
+        setMobileContainerPosition();
         // 聚焦到输入框
         const input = box.querySelector('.circle-search-input');
         setTimeout(() => {
@@ -262,6 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentUninputExpandedBox === box) {
             currentUninputExpandedBox = null;
         }
+        // 移动端重新计算位置
+        setMobileContainerPosition();
         // 不再清空输入框，保留用户输入的文字
     }
     
@@ -305,12 +340,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // 展开中间搜索框
     function expandCenterSearchBox() {
         centerSearchBox.classList.add('expanded');
+        // 移动端重新计算位置
+        setMobileContainerPosition();
         // 聚焦到输入框
         setTimeout(() => {
             centerSearchBox.querySelector('.circle-search-input').focus();
         }, 300);
     }
-    
+
     // 收缩中间搜索框
     function collapseCenterSearchBox() {
         collapseSearchBox(centerSearchBox);
@@ -472,4 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 更新菜单以包含自定义书签
     updateContextMenu();
+
+    // 初始化移动端位置
+    setMobileContainerPosition();
 });
