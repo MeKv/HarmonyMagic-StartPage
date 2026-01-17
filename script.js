@@ -1,3 +1,13 @@
+// 控制台ASCII字符画输出
+console.log(`
+\x1b[32m
+Harmony Magic Start Page
+欢迎来到和谐魔法起始页!
+\x1b[0m
+© 2026 anjisuan608
+Licensed under GPLv3
+`);
+
 // 主应用
 document.addEventListener('DOMContentLoaded', function() {
     const searchIcon = document.querySelector('.search-icon');
@@ -30,6 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 检查是否为移动端
     function isMobile() {
         return window.innerWidth <= 768;
+    }
+
+    // 检查是否为平板端
+    function isTablet() {
+        return window.innerWidth > 768 && window.innerWidth <= 1024;
     }
 
     // 检测并处理遮挡逻辑：时间日期被搜索框遮挡时隐藏
