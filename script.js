@@ -76,6 +76,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // 移动端：设置搜索框宽度
+    function setMobileSearchWidth() {
+        if (!isMobile()) return;
+
+        // 获取实际视口宽度，减去40px（左右各20px边距）
+        const viewportWidth = window.innerWidth;
+        const searchWidth = Math.min(viewportWidth - 40, 350);
+
+        // 设置CSS变量
+        document.documentElement.style.setProperty('--mobile-search-width', `${searchWidth}px`);
+    }
+
     // 窗口大小变化时处理
     window.addEventListener('resize', function() {
         if (!isMobile()) {
@@ -86,6 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // 移动端自适应位置
             setMobileContainerPosition();
+            // 重新计算搜索框宽度
+            setMobileSearchWidth();
         }
     });
     
@@ -282,6 +296,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // 移动端直接进入输入展开状态
         if (isMobile()) {
             box.classList.add('input-active');
+            // 设置搜索框宽度
+            setMobileSearchWidth();
         }
         currentUninputExpandedBox = box;
         // 移动端重新计算位置
@@ -514,6 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 更新菜单以包含自定义书签
     updateContextMenu();
 
-    // 初始化移动端位置
+    // 初始化移动端位置和搜索框宽度
     setMobileContainerPosition();
+    setMobileSearchWidth();
 });

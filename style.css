@@ -121,8 +121,20 @@ body::after {
 
 /* 移动端圆形搜索框直接展开到输入状态 */
 @media (max-width: 768px) {
-    .search-box-circle.expanded {
-        width: 280px;
+    :root {
+        --mobile-search-width: calc(100vw - 40px);
+    }
+
+    .search-box-circle.expanded,
+    .search-box-circle.expanded.input-active {
+        width: var(--mobile-search-width);
+        max-width: 350px;
+    }
+
+    .search-container-shortened.expanded,
+    .search-container-shortened.expanded.input-active {
+        width: var(--mobile-search-width);
+        max-width: 350px;
     }
 }
 
@@ -479,17 +491,17 @@ body::after {
 
     /* 移动端搜索框直接展开到输入状态 */
     .search-container-shortened.expanded {
-        width: 280px;
-        min-width: 240px;
+        width: var(--mobile-search-width);
+        min-width: auto;
     }
 
     .search-container-shortened.expanded.input-active {
-        width: 280px;
-        min-width: 240px;
+        width: var(--mobile-search-width);
+        min-width: auto;
     }
 
     .search-box-circle.expanded {
-        width: 280px;
+        width: var(--mobile-search-width);
     }
 
     /* 搜索框展开时的3排布局 - 使用flex-wrap实现真正的三排 */
