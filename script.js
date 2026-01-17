@@ -32,6 +32,55 @@ document.addEventListener('DOMContentLoaded', function() {
         return window.innerWidth <= 768;
     }
 
+    // 检测并处理遮挡逻辑：时间日期被搜索框遮挡时隐藏
+    function handleOcclusion() {
+        const timeDisplay = document.querySelector('.time-display');
+        const dateDisplay = document.querySelector('.date-display');
+        const searchBoxEl = document.querySelector('.search-box');
+
+        if (!timeDisplay || !dateDisplay || !searchBoxEl) return;
+
+        const timeRect = timeDisplay.getBoundingClientRect();
+        const dateRect = dateDisplay.getBoundingClientRect();
+        const searchRect = searchBoxEl.getBoundingClientRect();
+
+        // 检测日期是否被搜索框遮挡
+        const dateHidden = dateRect.bottom > searchRect.top;
+        // 检测时间是否被搜索框遮挡
+        const timeHidden = timeRect.bottom > searchRect.top;
+
+        if (dateHidden) {
+            dateDisplay.style.visibility = 'hidden';
+            dateDisplay.style.position = 'absolute';
+        } else {
+            dateDisplay.style.visibility = '';
+            dateDisplay.style.position = '';
+        }
+
+        if (timeHidden) {
+            timeDisplay.style.visibility = 'hidden';
+            timeDisplay.style.position = 'absolute';
+        } else {
+            timeDisplay.style.visibility = '';
+            timeDisplay.style.position = '';
+        }
+    }
+
+    // 恢复被隐藏的日期和时间
+    function restoreDateTime() {
+        const timeDisplay = document.querySelector('.time-display');
+        const dateDisplay = document.querySelector('.date-display');
+
+        if (timeDisplay) {
+            timeDisplay.style.visibility = '';
+            timeDisplay.style.position = '';
+        }
+        if (dateDisplay) {
+            dateDisplay.style.visibility = '';
+            dateDisplay.style.position = '';
+        }
+    }
+
     // 移动端：设置容器位置
     function setMobileContainerPosition() {
         if (isMobile()) {
@@ -59,6 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBox.style.top = `${timeHeight + 40}px`;
                 searchBox.style.left = '50%';
                 searchBox.style.transform = 'translateX(-50%)';
+
+                // 检测遮挡并处理
+                setTimeout(() => handleOcclusion(), 100);
             } else {
                 // 正常状态，居中显示
                 timeDate.style.position = 'relative';
@@ -71,6 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBox.style.top = '';
                 searchBox.style.left = '';
                 searchBox.style.transform = '';
+
+                // 恢复日期和时间显示
+                restoreDateTime();
             }
         } else if (isTablet()) {
             // 平板端：使用更大的布局，不使用绝对定位（输入法情况除外）
@@ -91,6 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBox.style.bottom = '';
                 searchBox.style.left = '50%';
                 searchBox.style.transform = 'translateX(-50%)';
+
+                // 检测遮挡并处理
+                setTimeout(() => handleOcclusion(), 100);
             } else {
                 // 正常状态
                 timeDate.style.position = 'relative';
@@ -103,6 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 searchBox.style.top = '';
                 searchBox.style.left = '';
                 searchBox.style.transform = '';
+
+                // 恢复日期和时间显示
+                restoreDateTime();
             }
         } else {
             // 桌面端和大屏平板：使用输入法自适应
@@ -221,6 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
             searchBox.style.bottom = '';
             searchBox.style.left = '50%';
             searchBox.style.transform = 'translateX(-50%)';
+
+            // 检测遮挡并处理
+            setTimeout(() => handleOcclusion(), 100);
         } else {
             // 正常状态，恢复默认样式
             timeDate.style.position = '';
@@ -234,6 +298,9 @@ document.addEventListener('DOMContentLoaded', function() {
             searchBox.style.bottom = '';
             searchBox.style.left = '';
             searchBox.style.transform = '';
+
+            // 恢复日期和时间显示
+            restoreDateTime();
         }
     }
 
@@ -250,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
         searchBox.style.bottom = '';
         searchBox.style.left = '';
         searchBox.style.transform = '';
+
+        // 恢复日期和时间显示
+        restoreDateTime();
     }
 
     // 窗口大小变化时处理
