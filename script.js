@@ -1,3 +1,13 @@
+// 控制台ASCII字符画输出
+console.log(`
+\x1b[32m
+Harmony Magic Start Page
+欢迎来到和谐魔法起始页!
+\x1b[0m
+© 2026 anjisuan608
+Licensed under GPLv3
+`);
+
 // 主应用
 document.addEventListener('DOMContentLoaded', function() {
     const searchIcon = document.querySelector('.search-icon');
