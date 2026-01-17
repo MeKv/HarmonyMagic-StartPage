@@ -65,11 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 点击圆形搜索框展开
         box.addEventListener('click', function(e) {
-            // 如果点击的是输入框或按钮，不触发展开/收缩逻辑
-            if (e.target === circleInput || e.target === circleBtn || circleBtn.contains(e.target)) {
-                return;
-            }
-
             // 如果当前已经有展开的搜索框且不是当前点击的，则先关闭它
             if (currentExpandedBox && currentExpandedBox !== box) {
                 collapseSearchBox(currentExpandedBox);
@@ -169,22 +164,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // 圆形搜索框输入框失焦事件
-        circleInput.addEventListener('blur', function() {
+        circleInput.addEventListener('blur', function(e) {
+            // 记录当前失焦的输入框和相关的按钮
+            const blurInput = this;
+            const relatedBtn = circleBtn;
+            
             setTimeout(() => {
-                if (document.activeElement !== circleBtn && document.activeElement !== circleInput) {
-                    // 无论是否有内容，都保持展开状态（未输入激活状态）
+                // 如果当前焦点在同一个搜索框的按钮上，保持状态不变
+                if (relatedBtn && (document.activeElement === relatedBtn || relatedBtn.contains(document.activeElement))) {
+                    return;
+                }
+                
+                // 如果焦点在同一个输入框上，保持状态不变
+                if (document.activeElement === blurInput) {
+                    return;
+                }
+                
+                // 如果当前展开的搜索框还是同一个，不重置
+                if (currentExpandedBox === box || currentUninputExpandedBox === box) {
+                    // 只移除input-active样式，保持expanded状态
                     box.classList.remove('input-active');
                     currentExpandedBox = null;
-                    currentUninputExpandedBox = box; // 保持展开状态，保留输入的文字
+                    // currentUninputExpandedBox 保持不变，保留展开状态
                 }
-            }, 100);
+            }, 150);
         });
         
         // 圆形搜索框按钮点击事件
         circleBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            // 执行搜索逻辑
+            
+            // 确保当前搜索框保持展开状态
+            if (!box.classList.contains('expanded')) {
+                expandSearchBox(box);
+            }
+            
+            // 确保状态正确
+            box.classList.add('input-active');
+            currentExpandedBox = box;
+            currentUninputExpandedBox = box;
+            
+            // 聚焦到输入框
             const input = box.querySelector('.circle-search-input');
+            input.focus();
+            
+            // 执行搜索逻辑
             const query = input.value.trim();
             let searchUrl = '';
 
