@@ -88,22 +88,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 切换当前搜索框的展开状态
             if (box.classList.contains('expanded')) {
-                // 记录当前搜索框
-                const wasCurrentBox = (box === currentUninputExpandedBox);
-                
-                collapseSearchBox(box);
-                currentExpandedBox = null;
-                currentUninputExpandedBox = null;
-                setMobileLayout(null);
-                
-                // 如果是在移动端，需要确保其他搜索框也正确处理
-                if (isMobile() && wasCurrentBox) {
-                    // 强制重新计算布局
-                    setTimeout(() => {
-                        if (!currentUninputExpandedBox) {
-                            searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
-                        }
-                    }, 50);
+                // 如果已经有内容，则聚焦到输入框
+                if (circleInput.value.trim() !== '') {
+                    box.classList.add('input-active');
+                    currentExpandedBox = box;
+                    currentUninputExpandedBox = box;
+                    circleInput.focus(); // 聚焦到输入框，继续输入
+                } else {
+                    // 记录当前搜索框
+                    const wasCurrentBox = (box === currentUninputExpandedBox);
+
+                    collapseSearchBox(box);
+                    currentExpandedBox = null;
+                    currentUninputExpandedBox = null;
+                    setMobileLayout(null);
+
+                    // 如果是在移动端，需要确保其他搜索框也正确处理
+                    if (isMobile() && wasCurrentBox) {
+                        // 强制重新计算布局
+                        setTimeout(() => {
+                            if (!currentUninputExpandedBox) {
+                                searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
+                            }
+                        }, 50);
+                    }
                 }
             } else {
                 // 检查中间搜索框是否展开，如果是则收缩它
@@ -175,27 +183,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 圆形搜索框输入框失焦事件
         circleInput.addEventListener('blur', function() {
-            box.classList.remove('input-active');
             setTimeout(() => {
                 if (document.activeElement !== circleBtn && document.activeElement !== circleInput) {
-                    // 如果输入框为空，则转为未输入展开状态而不是完全收缩
-                    if (circleInput.value.trim() === '') {
-                        // 记录这个搜索框为上一次输入展开的搜索框
-                        lastInputActiveBox = box;
-
-                        // 如果当前没有其他搜索框处于未输入展开状态，则保持当前搜索框为未输入展开状态
-                        if (!currentUninputExpandedBox || currentUninputExpandedBox === box) {
-                            box.classList.remove('input-active');
-                            // 保持展开状态但移除输入激活状态
-                            currentUninputExpandedBox = box;
-                        } else {
-                            // 如果已经有其他搜索框处于未输入展开状态，则完全收缩当前搜索框
-                            collapseSearchBox(box);
-                            currentExpandedBox = null;
-                            currentUninputExpandedBox = null;
-                            setMobileLayout(null);
-                        }
-                    }
+                    // 无论是否有内容，都保持展开状态（未输入激活状态）
+                    box.classList.remove('input-active');
+                    currentExpandedBox = null;
+                    currentUninputExpandedBox = box; // 保持展开状态，保留输入的文字
                 }
             }, 100);
         });
@@ -209,23 +202,10 @@ document.addEventListener('DOMContentLoaded', function() {
         circleBtn.addEventListener('blur', function() {
             setTimeout(() => {
                 if (document.activeElement !== circleInput) {
-                    if (circleInput.value.trim() === '') {
-                        // 记录这个搜索框为上一次输入展开的搜索框
-                        lastInputActiveBox = box;
-
-                        // 如果当前没有其他搜索框处于未输入展开状态，则保持当前搜索框为未输入展开状态
-                        if (!currentUninputExpandedBox || currentUninputExpandedBox === box) {
-                            box.classList.remove('input-active');
-                            // 保持展开状态但移除输入激活状态
-                            currentUninputExpandedBox = box;
-                        } else {
-                            // 如果已经有其他搜索框处于未输入展开状态，则完全收缩当前搜索框
-                            collapseSearchBox(box);
-                            currentExpandedBox = null;
-                            currentUninputExpandedBox = null;
-                            setMobileLayout(null);
-                        }
-                    }
+                    // 无论是否有内容，都保持展开状态
+                    box.classList.remove('input-active');
+                    currentExpandedBox = null;
+                    currentUninputExpandedBox = box; // 保持展开状态，保留输入的文字
                 }
             }, 100);
         });
@@ -255,14 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
     
-    // 收缩圆形搜索框
+    // 收缩圆形搜索框（保留输入文字）
     function collapseSearchBox(box) {
         box.classList.remove('expanded', 'input-active');
         if (currentUninputExpandedBox === box) {
             currentUninputExpandedBox = null;
         }
-        const input = box.querySelector('.circle-search-input');
-        input.value = '';
+        // 不再清空输入框，保留用户输入的文字
     }
     
     // 执行圆形搜索框的搜索
