@@ -279,6 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 展开圆形搜索框
     function expandSearchBox(box) {
         box.classList.add('expanded');
+        // 移动端直接进入输入展开状态
+        if (isMobile()) {
+            box.classList.add('input-active');
+        }
         currentUninputExpandedBox = box;
         // 移动端重新计算位置
         setMobileContainerPosition();

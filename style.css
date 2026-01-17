@@ -119,6 +119,13 @@ body::after {
     width: 300px; /* 与中间搜索框的展开宽度相同 */
 }
 
+/* 移动端圆形搜索框直接展开到输入状态 */
+@media (max-width: 768px) {
+    .search-box-circle.expanded {
+        width: 280px;
+    }
+}
+
 
 
 .search-box-circle:hover {
@@ -470,14 +477,19 @@ body::after {
         min-width: 50px;
     }
 
+    /* 移动端搜索框直接展开到输入状态 */
     .search-container-shortened.expanded {
-        width: 220px;
-        min-width: 180px;
+        width: 280px;
+        min-width: 240px;
     }
 
     .search-container-shortened.expanded.input-active {
         width: 280px;
         min-width: 240px;
+    }
+
+    .search-box-circle.expanded {
+        width: 280px;
     }
 
     /* 搜索框展开时的3排布局 - 使用flex-wrap实现真正的三排 */
