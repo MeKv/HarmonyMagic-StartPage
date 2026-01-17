@@ -40,7 +40,7 @@ body {
 }
 
 #time {
-    font-size: 3.3rem; /* 增加字体大小 (2.5rem + 0.8rem ≈ 8px增加) */
+    font-size: 80px;
     font-weight: bold;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
@@ -48,7 +48,7 @@ body {
 }
 
 #date {
-    font-size: 1.2rem; /* 减小字体大小 (1.5rem - 0.3rem ≈ 3px减少) */
+    font-size: 26px; /* 减小字体大小 (1.5rem - 0.3rem ≈ 3px减少) */
     color: white;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
@@ -59,7 +59,7 @@ body {
     align-items: center;
     width: 100%;
     max-width: 1000px; /* 增加最大宽度以确保有足够的空间 */
-    margin: 0 auto;
+    margin: 40px auto 0; /* 向下移动搜索框，与时间拉开距离 */
     position: relative;
     overflow: visible; /* 确保展开效果可见 */
 }
@@ -432,6 +432,7 @@ body {
         width: 100%;
         max-width: 100%;
         gap: 5px;
+        margin-top: 0; /* 移动端不应用向下偏移 */
     }
 
     /* 默认布局：横向排列 */
