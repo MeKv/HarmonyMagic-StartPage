@@ -34,52 +34,78 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 移动端：设置容器位置
     function setMobileContainerPosition() {
-        if (!isMobile()) return;
+        if (isMobile()) {
+            // 手机端：需要自适应输入法
+            const viewportHeight = window.innerHeight;
+            const timeDisplay = document.querySelector('.time-display');
+            const searchBoxesContainer = document.querySelector('.search-boxes-container');
 
-        const viewportHeight = window.innerHeight;
-        const timeDisplay = document.querySelector('.time-display');
-        const searchBoxesContainer = document.querySelector('.search-boxes-container');
+            const timeHeight = timeDisplay.offsetHeight;
+            const searchHeight = searchBoxesContainer.offsetHeight;
 
-        // 计算时间日期模块的高度
-        const timeHeight = timeDisplay.offsetHeight;
+            // 检查是否有输入法键盘弹出
+            const isKeyboardOpen = viewportHeight < window.visualViewport?.height || window.innerHeight < screen.height * 0.6;
 
-        // 计算搜索框容器的高度（折叠状态）
-        const searchHeight = searchBoxesContainer.offsetHeight;
+            if (isKeyboardOpen) {
+                // 输入法弹出时，将时间日期上移到顶端
+                timeDate.style.position = 'absolute';
+                timeDate.style.top = '20px';
+                timeDate.style.left = '50%';
+                timeDate.style.transform = 'translateX(-50%)';
+                timeDate.style.marginBottom = '0';
 
-        // 计算总高度
-        const totalHeight = timeHeight + searchHeight;
+                searchBox.style.position = 'absolute';
+                searchBox.style.top = `${timeHeight + 40}px`;
+                searchBox.style.left = '50%';
+                searchBox.style.transform = 'translateX(-50%)';
+            } else {
+                // 正常状态，居中显示
+                timeDate.style.position = 'relative';
+                timeDate.style.top = '';
+                timeDate.style.left = '';
+                timeDate.style.transform = '';
+                timeDate.style.marginBottom = '40px';
 
-        // 计算可用空间（考虑底部安全区域）
-        const availableHeight = viewportHeight;
+                searchBox.style.position = 'relative';
+                searchBox.style.top = '';
+                searchBox.style.left = '';
+                searchBox.style.transform = '';
+            }
+        } else if (isTablet()) {
+            // 平板端：使用更大的布局，不使用绝对定位（输入法情况除外）
+            const viewportHeight = window.innerHeight;
+            const isKeyboardOpen = viewportHeight < (window.visualViewport?.height || Infinity) || 
+                                    viewportHeight < window.screen.height * 0.5;
 
-        // 检查是否有输入法键盘弹出
-        const isKeyboardOpen = viewportHeight < window.visualViewport?.height || window.innerHeight < screen.height * 0.6;
+            if (isKeyboardOpen) {
+                // 输入法弹出时上移
+                timeDate.style.position = 'absolute';
+                timeDate.style.top = '30px';
+                timeDate.style.left = '50%';
+                timeDate.style.transform = 'translateX(-50%)';
+                timeDate.style.marginBottom = '0';
 
-        if (isKeyboardOpen) {
-            // 输入法弹出时，将时间日期上移到顶端
-            timeDate.style.position = 'absolute';
-            timeDate.style.top = '20px';
-            timeDate.style.left = '50%';
-            timeDate.style.transform = 'translateX(-50%)';
-            timeDate.style.marginBottom = '0';
+                searchBox.style.position = 'absolute';
+                searchBox.style.top = '';
+                searchBox.style.bottom = '';
+                searchBox.style.left = '50%';
+                searchBox.style.transform = 'translateX(-50%)';
+            } else {
+                // 正常状态
+                timeDate.style.position = 'relative';
+                timeDate.style.top = '';
+                timeDate.style.left = '';
+                timeDate.style.transform = '';
+                timeDate.style.marginBottom = '60px';
 
-            // 搜索框跟随移动，保持在时间下方
-            searchBox.style.position = 'absolute';
-            searchBox.style.top = `${timeHeight + 40}px`;
-            searchBox.style.left = '50%';
-            searchBox.style.transform = 'translateX(-50%)';
+                searchBox.style.position = 'relative';
+                searchBox.style.top = '';
+                searchBox.style.left = '';
+                searchBox.style.transform = '';
+            }
         } else {
-            // 正常状态，居中显示
-            timeDate.style.position = 'relative';
-            timeDate.style.top = '';
-            timeDate.style.left = '';
-            timeDate.style.transform = '';
-            timeDate.style.marginBottom = '40px';
-
-            searchBox.style.position = 'relative';
-            searchBox.style.top = '';
-            searchBox.style.left = '';
-            searchBox.style.transform = '';
+            // 桌面端和大屏平板：使用输入法自适应
+            setDesktopInputMethodPosition();
         }
     }
 
@@ -91,14 +117,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // 输入框聚焦时（输入法弹出）
             input.addEventListener('focus', function() {
                 setTimeout(() => {
-                    setMobileContainerPosition();
+                    if (isMobile()) {
+                        setMobileContainerPosition();
+                    } else {
+                        setDesktopInputMethodPosition();
+                    }
                 }, 300);
             });
 
             // 输入框失焦时（输入法收起）
             input.addEventListener('blur', function() {
                 setTimeout(() => {
-                    setMobileContainerPosition();
+                    if (isMobile()) {
+                        setMobileContainerPosition();
+                    } else {
+                        // 桌面端直接还原页面位置
+                        resetPagePosition();
+                    }
                 }, 100);
             });
         });
@@ -108,13 +143,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupViewportHandler() {
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', function() {
-                setMobileContainerPosition();
+                if (isMobile()) {
+                    setMobileContainerPosition();
+                } else {
+                    setDesktopInputMethodPosition();
+                }
             });
         }
 
         // 备用方案：监听window resize
         window.addEventListener('resize', function() {
-            setMobileContainerPosition();
+            if (isMobile()) {
+                setMobileContainerPosition();
+            } else {
+                setDesktopInputMethodPosition();
+            }
         });
     }
 
@@ -149,25 +192,76 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.setProperty('--mobile-search-width', `${searchWidth}px`);
     }
 
-    // 窗口大小变化时处理
-    window.addEventListener('resize', function() {
-        if (!isMobile()) {
-            // 恢复桌面布局
-            searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
-            // 恢复桌面端的样式
+    // 桌面端和大屏平板：输入法抬升页面
+    function setDesktopInputMethodPosition() {
+        // 仅在非手机端执行
+        if (isMobile()) return;
+
+        const viewportHeight = window.innerHeight;
+        const visualViewportHeight = window.visualViewport?.height || viewportHeight;
+
+        // 检测输入法是否弹出的更准确方法
+        // 当输入法弹出时，innerHeight 会小于 visualViewport.height（某些浏览器）
+        // 或者 innerHeight 会明显小于屏幕高度的一半
+        const isKeyboardOpen = viewportHeight < visualViewportHeight * 0.9 || 
+                                viewportHeight < window.screen.height * 0.5;
+
+        if (isKeyboardOpen) {
+            // 输入法弹出时，将时间日期上移到顶端
+            timeDate.style.position = 'absolute';
+            timeDate.style.top = '30px';
+            timeDate.style.left = '50%';
+            timeDate.style.transform = 'translateX(-50%)';
+            timeDate.style.marginBottom = '0';
+
+            // 搜索框跟随移动
+            searchBox.style.position = 'absolute';
+            searchBox.style.top = '';
+            searchBox.style.bottom = '';
+            searchBox.style.left = '50%';
+            searchBox.style.transform = 'translateX(-50%)';
+        } else {
+            // 正常状态，恢复默认样式
             timeDate.style.position = '';
             timeDate.style.top = '';
             timeDate.style.left = '';
             timeDate.style.transform = '';
+            timeDate.style.marginBottom = '';
+
             searchBox.style.position = '';
             searchBox.style.top = '';
+            searchBox.style.bottom = '';
             searchBox.style.left = '';
             searchBox.style.transform = '';
-        } else {
+        }
+    }
+
+    // 强制还原页面位置到默认状态
+    function resetPagePosition() {
+        timeDate.style.position = '';
+        timeDate.style.top = '';
+        timeDate.style.left = '';
+        timeDate.style.transform = '';
+        timeDate.style.marginBottom = '';
+
+        searchBox.style.position = '';
+        searchBox.style.top = '';
+        searchBox.style.bottom = '';
+        searchBox.style.left = '';
+        searchBox.style.transform = '';
+    }
+
+    // 窗口大小变化时处理
+    window.addEventListener('resize', function() {
+        if (isMobile()) {
             // 移动端自适应位置
             setMobileContainerPosition();
             // 重新计算搜索框宽度
             setMobileSearchWidth();
+        } else {
+            // 桌面端和大屏平板：恢复布局类并设置输入法位置
+            searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
+            setDesktopInputMethodPosition();
         }
     });
     
