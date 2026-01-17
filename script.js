@@ -180,27 +180,37 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         });
         
-        // 圆形搜索框按钮聚焦事件
-        circleBtn.addEventListener('focus', function() {
-            box.classList.add('input-active');
-        });
-        
-        // 圆形搜索框按钮失焦事件
-        circleBtn.addEventListener('blur', function() {
-            setTimeout(() => {
-                if (document.activeElement !== circleInput) {
-                    // 无论是否有内容，都保持展开状态
-                    box.classList.remove('input-active');
-                    currentExpandedBox = null;
-                    currentUninputExpandedBox = box; // 保持展开状态，保留输入的文字
-                }
-            }, 100);
-        });
-        
         // 圆形搜索框按钮点击事件
         circleBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            performCircleSearch(box);
+            // 执行搜索逻辑
+            const input = box.querySelector('.circle-search-input');
+            const query = input.value.trim();
+            let searchUrl = '';
+
+            // 根据搜索框的类名确定搜索引擎
+            if (box.classList.contains('left-circle-1')) {
+                searchUrl = query ? `https://www.baidu.com/s?wd=${encodeURIComponent(query)}` : 'https://www.baidu.com';
+            } else if (box.classList.contains('left-circle-2')) {
+                searchUrl = query ? `https://www.sogou.com/web?query=${encodeURIComponent(query)}` : 'https://www.sogou.com';
+            } else if (box.classList.contains('left-circle-3')) {
+                searchUrl = query ? `https://www.so.com/s?q=${encodeURIComponent(query)}` : 'https://www.so.com';
+            } else if (box.classList.contains('right-circle-1')) {
+                searchUrl = query ? `https://www.google.com/search?q=${encodeURIComponent(query)}` : 'https://www.google.com';
+            } else if (box.classList.contains('right-circle-2')) {
+                searchUrl = query ? `https://duckduckgo.com/?q=${encodeURIComponent(query)}` : 'https://duckduckgo.com';
+            } else if (box.classList.contains('right-circle-3')) {
+                searchUrl = query ? `https://search.mcmod.cn/s?key=${encodeURIComponent(query)}` : 'https://search.mcmod.cn';
+            } else {
+                searchUrl = query ? `https://www.bing.com/search?q=${encodeURIComponent(query)}` : 'https://www.bing.com';
+            }
+
+            // 搜索后清空输入框，但保持展开状态
+            input.value = '';
+            box.classList.remove('input-active');
+            
+            // 打开搜索页面
+            window.open(searchUrl, '_blank');
         });
         
         // 圆形搜索框输入框回车事件
