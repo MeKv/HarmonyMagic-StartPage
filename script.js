@@ -1,7 +1,8 @@
 // 主应用
 document.addEventListener('DOMContentLoaded', function() {
     const searchIcon = document.querySelector('.search-icon');
-    const container = document.querySelector('.container');
+    const timeDate = document.querySelector('.time-date');
+    const searchBox = document.querySelector('.search-box');
     const contextMenu = document.getElementById('context-menu');
     const searchBoxesContainer = document.querySelector('.search-boxes-container');
 
@@ -35,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function setMobileContainerPosition() {
         if (!isMobile()) return;
 
-        const container = document.querySelector('.container');
         const viewportHeight = window.innerHeight;
         const timeDisplay = document.querySelector('.time-display');
         const searchBoxesContainer = document.querySelector('.search-boxes-container');
@@ -46,15 +46,76 @@ document.addEventListener('DOMContentLoaded', function() {
         // 计算搜索框容器的高度（折叠状态）
         const searchHeight = searchBoxesContainer.offsetHeight;
 
-        // 计算总高度，留出上下边距
+        // 计算总高度
         const totalHeight = timeHeight + searchHeight;
-        const margin = Math.round(viewportHeight * 0.1);
 
-        // 计算需要的偏移量，确保内容在视口内居中显示
-        const topOffset = Math.round((viewportHeight - totalHeight) / 2 - margin);
+        // 计算可用空间（考虑底部安全区域）
+        const availableHeight = viewportHeight;
 
-        // 设置容器的top值
-        container.style.top = `-${Math.max(topOffset, 20)}px`;
+        // 检查是否有输入法键盘弹出
+        const isKeyboardOpen = viewportHeight < window.visualViewport?.height || window.innerHeight < screen.height * 0.6;
+
+        if (isKeyboardOpen) {
+            // 输入法弹出时，将时间日期上移到顶端
+            timeDate.style.position = 'absolute';
+            timeDate.style.top = '20px';
+            timeDate.style.left = '50%';
+            timeDate.style.transform = 'translateX(-50%)';
+            timeDate.style.marginBottom = '0';
+
+            // 搜索框跟随移动，保持在时间下方
+            searchBox.style.position = 'absolute';
+            searchBox.style.top = `${timeHeight + 40}px`;
+            searchBox.style.left = '50%';
+            searchBox.style.transform = 'translateX(-50%)';
+        } else {
+            // 正常状态，居中显示
+            timeDate.style.position = 'relative';
+            timeDate.style.top = '';
+            timeDate.style.left = '';
+            timeDate.style.transform = '';
+            timeDate.style.marginBottom = '40px';
+
+            searchBox.style.position = 'relative';
+            searchBox.style.top = '';
+            searchBox.style.left = '';
+            searchBox.style.transform = '';
+        }
+    }
+
+    // 监听输入框焦点事件，处理输入法弹出
+    function setupInputMethodHandlers() {
+        const allInputs = document.querySelectorAll('input[type="text"]');
+
+        allInputs.forEach(input => {
+            // 输入框聚焦时（输入法弹出）
+            input.addEventListener('focus', function() {
+                setTimeout(() => {
+                    setMobileContainerPosition();
+                }, 300);
+            });
+
+            // 输入框失焦时（输入法收起）
+            input.addEventListener('blur', function() {
+                setTimeout(() => {
+                    setMobileContainerPosition();
+                }, 100);
+            });
+        });
+    }
+
+    // 监听视口变化（输入法弹出/收起）
+    function setupViewportHandler() {
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', function() {
+                setMobileContainerPosition();
+            });
+        }
+
+        // 备用方案：监听window resize
+        window.addEventListener('resize', function() {
+            setMobileContainerPosition();
+        });
     }
 
     // 移动端：设置布局类
@@ -93,8 +154,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isMobile()) {
             // 恢复桌面布局
             searchBoxesContainer.classList.remove('left-expanded', 'center-expanded', 'right-expanded');
-            // 恢复桌面端的top值
-            container.style.top = '';
+            // 恢复桌面端的样式
+            timeDate.style.position = '';
+            timeDate.style.top = '';
+            timeDate.style.left = '';
+            timeDate.style.transform = '';
+            searchBox.style.position = '';
+            searchBox.style.top = '';
+            searchBox.style.left = '';
+            searchBox.style.transform = '';
         } else {
             // 移动端自适应位置
             setMobileContainerPosition();
@@ -533,4 +601,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化移动端位置和搜索框宽度
     setMobileContainerPosition();
     setMobileSearchWidth();
+
+    // 设置输入法自适应处理
+    setupInputMethodHandlers();
+    setupViewportHandler();
 });
