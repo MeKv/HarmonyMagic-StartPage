@@ -862,62 +862,58 @@ document.addEventListener('DOMContentLoaded', function() {
     setupInputMethodHandlers();
     setupViewportHandler();
 
-    // GPLv3许可证提示框功能
-    const gplToast = document.getElementById('gpl-toast');
-    let gplToastTimer = null;
+    // GPLv3许可证通知功能
+    const noticesContainer = document.getElementById('notices');
 
-    // 显示提示框
-    function showGplToast() {
-        gplToast.classList.add('show');
+    // 移除通知（带淡出动画）
+    function removeNotice(notice) {
+        notice.classList.add('removing');
+        setTimeout(() => {
+            notice.remove();
+        }, 300);
+    }
 
-        // 清除之前的定时器
-        if (gplToastTimer) {
-            clearTimeout(gplToastTimer);
-        }
+    // 创建并添加通知
+    function addGplNotice() {
+        const notice = document.createElement('div');
+        notice.className = 'notice-item';
+        notice.innerHTML = `
+            <div class="notice-title">注意</div>
+            <div class="notice-content">检测到按下开发工具热键<br>请遵守<strong>GPLv3</strong>许可协议</div>
+        `;
 
-        // 8秒后自动隐藏
-        gplToastTimer = setTimeout(() => {
-            hideGplToast();
+        // 点击移除通知
+        notice.addEventListener('click', function() {
+            removeNotice(notice);
+        });
+
+        noticesContainer.appendChild(notice);
+
+        // 8秒后自动移除
+        setTimeout(() => {
+            if (notice.parentNode) {
+                removeNotice(notice);
+            }
         }, 8000);
     }
-
-    // 隐藏提示框
-    function hideGplToast() {
-        gplToast.classList.remove('show');
-        if (gplToastTimer) {
-            clearTimeout(gplToastTimer);
-            gplToastTimer = null;
-        }
-    }
-
-    // 点击提示框关闭
-    gplToast.addEventListener('click', function() {
-        hideGplToast();
-    });
 
     // 监听F12和Ctrl+Shift+I
     document.addEventListener('keydown', function(e) {
         // F12键
         if (e.key === 'F12') {
-            showGplToast();
+            addGplNotice();
         }
         // Ctrl+Shift+I 组合键
         if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-            showGplToast();
+            addGplNotice();
         }
         // Ctrl+Shift+J 组合键 (Chrome开发者工具另一种打开方式)
         if (e.ctrlKey && e.shiftKey && e.key === 'J') {
-            showGplToast();
+            addGplNotice();
         }
         // Ctrl+Shift+C 组合键 (Chrome开发者工具Elements面板)
         if (e.ctrlKey && e.shiftKey && e.key === 'C') {
-            showGplToast();
+            addGplNotice();
         }
-    });
-
-    // 禁用F12和右键菜单打开开发者工具的默认行为
-    document.addEventListener('contextmenu', function(e) {
-        // 不阻止右键菜单，让用户可以正常使用右键
-        // 但可以通过其他方式检测
     });
 });
