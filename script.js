@@ -480,7 +480,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (circleInput.value.trim() !== '') {
                 box.classList.add('input-active');
             } else {
-                box.classList.remove('input-active');
+                // 只有当焦点不在输入框上时，才移除 input-active 状态
+                if (document.activeElement !== circleInput) {
+                    box.classList.remove('input-active');
+                }
             }
         });
         
