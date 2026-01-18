@@ -25,6 +25,46 @@ document.addEventListener('DOMContentLoaded', function() {
         ...Array.from(circleSearchBoxes)
     ];
 
+    // 获取背景模糊层
+    const bgBlurOverlay = document.querySelector('.bg-blur-overlay');
+
+    // 控制背景模糊
+    function setBackgroundBlur(blur) {
+        if (bgBlurOverlay) {
+            if (blur) {
+                bgBlurOverlay.classList.add('active');
+            } else {
+                bgBlurOverlay.classList.remove('active');
+            }
+        }
+    }
+
+    // 设置所有输入框的焦点监听
+    function setupInputFocusListeners() {
+        const allInputs = document.querySelectorAll('input[type="text"]');
+
+        allInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                setBackgroundBlur(true);
+            });
+
+            input.addEventListener('blur', function() {
+                setTimeout(() => {
+                    // 检查是否还有其他输入框有焦点
+                    const hasFocusedInput = Array.from(allInputs).some(inp =>
+                        inp === document.activeElement || inp.contains(document.activeElement)
+                    );
+                    if (!hasFocusedInput) {
+                        setBackgroundBlur(false);
+                    }
+                }, 100);
+            });
+        });
+    }
+
+    // 初始化输入框焦点监听
+    setupInputFocusListeners();
+
     // 设置默认搜索引擎为必应（用于中心搜索框和作为后备）
     let currentEngine = 'bing';
 
@@ -480,7 +520,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (circleInput.value.trim() !== '') {
                 box.classList.add('input-active');
             } else {
-                box.classList.remove('input-active');
+                // 只有当焦点不在输入框上时，才移除 input-active 状态
+                if (document.activeElement !== circleInput) {
+                    box.classList.remove('input-active');
+                }
             }
         });
         
@@ -589,10 +632,11 @@ document.addEventListener('DOMContentLoaded', function() {
         currentUninputExpandedBox = box;
         // 移动端重新计算位置
         setMobileContainerPosition();
-        // 聚焦到输入框
+        // 聚焦到输入框并启用背景模糊
         const input = box.querySelector('.circle-search-input');
         setTimeout(() => {
             input.focus();
+            setBackgroundBlur(true);
         }, 300);
     }
     
@@ -604,6 +648,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // 移动端重新计算位置
         setMobileContainerPosition();
+        // 移除背景模糊
+        setBackgroundBlur(false);
         // 不再清空输入框，保留用户输入的文字
     }
 
@@ -613,10 +659,11 @@ document.addEventListener('DOMContentLoaded', function() {
         box.classList.add('input-active');
         currentUninputExpandedBox = box;
         currentExpandedBox = box;
-        // 聚焦到输入框
+        // 聚焦到输入框并启用背景模糊
         const input = box.querySelector('.circle-search-input');
         setTimeout(() => {
             input.focus();
+            setBackgroundBlur(true);
         }, 100);
     }
 
@@ -629,6 +676,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentExpandedBox === box) {
             currentExpandedBox = null;
         }
+        // 移除背景模糊
+        setBackgroundBlur(false);
     }
 
     // 桌面端：快速切换到新的搜索框（直接展开新框，不等待旧框收缩）
@@ -866,15 +915,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadWallpaper() {
         const wallpaperUrl = 'https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg';
         const img = new Image();
-        
+
         img.onload = function() {
-            document.body.style.backgroundImage = `url('${wallpaperUrl}')`;
+            // 使用CSS变量设置背景图片，CSS负责渲染
+            document.documentElement.style.setProperty('--wallpaper-url', `url('${wallpaperUrl}')`);
         };
-        
+
         img.onerror = function() {
             networkTimeoutNotice('壁纸加载失败');
         };
-        
+
         img.src = wallpaperUrl;
     }
     
