@@ -862,8 +862,17 @@ document.addEventListener('DOMContentLoaded', function() {
     setupInputMethodHandlers();
     setupViewportHandler();
 
-    // GPLv3许可证通知功能
+    // 通知呈现器
     const noticesContainer = document.getElementById('notices');
+
+    // 通知等级配置
+    const NOTICE_LEVELS = {
+        fatal: { color: '#f7a699', duration: 60000 },
+        error: { color: '#ffccbb', duration: 50000 },
+        warns: { color: '#ffeecc', duration: 40000 },
+        info: { color: '#2196F3', duration: 11000 },
+        debug: { color: '#eee9e0', duration: 20000 }
+    };
 
     // 移除通知（带淡出动画）
     function removeNotice(notice) {
@@ -873,13 +882,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
 
-    // 创建并添加通知
-    function addGplNotice() {
+    // 获取格式化时间
+    function getTimeString() {
+        const now = new Date();
+        return now.toLocaleTimeString('zh-CN', { hour12: false });
+    }
+
+    /**
+     * 发送通知
+     * @param {string} content - 通知内容
+     * @param {string} level - 通知等级: fatal, error, warns, info, debug
+     * @param {Object} options - 可选配置: customColor(自定义颜色), customDuration(自定义持续时间ms)
+     */
+    function sendNotice(content, level = 'info', options = {}) {
+        const config = NOTICE_LEVELS[level] || NOTICE_LEVELS.info;
+        const color = options.customColor || config.color;
+        const duration = options.customDuration !== undefined ? options.customDuration : config.duration;
+
+        // 过滤HTML标签用于控制台输出
+        const plainText = content.replace(/<[^>]*>/g, '');
+        console.log(`[${getTimeString()}][${level.toUpperCase()}]${plainText}`);
+
+        // 创建通知元素
         const notice = document.createElement('div');
         notice.className = 'notice-item';
+        notice.style.backgroundColor = color;
         notice.innerHTML = `
-            <div class="notice-title">注意</div>
-            <div class="notice-content">检测到按下开发工具热键<br>请遵守<strong>GPLv3</strong>许可协议</div>
+            <div class="notice-title">${level.toUpperCase()}</div>
+            <div class="notice-content">${content}</div>
         `;
 
         // 点击移除通知
@@ -889,31 +919,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
         noticesContainer.appendChild(notice);
 
-        // 8秒后自动移除
+        // 自动移除
         setTimeout(() => {
             if (notice.parentNode) {
                 removeNotice(notice);
             }
-        }, 8000);
+        }, duration);
+    }
+
+    // GPLv3许可证提示
+    function gplNotice() {
+        sendNotice('检测到按下开发工具热键<br>请遵守<strong>GPLv3</strong>许可协议', 'info', { customDuration: 8000 });
     }
 
     // 监听F12和Ctrl+Shift+I
     document.addEventListener('keydown', function(e) {
         // F12键
         if (e.key === 'F12') {
-            addGplNotice();
+            gplNotice();
         }
         // Ctrl+Shift+I 组合键
         if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-            addGplNotice();
+            gplNotice();
         }
         // Ctrl+Shift+J 组合键 (Chrome开发者工具另一种打开方式)
         if (e.ctrlKey && e.shiftKey && e.key === 'J') {
-            addGplNotice();
+            gplNotice();
         }
         // Ctrl+Shift+C 组合键 (Chrome开发者工具Elements面板)
         if (e.ctrlKey && e.shiftKey && e.key === 'C') {
-            addGplNotice();
+            gplNotice();
         }
     });
+
+    // 暴露sendNotice到全局，以便其他地方使用
+    window.sendNotice = sendNotice;
 });
