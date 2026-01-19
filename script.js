@@ -767,6 +767,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // contextMenu覆盖整个页面，menu-items通过margin-top向下偏移
         contextMenu.classList.add('active');
+        setBackgroundBlur(true); // 启用背景模糊
 
         const menuItems = document.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
@@ -775,6 +776,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.open(url, '_blank');
                 contextMenu.classList.remove('active');
                 document.documentElement.style.removeProperty('--search-box-top');
+                setBackgroundBlur(false); // 移除背景模糊
                 searchBoxContainer.style.opacity = '1';
                 searchBoxContainer.style.visibility = 'visible';
             };
@@ -787,6 +789,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 如果菜单已打开，关闭它
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
+            setBackgroundBlur(false); // 移除背景模糊
             const searchBox = document.querySelector('.search-boxes-container');
             searchBox.style.opacity = '1';
             searchBox.style.visibility = 'visible';
@@ -850,6 +853,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 显示菜单
         contextMenu.classList.add('active');
+        setBackgroundBlur(true); // 启用背景模糊
         
         // 为菜单项添加点击事件（重新获取菜单项以确保包含所有动态添加的项）
         const menuItems = document.querySelectorAll('.menu-item');
@@ -859,6 +863,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.open(url, '_blank');
                 contextMenu.classList.remove('active');
                 document.documentElement.style.removeProperty('--search-box-top');
+                setBackgroundBlur(false); // 移除背景模糊
                 // 重新显示搜索框
                 searchBox.style.opacity = '1';
                 searchBox.style.visibility = 'visible';
@@ -872,6 +877,7 @@ document.addEventListener('DOMContentLoaded', function() {
             !e.target.closest('.menu-items')) {
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
+            setBackgroundBlur(false); // 移除背景模糊
             // 重新显示搜索框
             const searchBox = document.querySelector('.search-boxes-container');
             searchBox.style.opacity = '1';
