@@ -466,47 +466,55 @@ body::after {
     padding: 20px;
     margin-top: var(--search-box-top, 120px); /* 向下偏移到搜索框位置 */
     z-index: 2001;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(5px);
-    border-radius: 12px;
+    /* 移除背景板 */
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
 }
 
 .menu-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding: 10px 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     min-width: 70px;
     color: white; /* 将字体设置为白色 */
     position: relative;
+    /* 图标样式：圆角矩形浅灰背景 */
+    background: #F5F5F5;
+    border-radius: 12px;
+    width: 80px;
+    height: 80px;
 }
 
 .menu-item:hover {
-    transform: translateY(-5px);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .menu-icon {
     font-size: 1.5rem;
     margin-bottom: 6px;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .menu-item img {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     border-radius: 3px;
     margin-bottom: 6px;
 }
 
 .menu-item span {
     text-shadow: none; /* 移除文字阴影以解决重影问题 */
-    color: white; /* 确保文字为白色 */
+    color: #333; /* 文字颜色改为深色以在浅灰背景上显示 */
     font-size: 0.85rem; /* 稍微减小字体 */
 }
 
