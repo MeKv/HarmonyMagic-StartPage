@@ -782,10 +782,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    timeDisplay.addEventListener('click', openContextMenu);
-    if (dateDisplay) {
-        dateDisplay.addEventListener('click', openContextMenu);
-    }
+    // timeDate 点击打开/关闭快捷访问
+    timeDate.addEventListener('click', function(e) {
+        if (contextMenu.classList.contains('active')) {
+            // 如果菜单已打开，关闭它
+            contextMenu.classList.remove('active');
+            const searchBox = document.querySelector('.search-boxes-container');
+            searchBox.style.opacity = '1';
+            searchBox.style.visibility = 'visible';
+        } else {
+            // 如果菜单未打开，打开它
+            openContextMenu(e);
+        }
+    });
 
     // 添加时钟功能
     function updateClock() {

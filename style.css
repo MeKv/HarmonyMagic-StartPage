@@ -90,12 +90,7 @@ body::after {
     position: relative;
     z-index: 3000 !important;
     cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.time-display:hover,
-.date-display:hover {
-    transform: scale(1.02);
+    transition: none;
 }
 
 #time {
