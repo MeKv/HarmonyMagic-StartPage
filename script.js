@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const contextMenu = document.getElementById('context-menu');
     const searchBoxesContainer = document.querySelector('.search-boxes-container');
     const menuItemsContainer = document.querySelector('.menu-items');
+    const settings = document.getElementById('settings');
 
     // 读取快捷访问数据并动态生成菜单
     async function loadQuickAccessMenu() {
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     setBackgroundBlur(false);
                     searchBoxesContainer.style.opacity = '1';
                     searchBoxesContainer.style.visibility = 'visible';
+                    if (settings) settings.style.display = 'none';
                 }
                 
                 menuBg.addEventListener('click', handleItemClick);
@@ -101,6 +103,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             setBackgroundBlur(false);
             searchBoxesContainer.style.opacity = '1';
             searchBoxesContainer.style.visibility = 'visible';
+            if (settings) settings.style.display = 'none';
         }
         
         menuBg.addEventListener('click', handleSystemClick);
@@ -859,6 +862,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // contextMenu覆盖整个页面，menu-items通过margin-top向下偏移
         contextMenu.classList.add('active');
         setBackgroundBlur(true); // 启用背景模糊
+        if (settings) settings.style.display = 'block';
     }
 
     // timeDate 点击打开/关闭快捷访问
@@ -871,6 +875,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const searchBox = document.querySelector('.search-boxes-container');
             searchBox.style.opacity = '1';
             searchBox.style.visibility = 'visible';
+            if (settings) settings.style.display = 'none';
         } else {
             // 如果菜单未打开，打开它
             openContextMenu(e);
@@ -932,6 +937,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 显示菜单
         contextMenu.classList.add('active');
         setBackgroundBlur(true); // 启用背景模糊
+        if (settings) settings.style.display = 'block';
         
         // 为菜单项添加点击事件（重新获取菜单项以确保包含所有动态添加的项）
         const menuItems = document.querySelectorAll('.menu-item');
@@ -945,6 +951,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // 重新显示搜索框
                 searchBox.style.opacity = '1';
                 searchBox.style.visibility = 'visible';
+                if (settings) settings.style.display = 'none';
             };
         });
     });
@@ -960,6 +967,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const searchBox = document.querySelector('.search-boxes-container');
             searchBox.style.opacity = '1';
             searchBox.style.visibility = 'visible';
+            if (settings) settings.style.display = 'none';
         }
     });
     
@@ -1012,6 +1020,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 setBackgroundBlur(false);
                 searchBoxesContainer.style.opacity = '1';
                 searchBoxesContainer.style.visibility = 'visible';
+                if (settings) settings.style.display = 'none';
             }
             
             menuBg.addEventListener('click', handleCustomItemClick);

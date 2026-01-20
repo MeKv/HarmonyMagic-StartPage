@@ -718,6 +718,20 @@ body::after {
     pointer-events: none;
 }
 
+/* 设置面板样式 - 定位在右上角，仅在快捷访问打开时显示 */
+#settings, .settings {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: none;
+}
+
+.context-menu.active ~ #settings,
+.context-menu.active ~ .settings {
+    display: block;
+}
+
 /* 单条通知样式 */
 .notice-item {
     padding: 12px 16px;
