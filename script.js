@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 按 id 排序
             quickAccessData.sort((a, b) => a.id - b.id);
 
+            // 保存系统图标（编辑）的HTML
+            const systemIconHTML = menuItemsContainer.innerHTML;
+
             // 清空现有菜单项
             menuItemsContainer.innerHTML = '';
 
@@ -53,7 +56,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 function handleItemClick(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.open(item.url, '_blank');
+                    // 如果url是占位符"#"，则不打开新标签页
+                    if (item.url && item.url !== '#') {
+                        window.open(item.url, '_blank');
+                    }
                     // 点击后关闭菜单
                     contextMenu.classList.remove('active');
                     document.documentElement.style.removeProperty('--search-box-top');
@@ -67,6 +73,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 menuItemsContainer.appendChild(menuItem);
             });
+
+            // 恢复系统图标（编辑）
+            if (systemIconHTML) {
+                menuItemsContainer.innerHTML += systemIconHTML;
+            }
         } catch (error) {
             console.error('Error loading quick access data:', error);
         }
@@ -74,6 +85,27 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 初始化快捷访问菜单
     await loadQuickAccessMenu();
+
+    // 初始化系统图标（编辑）的点击事件
+    const systemIcons = menuItemsContainer.querySelectorAll('.menu-item[data-url="#"]');
+    systemIcons.forEach(item => {
+        const menuBg = item.querySelector('.menu-item-bg');
+        const menuText = item.querySelector('.menu-text');
+        
+        function handleSystemClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // 点击后关闭菜单（暂不关联用途）
+            contextMenu.classList.remove('active');
+            document.documentElement.style.removeProperty('--search-box-top');
+            setBackgroundBlur(false);
+            searchBoxesContainer.style.opacity = '1';
+            searchBoxesContainer.style.visibility = 'visible';
+        }
+        
+        menuBg.addEventListener('click', handleSystemClick);
+        menuText.addEventListener('click', handleSystemClick);
+    });
 
     // 获取所有圆形搜索框
     const circleSearchBoxes = document.querySelectorAll('.search-box-circle');
