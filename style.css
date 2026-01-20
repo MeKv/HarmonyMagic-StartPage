@@ -489,22 +489,20 @@ body::after {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0 8px 8px 8px;
+    justify-content: center;
+    padding: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 70px;
     color: white; /* 将字体设置为白色 */
     position: relative;
-    width: 80px;
 }
 
 /* 点击背景板 - 方形 */
 .menu-item-bg {
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     width: 48px;
     height: 48px;
     border-radius: 4px;
@@ -515,7 +513,7 @@ body::after {
 /* 图标容器 */
 .menu-icon-wrapper {
     position: relative;
-    width: 48px;
+    width: 100%;
     height: 48px;
     display: flex;
     align-items: center;
@@ -533,6 +531,11 @@ body::after {
     justify-content: center;
     pointer-events: none; /* 图标不响应点击 */
     z-index: 2;
+}
+
+.menu-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .menu-item img {
