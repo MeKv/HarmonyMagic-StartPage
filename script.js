@@ -983,7 +983,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 点击快捷访问面板外空白区域关闭菜单
     document.addEventListener('click', function(e) {
         if (contextMenu.classList.contains('active') && 
-            !e.target.closest('.menu-items')) {
+            !e.target.closest('.menu-items') &&
+            !e.target.closest('.settings-modal') &&
+            !e.target.closest('.setting-button') &&
+            !e.target.closest('#settings-close')) {
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
             setBackgroundBlur(false); // 移除背景模糊
@@ -1253,4 +1256,71 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.networkTimeoutNotice = networkTimeoutNotice;
     window.pageLoadStoppedNotice = pageLoadStoppedNotice;
     window.resourceBlockedNotice = resourceBlockedNotice;
+
+    // ==================== 设置菜单功能 ====================
+    const settingButton = document.getElementById('setting-button');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsClose = document.getElementById('settings-close');
+    const settingsModalOverlay = document.querySelector('.settings-modal-overlay');
+    const settingItems = document.querySelectorAll('.setting-item');
+
+    // 打开设置菜单
+    function openSettingsModal() {
+        if (settingsModal) {
+            settingsModal.classList.add('active');
+            setBackgroundBlur(true);
+        }
+    }
+
+    // 关闭设置菜单
+    function closeSettingsModal() {
+        if (settingsModal) {
+            settingsModal.classList.remove('active');
+            // 如果快捷访问菜单没有打开，则移除背景模糊
+            if (!contextMenu.classList.contains('active')) {
+                setBackgroundBlur(false);
+            }
+        }
+    }
+
+    // 点击设置按钮打开菜单
+    if (settingButton) {
+        settingButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            openSettingsModal();
+        });
+    }
+
+    // 点击关闭按钮关闭菜单
+    if (settingsClose) {
+        settingsClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeSettingsModal();
+        });
+    }
+
+    // 点击遮罩层关闭菜单
+    if (settingsModalOverlay) {
+        settingsModalOverlay.addEventListener('click', function() {
+            closeSettingsModal();
+        });
+    }
+
+    // 点击设置项切换状态
+    settingItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const indicator = this.querySelector('.status-indicator');
+            if (indicator) {
+                indicator.classList.toggle('enabled');
+            }
+        });
+    });
+
+    // ESC键关闭设置菜单
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && settingsModal && settingsModal.classList.contains('active')) {
+            closeSettingsModal();
+        }
+    });
 });
