@@ -1376,6 +1376,11 @@ body::after {
     cursor: not-allowed;
 }
 
+.edit-shortcut-delete:hover:not(:disabled) {
+    background: #ffebee;
+    color: #e53935;
+}
+
 .edit-shortcut-buttons {
     display: flex;
     gap: 12px;

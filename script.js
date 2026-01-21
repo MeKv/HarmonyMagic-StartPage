@@ -1925,6 +1925,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                             <path d="M6 9L12 15L18 9"/>
                         </svg>
                     </button>
+                    <button class="edit-shortcut-move-btn edit-shortcut-delete" data-index="${index}" ${item.isPreset ? 'disabled' : ''} title="删除">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
             `;
             editShortcutList.appendChild(div);
@@ -1953,6 +1958,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const temp = editShortcutItems[index];
                     editShortcutItems[index] = editShortcutItems[index + 1];
                     editShortcutItems[index + 1] = temp;
+                    editShortcutHasChanges = true;
+                    renderEditShortcutList();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.edit-shortcut-delete').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const index = parseInt(this.dataset.index);
+                const item = editShortcutItems[index];
+                if (item.isPreset) return; // 预设项目不能删除
+                if (confirm('确定要删除"' + item.title + '"吗？')) {
+                    editShortcutItems.splice(index, 1);
                     editShortcutHasChanges = true;
                     renderEditShortcutList();
                 }
