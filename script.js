@@ -1911,7 +1911,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             
             div.innerHTML = `
                 <div class="edit-shortcut-item-icon">${iconContent}</div>
-                <div class="edit-shortcut-item-text" title="${item.title}">${item.title}</div>
+                <div class="edit-shortcut-item-text" title="${item.title}">
+                    ${item.isPreset ? '<span class="preset-tag">预制</span>' : ''}${item.title}
+                </div>
                 <div class="edit-shortcut-item-actions">
                     <button class="edit-shortcut-move-btn edit-shortcut-move-up" data-index="${index}" ${index === 0 ? 'disabled' : ''}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

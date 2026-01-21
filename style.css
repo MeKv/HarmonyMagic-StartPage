@@ -1334,6 +1334,19 @@ body::after {
     white-space: nowrap;
     font-size: 14px;
     color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.preset-tag {
+    background: #F0F0F0;
+    color: #333333;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
 }
 
 .edit-shortcut-item-actions {
