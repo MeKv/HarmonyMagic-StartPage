@@ -1932,7 +1932,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // 绑定移动按钮事件
         document.querySelectorAll('.edit-shortcut-move-up').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
                 const index = parseInt(this.dataset.index);
                 if (index > 0) {
                     const temp = editShortcutItems[index];
@@ -1945,7 +1946,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
         
         document.querySelectorAll('.edit-shortcut-move-down').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
                 const index = parseInt(this.dataset.index);
                 if (index < editShortcutItems.length - 1) {
                     const temp = editShortcutItems[index];
@@ -1954,6 +1956,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                     editShortcutHasChanges = true;
                     renderEditShortcutList();
                 }
+            });
+        });
+        
+        // 阻止编辑面板内的点击事件冒泡
+        editShortcutList.querySelectorAll('.edit-shortcut-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
         });
     }
