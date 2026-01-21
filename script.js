@@ -1216,7 +1216,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 动态加载壁纸
     function loadWallpaper() {
-        const wallpaperUrl = 'https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg';
+        // const wallpaperUrl = 'https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg';
+        const wallpaperUrl = 'https://www.bing.com/th?id=OHR.BubblesAbraham_ZH-CN7203734882_1920x1080.jpg';
         const img = new Image();
 
         img.onload = function() {
@@ -1701,36 +1702,44 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         this.value = url;
         
+        // 检查用户是否已手动输入标题或图标，如果是则不自动获取
+        const userHasEnteredTitle = addShortcutName.value.trim() !== '';
+        const userHasEnteredIcon = addShortcutIcon.value.trim() !== '';
+        
         // 创建新的AbortController用于这次请求
         if (addPanelAbortController) {
             addPanelAbortController.abort();
         }
         addPanelAbortController = new AbortController();
         
-        // 获取favicon
-        const faviconUrl = getFaviconFromUrl(url);
-        const img = new Image();
-        img.onload = function() {
-            addShortcutPreviewIcon.innerHTML = '<img src="' + faviconUrl + '" style="width:32px;height:32px;">';
-            // 填充favicon URL到输入框
-            addShortcutIcon.value = faviconUrl;
-        };
-        img.onerror = function() {
-            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
-            // favicon获取失败时不填充输入框
-        };
-        img.src = faviconUrl;
+        // 只有用户未手动输入图标时才获取favicon
+        if (!userHasEnteredIcon) {
+            const faviconUrl = getFaviconFromUrl(url);
+            const img = new Image();
+            img.onload = function() {
+                addShortcutPreviewIcon.innerHTML = '<img src="' + faviconUrl + '" style="width:32px;height:32px;">';
+                // 填充favicon URL到输入框
+                addShortcutIcon.value = faviconUrl;
+            };
+            img.onerror = function() {
+                addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+                // favicon获取失败时不填充输入框
+            };
+            img.src = faviconUrl;
+        }
         
-        // 获取标题并填充到输入框
-        try {
-            const title = await fetchPageTitle(url, addPanelAbortController.signal);
-            if (addPanelAbortController.signal.aborted) return;
-            if (title) {
-                addShortcutName.value = title;
-            }
-        } catch (e) {
-            if (e.name !== 'AbortError') {
-                console.log('获取标题失败:', e);
+        // 只有用户未手动输入标题时才获取标题
+        if (!userHasEnteredTitle) {
+            try {
+                const title = await fetchPageTitle(url, addPanelAbortController.signal);
+                if (addPanelAbortController.signal.aborted) return;
+                if (title) {
+                    addShortcutName.value = title;
+                }
+            } catch (e) {
+                if (e.name !== 'AbortError') {
+                    console.log('获取标题失败:', e);
+                }
             }
         }
     });
@@ -1777,9 +1786,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             const name = addShortcutName.value.trim() || addShortcutName.value.trim();
             let icon = addShortcutIcon.value.trim();
             
-            // 如果没有指定图标，使用favicon
+            // 如果没有指定图标，使用默认图标（空字符串会显示默认图标）
             if (!icon) {
-                icon = getFaviconFromUrl(url);
+                icon = '';
             } else if (!isValidIconUrl(icon)) {
                 sendNotice('图标格式不支持，将使用默认图标', 'warn');
                 icon = '';
