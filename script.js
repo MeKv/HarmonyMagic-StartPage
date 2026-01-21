@@ -1204,7 +1204,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 动态加载壁纸
     function loadWallpaper() {
-        // const wallpaperUrl = 'https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg';
         const wallpaperUrl = 'https://www.bing.com/th?id=OHR.BubblesAbraham_ZH-CN7203734882_1920x1080.jpg';
         const img = new Image();
 
@@ -1788,7 +1787,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             title: '重置壁纸',
             message: '确定要重置为默认壁纸吗？',
             onOk: function() {
-                // 执行重置壁纸逻辑
+                // 清除壁纸设置cookie
+                document.cookie = 'wallpaper_settings=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                // 清除壁纸URL cookie
+                document.cookie = 'wallpaper_url=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                // 重置壁纸URL样式
+                document.body.style.setProperty('--wallpaper-url', 'none');
+                // 清除自定义壁纸缓存
+                localStorage.removeItem('custom_wallpaper');
+                // 清除自定义壁纸URL缓存
+                localStorage.removeItem('custom_wallpaper_url');
+                // 应用默认壁纸
+                const defaultSettings = { id: 1, customUrl: '', customMode: 'cover' };
+                applyWallpaper(defaultSettings);
                 sendNotice('壁纸已重置为默认', 'info');
             }
         },
