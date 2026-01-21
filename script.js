@@ -178,6 +178,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
             setBackgroundBlur(false);
+            // 直接恢复搜索框显示（确保立即生效，添加 !important）
+            const searchBoxForClose = document.querySelector('.search-boxes-container');
+            if (searchBoxForClose) {
+                searchBoxForClose.style.setProperty('opacity', '1', 'important');
+                searchBoxForClose.style.setProperty('visibility', 'visible', 'important');
+            }
             if (settings) settings.style.display = 'none';
             // 恢复通知位置
             const notices = document.getElementById('notices');
@@ -1463,9 +1469,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             onOk: function() {
                 // 删除快捷访问cookie
                 setCookie('custom_shortcuts', []);
-                // 关闭编辑面板
-                closeEditShortcutPanel();
-                // 重新加载菜单
+                // 重新加载菜单（保持context-menu打开，搜索框保持隐藏）
                 loadQuickAccessMenu();
                 sendNotice('快捷访问已重置', 'info');
             }
