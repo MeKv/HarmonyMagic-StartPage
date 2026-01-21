@@ -1481,11 +1481,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 closeEditShortcutPanel();
             }
         },
-        'deleted-preset-warn': {
+        'deleted-preset-warn-apply': {
             title: '删除预设快捷访问',
             message: '已删除预设快捷访问，这些预设将在保存后被移除。确定要继续吗？',
             onOk: function() {
-                // 继续保存
+                // 继续保存（应用）
                 saveShortcutOrder();
                 editShortcutHasChanges = false;
                 editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
@@ -1493,6 +1493,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // 重置已删除预设列表
                 deletedPresetIds = [];
                 sendNotice('设置已应用', 'info');
+            }
+        },
+        'deleted-preset-warn-ok': {
+            title: '删除预设快捷访问',
+            message: '已删除预设快捷访问，这些预设将在保存后被移除。确定要继续吗？',
+            onOk: function() {
+                // 继续保存（确定）
+                saveShortcutOrder();
+                loadQuickAccessMenu();
+                closeEditShortcutPanel();
+                // 重置已删除预设列表
+                deletedPresetIds = [];
+                sendNotice('设置已保存', 'info');
             }
         },
         'delete-preset-shortcut': {
@@ -2167,7 +2180,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.stopPropagation();
             // 检查是否删除了预设项目
             if (deletedPresetIds.length > 0) {
-                openConfirmDialog('deleted-preset-warn');
+                openConfirmDialog('deleted-preset-warn-apply');
             } else {
                 saveShortcutOrder();
                 editShortcutHasChanges = false;
@@ -2184,7 +2197,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.stopPropagation();
             // 检查是否删除了预设项目
             if (deletedPresetIds.length > 0) {
-                openConfirmDialog('deleted-preset-warn');
+                openConfirmDialog('deleted-preset-warn-ok');
             } else {
                 saveShortcutOrder();
                 loadQuickAccessMenu();
