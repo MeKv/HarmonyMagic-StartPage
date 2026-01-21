@@ -1477,13 +1477,27 @@ document.addEventListener('DOMContentLoaded', async function() {
                 closeEditShortcutPanel();
             }
         },
+        'deleted-preset-warn': {
+            title: '删除预设快捷访问',
+            message: '已删除预设快捷访问，这些预设将在保存后被移除。确定要继续吗？',
+            onOk: function() {
+                // 继续保存
+                saveShortcutOrder();
+                editShortcutHasChanges = false;
+                editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
+                loadQuickAccessMenu();
+                // 重置已删除预设列表
+                deletedPresetIds = [];
+                sendNotice('设置已应用', 'info');
+            }
+        },
         'delete-preset-shortcut': {
             title: '删除预设快捷访问',
             message: '这是预设快捷访问，确定要删除吗？删除后可通过还原按钮恢复。',
             onOk: function() {
                 const index = parseInt(confirmDialog.dataset.targetIndex);
                 const item = editShortcutItems[index];
-                // 记录被删除的预设
+                // 记录被删除的预设（cookie）
                 let deletedPresets = [];
                 try {
                     deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
@@ -1496,6 +1510,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!deletedPresets.includes(item.presetId)) {
                     deletedPresets.push(item.presetId);
                     setCookie('deleted_presets', deletedPresets);
+                }
+                // 记录到会话变量
+                if (!deletedPresetIds.includes(item.presetId)) {
+                    deletedPresetIds.push(item.presetId);
                 }
                 // 从列表中移除
                 editShortcutItems.splice(index, 1);
@@ -1894,10 +1912,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     let editShortcutItems = []; // 当前编辑的项目列表
     let editShortcutOriginalOrder = []; // 原始顺序，用于检测更改
     let editShortcutHasChanges = false; // 是否有更改
+    let deletedPresetIds = []; // 本次编辑会话中删除的预设ID列表
 
     // 打开编辑快捷访问面板
     function openEditShortcutPanel() {
         if (editShortcutPanel) {
+            // 重置已删除预设列表
+            deletedPresetIds = [];
             // 加载所有快捷方式
             editShortcutItems = loadAllShortcuts();
             // 保存原始顺序
@@ -2140,11 +2161,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (editShortcutApply) {
         editShortcutApply.addEventListener('click', function(e) {
             e.stopPropagation();
-            saveShortcutOrder();
-            editShortcutHasChanges = false;
-            editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
-            loadQuickAccessMenu();
-            sendNotice('设置已应用', 'info');
+            // 检查是否删除了预设项目
+            if (deletedPresetIds.length > 0) {
+                openConfirmDialog('deleted-preset-warn');
+            } else {
+                saveShortcutOrder();
+                editShortcutHasChanges = false;
+                editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
+                loadQuickAccessMenu();
+                sendNotice('设置已应用', 'info');
+            }
         });
     }
 
@@ -2152,10 +2178,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (editShortcutOk) {
         editShortcutOk.addEventListener('click', function(e) {
             e.stopPropagation();
-            saveShortcutOrder();
-            loadQuickAccessMenu();
-            closeEditShortcutPanel();
-            sendNotice('设置已保存', 'info');
+            // 检查是否删除了预设项目
+            if (deletedPresetIds.length > 0) {
+                openConfirmDialog('deleted-preset-warn');
+            } else {
+                saveShortcutOrder();
+                loadQuickAccessMenu();
+                closeEditShortcutPanel();
+                sendNotice('设置已保存', 'info');
+            }
         });
     }
 
