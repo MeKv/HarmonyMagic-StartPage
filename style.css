@@ -1158,6 +1158,121 @@ body::after {
     background: #43A047;
 }
 
+/* 添加快捷方式面板样式 */
+#add-shortcut-panel {
+    display: none;
+}
+
+#add-shortcut-panel.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#add-shortcut-panel .settings-modal-content {
+    width: 380px;
+    max-width: 90vw;
+    position: relative;
+    transform: none;
+    opacity: 1;
+}
+
+#add-shortcut-panel .settings-body {
+    padding: 20px;
+}
+
+.add-shortcut-field {
+    margin-bottom: 16px;
+}
+
+.add-shortcut-label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.add-shortcut-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.add-shortcut-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.add-shortcut-input::placeholder {
+    color: #aaa;
+}
+
+.add-shortcut-preview {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-shortcut-preview-label {
+    font-size: 13px;
+    color: #666;
+    margin-right: 12px;
+}
+
+.add-shortcut-preview-box {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+}
+
+.add-shortcut-preview-box .icon {
+    width: 32px;
+    height: 32px;
+}
+
+.add-shortcut-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.add-shortcut-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-shortcut-cancel {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.add-shortcut-cancel:hover {
+    background: #e0e0e0;
+}
+
+.add-shortcut-save {
+    background: #4CAF50;
+    color: white;
+}
+
+.add-shortcut-save:hover {
+    background: #43A047;
+}
+
 /* 单条通知样式 */
 .notice-item {
     padding: 12px 16px;

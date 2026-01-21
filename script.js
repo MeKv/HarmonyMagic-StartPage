@@ -18,6 +18,33 @@ document.addEventListener('DOMContentLoaded', async function() {
     const menuItemsContainer = document.querySelector('.menu-items');
     const settings = document.getElementById('settings');
 
+    // Cookie工具函数
+    function setCookie(name, value, days = 365) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+        document.cookie = name + '=' + encodeURIComponent(JSON.stringify(value)) + ';expires=' + expires.toUTCString() + ';path=/';
+    }
+
+    function getCookie(name) {
+        const nameEQ = name + '=';
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) {
+                try {
+                    return JSON.parse(decodeURIComponent(c.substring(nameEQ.length)));
+                } catch (e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    // 默认图标SVG
+    const defaultIconSVG = '<svg t="1768974157218" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8714" width="32" height="32"><path d="M512.704787 1022.681895c-6.566636 0-12.885487-0.746767-19.370211-0.997965l223.522968-358.091907c32.011327-42.692008 51.675057-95.154106 51.675057-152.604663 0-88.961536-45.561669-167.195974-114.530461-213.091436l322.88327 0c29.969663 65.017888 47.096842 137.184673 47.096842 213.424546C1023.98157 793.752715 795.095394 1022.681895 512.704787 1022.681895zM512.205805 256.491303c-134.523205 0-243.604451 102.347371-254.246906 233.876682L96.997133 214.338551C189.740287 84.72121 341.184526 0 512.704787 0c189.230383 0 354.100731 103.095504 442.520963 255.992321C955.22575 255.992321 302.108946 256.491303 512.205805 256.491303zM511.416716 298.145073c118.142111 0 213.88189 95.36503 213.88189 213.051163 0 117.68545-95.739779 213.093484-213.88189 213.093484-118.103885 0-213.882572-95.408034-213.882572-213.093484C297.534144 393.510103 393.312831 298.145073 511.416716 298.145073zM269.683279 590.222492c33.504179 102.303002 128.784566 176.716231 242.522526 176.716231 38.828478 0 75.283547-9.269059 108.292157-24.733419L448.229568 1018.192418c-251.87691-31.759447-446.887571-246.346465-446.887571-506.872631 0-94.739084 26.233779-183.159316 71.129911-259.235365L269.683279 590.222492z" fill="#515151" p-id="8715"></path></svg>';
+
     // 读取快捷访问数据并动态生成菜单
     async function loadQuickAccessMenu() {
         try {
@@ -33,13 +60,23 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 保存系统图标（编辑）的HTML
             const systemIconHTML = menuItemsContainer.innerHTML;
 
-            // 提取"添加"按钮（包含完整的menu-item div）
-            // 匹配从 data-action="add" 的div开始，到 </div> 后面跟着 <!-- 系统图标：编辑
-            const addIconMatch = systemIconHTML.match(/<div[^>]*data-action="add"[^>]*>[\s\S]*?<\/div>\s*<!-- 系统图标：编辑/);
-            const addIconHTML = addIconMatch ? addIconMatch[0].replace(/\s*<!-- 系统图标：编辑$/, '') : '';
-            
-            // 移除"添加"按钮后获取"编辑"按钮
-            const editIconHTML = systemIconHTML.replace(/<div[^>]*data-action="add"[^>]*>[\s\S]*?<\/div>\s*<!-- 系统图标：编辑/, '<!-- 系统图标：编辑');
+            // 系统图标的HTML模板（硬编码，避免提取错误）
+            const addIconHTML = `<div class="menu-item" data-action="add">
+                <div class="menu-icon-wrapper">
+                    <div class="menu-item-bg"></div>
+                    <div class="menu-icon"><svg t="1768967144636" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9794" width="32" height="32"><path d="M831.6 639.6h-63.9v127.9H639.9v63.9h127.8v127.9h63.9V831.4h127.9v-63.9H831.6z" p-id="9795" fill="#2c2c2c"></path><path d="M564.3 925.2c0-18.5-15-33.6-33.6-33.6H287.3c-86.2 0-156.4-70.2-156.4-156.4V286.9c0-86.2 70.1-156.4 156.4-156.4h448.4c86.2 0 156.4 70.2 156.4 156.4v238.8c0 18.5 15 33.6 33.6 33.6s33.6-15 33.6-33.6V286.9C959.2 163.6 859 63.3 735.7 63.3H287.3C164 63.3 63.7 163.6 63.7 286.8v448.3c0 123.2 100.3 223.5 223.6 223.5h243.4c18.6 0.1 33.6-14.9 33.6-33.4z" p-id="9796" fill="#2c2c2c"></path></svg></div>
+                </div>
+                <div class="menu-text">添加</div>
+            </div>`;
+
+            const editIconHTML = `<!-- 系统图标：编辑（始终显示在最后） -->
+            <div class="menu-item" data-url="#">
+                <div class="menu-icon-wrapper">
+                    <div class="menu-item-bg"></div>
+                    <div class="menu-icon"><svg t="1768898892387" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4731" width="32" height="32"><path d="M474.58679343 587.16868738c-11.45302241 0-22.90604486-4.37057868-31.6472022-13.11173601-17.48231469-17.48231469-17.48231469-45.83841849 0-63.29440437l487.24053555-487.24053552c17.48231469-17.48231469 45.81208967-17.48231469 63.29440431 0 17.48231469 17.48231469 17.48231469 45.83841849 0 63.29440441L506.23399561 574.05695137a44.61676276 44.61676276 0 0 1-31.64720218 13.11173601z" fill="#2c2c2c" p-id="4732"></path><path d="M904.16728498 1017.19676833h-781.96497912c-62.68884228 0-113.68770304-50.99886074-113.68770305-113.71403181v-781.96497913c0-62.71517108 50.99886074-113.71403182 113.66137425-113.71403185l457.51533479 0.0263288c24.72273117 0 44.75893818 20.03620706 44.75893819 44.7589382s-20.03620706 44.75893818-44.75893819 44.7589382l-457.51533479-0.02632877c-13.2960375 0-24.14349786 10.84746035-24.14349785 24.16982661v781.96497915c0 13.32236631 10.84746035 24.1698266 24.16982665 24.16982664h781.96497912c13.32236631 0 24.1698266-10.84746035 24.16982668-24.16982664V403.42008173c0-24.72273117 20.06253583-44.75893818 44.75893815-44.75893828 24.72273117 0 44.75893818 20.03620706 44.7589382 44.75893828V903.50906532c0 62.68884228-50.99886074 113.68770304-113.68770303 113.68770301z" fill="#2c2c2c" p-id="4733"></path></svg></div>
+                </div>
+                <div class="menu-text">编辑</div>
+            </div>`;
 
             // 清空现有菜单项
             menuItemsContainer.innerHTML = '';
@@ -85,6 +122,71 @@ document.addEventListener('DOMContentLoaded', async function() {
                 menuItemsContainer.appendChild(menuItem);
             });
 
+            // 从Cookie加载自定义快捷方式
+            const customShortcuts = getCookie('custom_shortcuts') || [];
+            if (customShortcuts.length > 0) {
+                customShortcuts.forEach(item => {
+                    const menuItem = document.createElement('div');
+                    menuItem.className = 'menu-item';
+                    menuItem.setAttribute('data-url', item.url);
+                    
+                    // 确定图标HTML
+                    let iconContent;
+                    if (item.icon && item.icon.trim()) {
+                        iconContent = '<div class="icon-fallback" data-src="' + item.icon + '"></div>';
+                    } else {
+                        iconContent = defaultIconSVG;
+                    }
+                    
+                    menuItem.innerHTML = `
+                        <div class="menu-icon-wrapper">
+                            <div class="menu-item-bg"></div>
+                            <div class="menu-icon">${iconContent}</div>
+                        </div>
+                        <div class="menu-text">${item.title}</div>
+                    `;
+                    
+                    // 异步加载图标
+                    const iconFallback = menuItem.querySelector('.icon-fallback');
+                    if (iconFallback && item.icon && item.icon.trim()) {
+                        const img = new Image();
+                        img.onload = function() {
+                            iconFallback.innerHTML = '<img src="' + item.icon + '" style="width:32px;height:32px;">';
+                        };
+                        img.onerror = function() {
+                            iconFallback.innerHTML = defaultIconSVG;
+                        };
+                        img.src = item.icon.trim();
+                    }
+
+                    // 获取点击区域元素
+                    const menuBg = menuItem.querySelector('.menu-item-bg');
+                    const menuText = menuItem.querySelector('.menu-text');
+                    
+                    // 点击背景板或文字跳转
+                    function handleCustomItemClick(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (item.url && item.url !== '#') {
+                            window.open(item.url, '_blank');
+                        }
+                        // 点击后关闭菜单
+                        contextMenu.classList.remove('active');
+                        document.documentElement.style.removeProperty('--search-box-top');
+                        setBackgroundBlur(false);
+                        if (settings) settings.style.display = 'none';
+                        // 恢复通知位置
+                        const notices = document.getElementById('notices');
+                        if (notices) notices.style.top = '20px';
+                    }
+                    
+                    menuBg.addEventListener('click', handleCustomItemClick);
+                    menuText.addEventListener('click', handleCustomItemClick);
+
+                    menuItemsContainer.appendChild(menuItem);
+                });
+            }
+
             // 恢复"添加"按钮
             if (addIconHTML) {
                 menuItemsContainer.innerHTML += addIconHTML;
@@ -94,6 +196,36 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (editIconHTML) {
                 menuItemsContainer.innerHTML += editIconHTML;
             }
+
+            // 绑定"编辑"按钮点击事件
+            const systemIcons = menuItemsContainer.querySelectorAll('.menu-item[data-url="#"]');
+            systemIcons.forEach(item => {
+                function handleSystemClick(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // 点击后关闭菜单（暂不关联用途）
+                    contextMenu.classList.remove('active');
+                    document.documentElement.style.removeProperty('--search-box-top');
+                    setBackgroundBlur(false);
+                    if (settings) settings.style.display = 'none';
+                    // 恢复通知位置
+                    const notices = document.getElementById('notices');
+                    if (notices) notices.style.top = '20px';
+                }
+                item.addEventListener('click', handleSystemClick);
+            });
+
+            // 绑定"添加"按钮点击事件
+            const addIcons = menuItemsContainer.querySelectorAll('.menu-item[data-action="add"]');
+            addIcons.forEach(item => {
+                function handleAddClick(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    openAddShortcutPanel();
+                }
+                item.addEventListener('click', handleAddClick, true);
+            });
         } catch (error) {
             console.error('Error loading quick access data:', error);
         }
@@ -101,54 +233,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 初始化快捷访问菜单
     await loadQuickAccessMenu();
-
-    // 初始化系统图标（编辑）的点击事件
-    const systemIcons = menuItemsContainer.querySelectorAll('.menu-item[data-url="#"]');
-    systemIcons.forEach(item => {
-        const menuBg = item.querySelector('.menu-item-bg');
-        const menuText = item.querySelector('.menu-text');
-        
-        function handleSystemClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // 点击后关闭菜单（暂不关联用途）
-            contextMenu.classList.remove('active');
-            document.documentElement.style.removeProperty('--search-box-top');
-            setBackgroundBlur(false);
-            if (settings) settings.style.display = 'none';
-            // 恢复通知位置
-            const notices = document.getElementById('notices');
-            if (notices) notices.style.top = '20px';
-        }
-        
-        menuBg.addEventListener('click', handleSystemClick);
-        menuText.addEventListener('click', handleSystemClick);
-    });
-
-    // 初始化"添加"图标的点击事件
-    const addIcons = menuItemsContainer.querySelectorAll('.menu-item[data-action="add"]');
-    addIcons.forEach(item => {
-        const menuBg = item.querySelector('.menu-item-bg');
-        const menuText = item.querySelector('.menu-text');
-        
-        function handleAddClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // 点击后关闭菜单（暂不关联用途）
-            contextMenu.classList.remove('active');
-            document.documentElement.style.removeProperty('--search-box-top');
-            setBackgroundBlur(false);
-            if (settings) settings.style.display = 'none';
-            // 恢复通知位置
-            const notices = document.getElementById('notices');
-            if (notices) notices.style.top = '20px';
-            // 显示添加功能开发中通知
-            sendNotice('添加功能开发中', 'info');
-        }
-        
-        menuBg.addEventListener('click', handleAddClick);
-        menuText.addEventListener('click', handleAddClick);
-    });
 
     // 获取所有圆形搜索框
     const circleSearchBoxes = document.querySelectorAll('.search-box-circle');
@@ -179,10 +263,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         allInputs.forEach(input => {
             input.addEventListener('focus', function() {
-                setBackgroundBlur(true);
+                // 如果添加面板是激活状态，不改变背景模糊
+                if (!addShortcutPanel || !addShortcutPanel.classList.contains('active')) {
+                    setBackgroundBlur(true);
+                }
             });
 
             input.addEventListener('blur', function() {
+                // 如果添加面板是激活状态，不关闭背景模糊
+                if (addShortcutPanel && addShortcutPanel.classList.contains('active')) {
+                    return;
+                }
+
                 setTimeout(() => {
                     // 检查是否还有其他输入框有焦点
                     const hasFocusedInput = Array.from(allInputs).some(inp =>
@@ -1001,6 +1093,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 为菜单项添加点击事件（重新获取菜单项以确保包含所有动态添加的项）
         const menuItems = document.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
+            // 处理"添加"按钮
+            if (item.hasAttribute('data-action')) {
+                item.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // 打开添加快捷方式面板
+                    openAddShortcutPanel();
+                };
+                return;
+            }
+
             const url = item.getAttribute('data-url');
             item.onclick = function() {
                 window.open(url, '_blank');
@@ -1024,7 +1127,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             !e.target.closest('.menu-items') &&
             !e.target.closest('.settings-modal') &&
             !e.target.closest('.setting-button') &&
-            !e.target.closest('#settings-close')) {
+            !e.target.closest('#settings-close') &&
+            !e.target.closest('#add-shortcut-panel')) {
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
             setBackgroundBlur(false); // 移除背景模糊
@@ -1459,6 +1563,259 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && confirmDialog && confirmDialog.classList.contains('active')) {
             closeConfirmDialog();
+        }
+    });
+
+    // ==================== 添加快捷方式面板 ====================
+    
+    // 添加快捷方式面板元素
+    const addShortcutPanel = document.getElementById('add-shortcut-panel');
+    const addShortcutClose = document.getElementById('add-shortcut-close');
+    const addShortcutUrl = document.getElementById('add-shortcut-url');
+    const addShortcutName = document.getElementById('add-shortcut-name');
+    const addShortcutIcon = document.getElementById('add-shortcut-icon');
+    const addShortcutPreviewIcon = document.getElementById('add-shortcut-preview-icon');
+    const addShortcutCancel = document.getElementById('add-shortcut-cancel');
+    const addShortcutSave = document.getElementById('add-shortcut-save');
+    const addShortcutOverlay = document.querySelector('#add-shortcut-panel .settings-modal-overlay');
+
+    // 用于取消进行中的请求
+    let addPanelAbortController = null;
+
+    // 初始化关闭按钮图标
+    if (addShortcutClose) {
+        addShortcutClose.innerHTML = svgClose;
+    }
+
+    // 验证URL格式并补全协议
+    function normalizeUrl(url) {
+        url = url.trim();
+        if (!url) return '';
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'http://' + url;
+        }
+        return url;
+    }
+
+    // 验证图标URL格式（必须是ico/png/jpg）
+    function isValidIconUrl(url) {
+        if (!url || !url.trim()) return false;
+        url = url.trim().toLowerCase();
+        return /\.(ico|png|jpg|jpeg)(\?.*)?$/i.test(url);
+    }
+
+    // 从URL提取favicon地址
+    function getFaviconFromUrl(url) {
+        try {
+            const urlObj = new URL(url);
+            return urlObj.origin + '/favicon.ico';
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // 获取页面标题（使用多个代理服务）
+    async function fetchPageTitle(url, signal) {
+        const proxyServices = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?',
+            'https://api.codetabs.com/v1/proxy?quest='
+        ];
+        
+        for (const service of proxyServices) {
+            try {
+                const proxyUrl = service + encodeURIComponent(url);
+                const response = await fetch(proxyUrl, { signal });
+                if (!response.ok) continue;
+                const text = await response.text();
+                const titleMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i);
+                if (titleMatch) return titleMatch[1].trim();
+            } catch (e) {
+                if (e.name === 'AbortError') throw e;
+                continue;
+            }
+        }
+        return null;
+    }
+
+    // 打开添加快捷方式面板
+    function openAddShortcutPanel() {
+        if (addShortcutPanel) {
+            // 取消之前进行中的请求
+            if (addPanelAbortController) {
+                addPanelAbortController.abort();
+                addPanelAbortController = null;
+            }
+            
+            addShortcutPanel.classList.add('active');
+            // 不改变背景模糊状态
+            // 清空表单
+            addShortcutUrl.value = '';
+            addShortcutName.value = '';
+            addShortcutIcon.value = '';
+            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+            addShortcutUrl.focus();
+        }
+    }
+
+    // 关闭添加快捷方式面板
+    function closeAddShortcutPanel() {
+        if (addShortcutPanel) {
+            addShortcutPanel.classList.remove('active');
+            // 取消进行中的请求
+            if (addPanelAbortController) {
+                addPanelAbortController.abort();
+                addPanelAbortController = null;
+            }
+            // 不关闭背景模糊，保留快捷访问菜单
+        }
+    }
+
+    // 更新图标预览
+    function updateIconPreview(iconUrl) {
+        if (!iconUrl || !iconUrl.trim()) {
+            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+            return;
+        }
+        
+        if (isValidIconUrl(iconUrl)) {
+            const img = new Image();
+            img.onload = function() {
+                addShortcutPreviewIcon.innerHTML = '<img src="' + iconUrl + '" style="width:32px;height:32px;">';
+            };
+            img.onerror = function() {
+                sendNotice('图标加载失败，将使用默认图标', 'warn');
+                addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+            };
+            img.src = iconUrl;
+        } else {
+            sendNotice('图标格式不支持，请使用 ico/png/jpg 格式', 'warn');
+            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+        }
+    }
+
+    // URL失焦时自动获取信息
+    addShortcutUrl.addEventListener('blur', async function() {
+        const url = normalizeUrl(this.value);
+        if (!url) return;
+        
+        this.value = url;
+        
+        // 创建新的AbortController用于这次请求
+        if (addPanelAbortController) {
+            addPanelAbortController.abort();
+        }
+        addPanelAbortController = new AbortController();
+        
+        // 获取favicon
+        const faviconUrl = getFaviconFromUrl(url);
+        const img = new Image();
+        img.onload = function() {
+            addShortcutPreviewIcon.innerHTML = '<img src="' + faviconUrl + '" style="width:32px;height:32px;">';
+            // 填充favicon URL到输入框
+            addShortcutIcon.value = faviconUrl;
+        };
+        img.onerror = function() {
+            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
+            // favicon获取失败时不填充输入框
+        };
+        img.src = faviconUrl;
+        
+        // 获取标题并填充到输入框
+        try {
+            const title = await fetchPageTitle(url, addPanelAbortController.signal);
+            if (addPanelAbortController.signal.aborted) return;
+            if (title) {
+                addShortcutName.value = title;
+            }
+        } catch (e) {
+            if (e.name !== 'AbortError') {
+                console.log('获取标题失败:', e);
+            }
+        }
+    });
+
+    // 图标输入失焦时验证
+    addShortcutIcon.addEventListener('blur', function() {
+        updateIconPreview(this.value);
+    });
+
+    // 点击关闭按钮
+    if (addShortcutClose) {
+        addShortcutClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAddShortcutPanel();
+        });
+    }
+
+    // 点击取消按钮
+    if (addShortcutCancel) {
+        addShortcutCancel.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAddShortcutPanel();
+        });
+    }
+
+    // 点击保存按钮
+    if (addShortcutSave) {
+        addShortcutSave.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const url = normalizeUrl(addShortcutUrl.value.trim());
+            if (!url) {
+                sendNotice('请输入URL', 'warn');
+                return;
+            }
+            
+            // 验证URL格式
+            try {
+                new URL(url);
+            } catch (e) {
+                sendNotice('URL格式不正确', 'warn');
+                return;
+            }
+            
+            const name = addShortcutName.value.trim() || addShortcutName.value.trim();
+            let icon = addShortcutIcon.value.trim();
+            
+            // 如果没有指定图标，使用favicon
+            if (!icon) {
+                icon = getFaviconFromUrl(url);
+            } else if (!isValidIconUrl(icon)) {
+                sendNotice('图标格式不支持，将使用默认图标', 'warn');
+                icon = '';
+            }
+            
+            // 保存到Cookie
+            const customShortcuts = getCookie('custom_shortcuts') || [];
+            const newShortcut = {
+                id: Date.now(),
+                url: url,
+                title: name || url,
+                icon: icon || ''
+            };
+            customShortcuts.push(newShortcut);
+            setCookie('custom_shortcuts', customShortcuts);
+            
+            sendNotice('快捷方式已保存', 'info');
+            closeAddShortcutPanel();
+            
+            // 重新加载菜单
+            loadQuickAccessMenu();
+        });
+    }
+
+    // 点击遮罩层关闭
+    if (addShortcutOverlay) {
+        addShortcutOverlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAddShortcutPanel();
+        });
+    }
+
+    // ESC键关闭添加面板
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && addShortcutPanel && addShortcutPanel.classList.contains('active')) {
+            closeAddShortcutPanel();
         }
     });
 
