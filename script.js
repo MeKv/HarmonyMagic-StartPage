@@ -82,7 +82,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             menuItemsContainer.innerHTML = '';
 
             // 动态生成菜单项（过滤掉已删除的预设）
-            const deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+            let deletedPresets = [];
+            try {
+                const cookieValue = getCookie('deleted_presets');
+                deletedPresets = JSON.parse(cookieValue || '[]');
+                // 确保是数组
+                if (!Array.isArray(deletedPresets)) {
+                    deletedPresets = [];
+                }
+            } catch (e) {
+                deletedPresets = [];
+            }
             quickAccessData.forEach(item => {
                 if (deletedPresets.includes(item.id)) return;
                 const menuItem = document.createElement('div');
@@ -1474,7 +1484,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const index = parseInt(confirmDialog.dataset.targetIndex);
                 const item = editShortcutItems[index];
                 // 记录被删除的预设
-                const deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+                let deletedPresets = [];
+                try {
+                    deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+                    if (!Array.isArray(deletedPresets)) {
+                        deletedPresets = [];
+                    }
+                } catch (e) {
+                    deletedPresets = [];
+                }
                 if (!deletedPresets.includes(item.presetId)) {
                     deletedPresets.push(item.presetId);
                     setCookie('deleted_presets', deletedPresets);
@@ -1499,7 +1517,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             title: '还原预设快捷访问',
             message: '确定要还原所有被删除的预设快捷访问吗？',
             onOk: function() {
-                const deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+                let deletedPresets = [];
+                try {
+                    deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+                    if (!Array.isArray(deletedPresets)) {
+                        deletedPresets = [];
+                    }
+                } catch (e) {
+                    deletedPresets = [];
+                }
                 if (deletedPresets.length === 0) {
                     sendNotice('没有需要还原的预设快捷访问', 'info');
                     return;
@@ -1893,7 +1919,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 加载所有快捷方式（预设 + 自定义）
     function loadAllShortcuts() {
         const items = [];
-        const deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+        let deletedPresets = [];
+        try {
+            deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+            if (!Array.isArray(deletedPresets)) {
+                deletedPresets = [];
+            }
+        } catch (e) {
+            deletedPresets = [];
+        }
         // 加载预设快捷方式（过滤掉已删除的）
         quickAccessData.forEach(item => {
             if (deletedPresets.includes(item.id)) return;
@@ -2061,7 +2095,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (editShortcutRestore) {
         editShortcutRestore.addEventListener('click', function(e) {
             e.stopPropagation();
-            const deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+            let deletedPresets = [];
+            try {
+                deletedPresets = JSON.parse(getCookie('deleted_presets') || '[]');
+                if (!Array.isArray(deletedPresets)) {
+                    deletedPresets = [];
+                }
+            } catch (err) {
+                deletedPresets = [];
+            }
             if (deletedPresets.length === 0) {
                 sendNotice('没有需要还原的预设快捷访问', 'info');
                 return;
