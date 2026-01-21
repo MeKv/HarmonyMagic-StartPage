@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     if (item.icon && item.icon.trim()) {
                         // 使用 encodeURI 避免 URL 中的特殊字符问题
                         const escapedIcon = encodeURI(item.icon.trim());
-                        iconContent = '<img src="' + escapedIcon + '" style="width:32px;height:32px;" onerror="this.outerHTML=\'&lt;svg t=\\\'1768974157218\\\' class=\\\'icon\\\' viewBox=\\\'0 0 1024 1024\\\' version=\\\'1.1\\\' xmlns=\\\'http://www.w3.org/2000/svg\\\' p-id=\\\'8714\\\' width=\\\'32\\\' height=\\\'32\\\'&gt;&lt;path d=\\\'M512.704787 1022.681895c-6.566636 0-12.885487-0.746767-19.370211-0.997965l223.522968-358.091907c32.011327-42.692008 51.675057-95.154106 51.675057-152.604663 0-88.961536-45.561669-167.195974-114.530461-213.091436l322.88327 0c29.969663 65.017888 47.096842 137.184673 47.096842 213.424546C1023.98157 793.752715 795.095394 1022.681895 512.704787 1022.681895zM512.205805 256.491303c-134.523205 0-243.604451 102.347371-254.246906 233.876682L96.997133 214.338551C189.740287 84.72121 341.184526 0 512.704787 0c189.230383 0 354.100731 103.095504 442.520963 255.992321C955.22575 255.992321 302.108946 256.491303 512.205805 256.491303zM511.416716 298.145073c118.142111 0 213.88189 95.36503 213.88189 213.051163 0 117.68545-95.739779 213.093484-213.88189 213.093484-118.103885 0-213.882572-95.408034-213.882572-213.093484C297.534144 393.510103 393.312831 298.145073 511.416716 298.145073zM269.683279 590.222492c33.504179 102.303002 128.784566 176.716231 242.522526 176.716231 38.828478 0 75.283547-9.269059 108.292157-24.733419L448.229568 1018.192418c-251.87691-31.759447-446.887571-246.346465-446.887571-506.872631 0-94.739084 26.233779-183.159316 71.129911-259.235365L269.683279 590.222492z\\\' fill=\\\'#515151\\\' p-id=\\\'8715\\\'&gt;&lt;/path&gt;&lt;/svg>\'">';
+                        iconContent = '<img src="' + escapedIcon + '" class="favicon-img" width="32" height="32" onerror="this.classList.add(\'favicon-error\')">';
                     } else {
                         iconContent = defaultIconSVG;
                     }
@@ -152,12 +152,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                         <div class="menu-text" title="${item.title}">${item.title}</div>
                     `;
 
-                    // 获取点击区域元素
-                    const menuBg = menuItem.querySelector('.menu-item-bg');
-                    const menuText = menuItem.querySelector('.menu-text');
-                    
-                    // 点击背景板或文字跳转
-                    function handleCustomItemClick(e) {
+                    // 点击整个菜单项跳转
+                    menuItem.addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         if (item.url && item.url !== '#') {
@@ -171,10 +167,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         // 恢复通知位置
                         const notices = document.getElementById('notices');
                         if (notices) notices.style.top = '20px';
-                    }
-                    
-                    menuBg.addEventListener('click', handleCustomItemClick);
-                    menuText.addEventListener('click', handleCustomItemClick);
+                    });
 
                     menuItemsContainer.appendChild(menuItem);
                 });
@@ -1962,9 +1955,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 图标
             let iconContent;
             if (item.icon && item.icon.trim()) {
-                iconContent = '<img src="' + encodeURI(item.icon.trim()) + '" style="width:32px;height:32px;" onerror="this.outerHTML=\'&lt;svg t=\\\'1768974157218\\\' class=\\\'icon\\\' viewBox=\\\'0 0 1024 1024\\\' version=\\\'1.1\\\' xmlns=\\\'http://www.w3.org/2000/svg\\\' p-id=\\\'8714\\\' width=\\\'32\\\' height=\\\'32\\\'&gt;&lt;path d=\\\'M512.704787 1022.681895c-6.566636 0-12.885487-0.746767-19.370211-0.997965l223.522968-358.091907c32.011327-42.692008 51.675057-95.154106 51.675057-152.604663 0-88.961536-45.561669-167.195974-114.530461-213.091436l322.88327 0c29.969663 65.017888 47.096842 137.184673 47.096842 213.424546C1023.98157 793.752715 795.095394 1022.681895 512.704787 1022.681895zM512.205805 256.491303c-134.523205 0-243.604451 102.347371-254.246906 233.876682L96.997133 214.338551C189.740287 84.72121 341.184526 0 512.704787 0c189.230383 0 354.100731 103.095504 442.520963 255.992321C955.22575 255.992321 302.108946 256.491303 512.205805 256.491303zM511.416716 298.145073c118.142111 0 213.88189 95.36503 213.88189 213.051163 0 117.68545-95.739779 213.093484-213.88189 213.093484-118.103885 0-213.882572-95.408034-213.882572-213.093484C297.534144 393.510103 393.312831 298.145073 511.416716 298.145073zM269.683279 590.222492c33.504179 102.303002 128.784566 176.716231 242.522526 176.716231 38.828478 0 75.283547-9.269059 108.292157-24.733419L448.229568 1018.192418c-251.87691-31.759447-446.887571-246.346465-446.887571-506.872631 0-94.739084 26.233779-183.159316 71.129911-259.235365L269.683279 590.222492z\\\' fill=\\\'#515151\\\' p-id=\\\'8715\\\'&gt;&lt;/path&gt;&lt;/svg>\'">';
-            } else {
-                iconContent = defaultIconSVG;
+                                    iconContent = '<img src="' + encodeURI(item.icon.trim()) + '" class="favicon-img" width="32" height="32" onerror="this.classList.add(\'favicon-error\')">';
+                                    } else {                iconContent = defaultIconSVG;
             }
             
             div.innerHTML = `
