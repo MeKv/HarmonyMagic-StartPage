@@ -8,6 +8,9 @@ Harmony Magic Start Page
 Licensed under GPLv3
 `);
 
+// 全局变量
+let quickAccessData = [];
+
 // 主应用
 document.addEventListener('DOMContentLoaded', async function() {
     const searchIcon = document.querySelector('.search-icon');
@@ -52,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (!response.ok) {
                 throw new Error('Failed to load quick-access.json');
             }
-            const quickAccessData = await response.json();
+            quickAccessData = await response.json();
 
             // 按 id 排序
             quickAccessData.sort((a, b) => a.id - b.id);
@@ -70,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             </div>`;
 
             const editIconHTML = `<!-- 系统图标：编辑（始终显示在最后） -->
-            <div class="menu-item" data-url="#">
+            <div class="menu-item" data-action="edit">
                 <div class="menu-icon-wrapper">
                     <div class="menu-item-bg"></div>
                     <div class="menu-icon"><svg t="1768898892387" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4731" width="32" height="32"><path d="M474.58679343 587.16868738c-11.45302241 0-22.90604486-4.37057868-31.6472022-13.11173601-17.48231469-17.48231469-17.48231469-45.83841849 0-63.29440437l487.24053555-487.24053552c17.48231469-17.48231469 45.81208967-17.48231469 63.29440431 0 17.48231469 17.48231469 17.48231469 45.83841849 0 63.29440441L506.23399561 574.05695137a44.61676276 44.61676276 0 0 1-31.64720218 13.11173601z" fill="#2c2c2c" p-id="4732"></path><path d="M904.16728498 1017.19676833h-781.96497912c-62.68884228 0-113.68770304-50.99886074-113.68770305-113.71403181v-781.96497913c0-62.71517108 50.99886074-113.71403182 113.66137425-113.71403185l457.51533479 0.0263288c24.72273117 0 44.75893818 20.03620706 44.75893819 44.7589382s-20.03620706 44.75893818-44.75893819 44.7589382l-457.51533479-0.02632877c-13.2960375 0-24.14349786 10.84746035-24.14349785 24.16982661v781.96497915c0 13.32236631 10.84746035 24.1698266 24.16982665 24.16982664h781.96497912c13.32236631 0 24.1698266-10.84746035 24.16982668-24.16982664V403.42008173c0-24.72273117 20.06253583-44.75893818 44.75893815-44.75893828 24.72273117 0 44.75893818 20.03620706 44.7589382 44.75893828V903.50906532c0 62.68884228-50.99886074 113.68770304-113.68770303 113.68770301z" fill="#2c2c2c" p-id="4733"></path></svg></div>
@@ -184,24 +187,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (editIconHTML) {
                 menuItemsContainer.innerHTML += editIconHTML;
             }
-
-            // 绑定"编辑"按钮点击事件
-            const systemIcons = menuItemsContainer.querySelectorAll('.menu-item[data-url="#"]');
-            systemIcons.forEach(item => {
-                function handleSystemClick(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // 点击后关闭菜单（暂不关联用途）
-                    contextMenu.classList.remove('active');
-                    document.documentElement.style.removeProperty('--search-box-top');
-                    setBackgroundBlur(false);
-                    if (settings) settings.style.display = 'none';
-                    // 恢复通知位置
-                    const notices = document.getElementById('notices');
-                    if (notices) notices.style.top = '20px';
-                }
-                item.addEventListener('click', handleSystemClick);
-            });
 
             // 绑定"添加"按钮点击事件
             const addIcons = menuItemsContainer.querySelectorAll('.menu-item[data-action="add"]');
@@ -1081,13 +1066,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 为菜单项添加点击事件（重新获取菜单项以确保包含所有动态添加的项）
         const menuItems = document.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
-            // 处理"添加"按钮
+            // 处理"添加"和"编辑"按钮
             if (item.hasAttribute('data-action')) {
+                const action = item.getAttribute('data-action');
                 item.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    // 打开添加快捷方式面板
-                    openAddShortcutPanel();
+                    if (action === 'add') {
+                        // 打开添加快捷方式面板
+                        openAddShortcutPanel();
+                    } else if (action === 'edit') {
+                        // 打开编辑快捷访问面板
+                        openEditShortcutPanel();
+                    }
                 };
                 return;
             }
@@ -1824,6 +1815,242 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && addShortcutPanel && addShortcutPanel.classList.contains('active')) {
             closeAddShortcutPanel();
+        }
+    });
+
+    // 编辑快捷访问面板相关
+    const editShortcutPanel = document.getElementById('edit-shortcut-panel');
+    const editShortcutClose = document.getElementById('edit-shortcut-close');
+    const editShortcutReset = document.getElementById('edit-shortcut-reset');
+    const editShortcutList = document.getElementById('edit-shortcut-list');
+    const editShortcutCancel = document.getElementById('edit-shortcut-cancel');
+    const editShortcutApply = document.getElementById('edit-shortcut-apply');
+    const editShortcutOk = document.getElementById('edit-shortcut-ok');
+    const editShortcutOverlay = editShortcutPanel ? editShortcutPanel.querySelector('.settings-modal-overlay') : null;
+
+    let editShortcutItems = []; // 当前编辑的项目列表
+    let editShortcutOriginalOrder = []; // 原始顺序，用于检测更改
+    let editShortcutHasChanges = false; // 是否有更改
+
+    // 打开编辑快捷访问面板
+    function openEditShortcutPanel() {
+        if (editShortcutPanel) {
+            // 加载所有快捷方式
+            editShortcutItems = loadAllShortcuts();
+            // 保存原始顺序
+            editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
+            editShortcutHasChanges = false;
+            // 渲染列表
+            renderEditShortcutList();
+            editShortcutPanel.classList.add('active');
+        }
+    }
+
+    // 关闭编辑快捷访问面板
+    function closeEditShortcutPanel() {
+        if (editShortcutPanel) {
+            editShortcutPanel.classList.remove('active');
+        }
+    }
+
+    // 加载所有快捷方式（预设 + 自定义）
+    function loadAllShortcuts() {
+        const items = [];
+        // 加载预设快捷方式
+        quickAccessData.forEach(item => {
+            items.push({
+                id: 'preset_' + item.id,
+                presetId: item.id,
+                url: item.url,
+                title: item.title,
+                icon: item.icon,
+                isPreset: true
+            });
+        });
+        // 加载自定义快捷方式
+        const customShortcuts = getCookie('custom_shortcuts') || [];
+        customShortcuts.forEach(item => {
+            items.push({
+                id: 'custom_' + item.id,
+                customId: item.id,
+                url: item.url,
+                title: item.title,
+                icon: item.icon,
+                isPreset: false
+            });
+        });
+        return items;
+    }
+
+    // 渲染编辑列表
+    function renderEditShortcutList() {
+        if (!editShortcutList) return;
+        editShortcutList.innerHTML = '';
+        
+        editShortcutItems.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'edit-shortcut-item';
+            div.dataset.index = index;
+            
+            // 图标
+            let iconContent;
+            if (item.icon && item.icon.trim()) {
+                iconContent = '<img src="' + encodeURI(item.icon.trim()) + '" style="width:32px;height:32px;" onerror="this.outerHTML=\'&lt;svg t=\\\'1768974157218\\\' class=\\\'icon\\\' viewBox=\\\'0 0 1024 1024\\\' version=\\\'1.1\\\' xmlns=\\\'http://www.w3.org/2000/svg\\\' p-id=\\\'8714\\\' width=\\\'32\\\' height=\\\'32\\\'&gt;&lt;path d=\\\'M512.704787 1022.681895c-6.566636 0-12.885487-0.746767-19.370211-0.997965l223.522968-358.091907c32.011327-42.692008 51.675057-95.154106 51.675057-152.604663 0-88.961536-45.561669-167.195974-114.530461-213.091436l322.88327 0c29.969663 65.017888 47.096842 137.184673 47.096842 213.424546C1023.98157 793.752715 795.095394 1022.681895 512.704787 1022.681895zM512.205805 256.491303c-134.523205 0-243.604451 102.347371-254.246906 233.876682L96.997133 214.338551C189.740287 84.72121 341.184526 0 512.704787 0c189.230383 0 354.100731 103.095504 442.520963 255.992321C955.22575 255.992321 302.108946 256.491303 512.205805 256.491303zM511.416716 298.145073c118.142111 0 213.88189 95.36503 213.88189 213.051163 0 117.68545-95.739779 213.093484-213.88189 213.093484-118.103885 0-213.882572-95.408034-213.882572-213.093484C297.534144 393.510103 393.312831 298.145073 511.416716 298.145073zM269.683279 590.222492c33.504179 102.303002 128.784566 176.716231 242.522526 176.716231 38.828478 0 75.283547-9.269059 108.292157-24.733419L448.229568 1018.192418c-251.87691-31.759447-446.887571-246.346465-446.887571-506.872631 0-94.739084 26.233779-183.159316 71.129911-259.235365L269.683279 590.222492z\\\' fill=\\\'#515151\\\' p-id=\\\'8715\\\'&gt;&lt;/path&gt;&lt;/svg>\'">';
+            } else {
+                iconContent = defaultIconSVG;
+            }
+            
+            div.innerHTML = `
+                <div class="edit-shortcut-item-icon">${iconContent}</div>
+                <div class="edit-shortcut-item-text" title="${item.title}">${item.title}</div>
+                <div class="edit-shortcut-item-actions">
+                    <button class="edit-shortcut-move-btn edit-shortcut-move-up" data-index="${index}" ${index === 0 ? 'disabled' : ''}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15L12 9L6 15"/>
+                        </svg>
+                    </button>
+                    <button class="edit-shortcut-move-btn edit-shortcut-move-down" data-index="${index}" ${index === editShortcutItems.length - 1 ? 'disabled' : ''}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9L12 15L18 9"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            editShortcutList.appendChild(div);
+        });
+        
+        // 绑定移动按钮事件
+        document.querySelectorAll('.edit-shortcut-move-up').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                if (index > 0) {
+                    const temp = editShortcutItems[index];
+                    editShortcutItems[index] = editShortcutItems[index - 1];
+                    editShortcutItems[index - 1] = temp;
+                    editShortcutHasChanges = true;
+                    renderEditShortcutList();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.edit-shortcut-move-down').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                if (index < editShortcutItems.length - 1) {
+                    const temp = editShortcutItems[index];
+                    editShortcutItems[index] = editShortcutItems[index + 1];
+                    editShortcutItems[index + 1] = temp;
+                    editShortcutHasChanges = true;
+                    renderEditShortcutList();
+                }
+            });
+        });
+    }
+
+    // 保存快捷访问顺序
+    function saveShortcutOrder() {
+        // 获取预设项目（保持相对顺序）
+        const presetItems = editShortcutItems.filter(item => item.isPreset);
+        const customItems = editShortcutItems.filter(item => !item.isPreset);
+        
+        // 保存预设顺序到新cookie
+        const presetOrder = presetItems.map(item => item.presetId);
+        setCookie('quick_access_order', presetOrder);
+        
+        // 保存自定义快捷方式（按新顺序）
+        const newCustomShortcuts = customItems.map(item => ({
+            id: item.customId,
+            url: item.url,
+            title: item.title,
+            icon: item.icon
+        }));
+        setCookie('custom_shortcuts', newCustomShortcuts);
+    }
+
+    // 点击关闭按钮
+    if (editShortcutClose) {
+        editShortcutClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeEditShortcutPanel();
+        });
+    }
+
+    // 点击重置按钮
+    if (editShortcutReset) {
+        editShortcutReset.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // 确认重置
+            if (confirm('确定要重置快捷访问吗？这将删除所有自定义快捷方式。')) {
+                setCookie('custom_shortcuts', []);
+                setCookie('quick_access_order', []);
+                sendNotice('快捷访问已重置', 'info');
+                closeEditShortcutPanel();
+                loadQuickAccessMenu();
+            }
+        });
+    }
+
+    // 点击取消按钮
+    if (editShortcutCancel) {
+        editShortcutCancel.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (editShortcutHasChanges) {
+                if (confirm('有未保存的更改，确定要放弃吗？')) {
+                    closeEditShortcutPanel();
+                }
+            } else {
+                closeEditShortcutPanel();
+            }
+        });
+    }
+
+    // 点击应用按钮
+    if (editShortcutApply) {
+        editShortcutApply.addEventListener('click', function(e) {
+            e.stopPropagation();
+            saveShortcutOrder();
+            editShortcutHasChanges = false;
+            editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
+            loadQuickAccessMenu();
+            sendNotice('设置已应用', 'info');
+        });
+    }
+
+    // 点击确定按钮
+    if (editShortcutOk) {
+        editShortcutOk.addEventListener('click', function(e) {
+            e.stopPropagation();
+            saveShortcutOrder();
+            loadQuickAccessMenu();
+            closeEditShortcutPanel();
+            sendNotice('设置已保存', 'info');
+        });
+    }
+
+    // 点击遮罩层关闭
+    if (editShortcutOverlay) {
+        editShortcutOverlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (editShortcutHasChanges) {
+                if (confirm('有未保存的更改，确定要放弃吗？')) {
+                    closeEditShortcutPanel();
+                }
+            } else {
+                closeEditShortcutPanel();
+            }
+        });
+    }
+
+    // ESC键关闭编辑面板
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && editShortcutPanel && editShortcutPanel.classList.contains('active')) {
+            if (editShortcutHasChanges) {
+                if (confirm('有未保存的更改，确定要放弃吗？')) {
+                    closeEditShortcutPanel();
+                }
+            } else {
+                closeEditShortcutPanel();
+            }
         }
     });
 
