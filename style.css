@@ -983,6 +983,12 @@ body::after {
     height: 100%;
 }
 
+.action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
     .settings-modal-content {
@@ -1002,6 +1008,154 @@ body::after {
     .setting-item-text {
         font-size: 13px;
     }
+}
+
+/* 可复用关闭按钮样式 */
+.icon-close {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.icon-close::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(128, 128, 128, 0.4) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.icon-close:hover::before {
+    opacity: 1;
+}
+
+.icon-close:hover {
+    background: #F5F5F5;
+}
+
+.icon-close:active {
+    transform: scale(0.95);
+}
+
+.icon-close svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+/* 确认对话框样式 */
+.confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10002;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-dialog.active {
+    display: flex;
+}
+
+.confirm-dialog-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.confirm-dialog.active .confirm-dialog-overlay {
+    opacity: 1;
+}
+
+.confirm-dialog-content {
+    position: relative;
+    width: 320px;
+    max-width: 90%;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.confirm-dialog.active .confirm-dialog-content {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.confirm-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.confirm-dialog-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.confirm-dialog-message {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.confirm-dialog-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.confirm-dialog-cancel {
+    background: #F5F5F5;
+    color: #666666;
+}
+
+.confirm-dialog-cancel:hover {
+    background: #EEEEEE;
+}
+
+.confirm-dialog-ok {
+    background: #4CAF50;
+    color: white;
+}
+
+.confirm-dialog-ok:hover {
+    background: #43A047;
 }
 
 /* 单条通知样式 */

@@ -1269,6 +1269,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (settingsModal) {
             settingsModal.classList.add('active');
             setBackgroundBlur(true);
+            // 初始化操作项图标
+            initActionItems();
         }
     }
 
@@ -1318,6 +1320,137 @@ document.addEventListener('DOMContentLoaded', async function() {
     // SVG 图标定义
     const svgOff = '<path d="M1536.011446 0H512.011446C229.234257 0 0 229.234257 0 512.011446c0 282.754298 229.234257 511.988554 512.011446 511.988554H1536.011446c282.777189 0 512.011446-229.234257 512.011445-511.988554C2048.022891 229.234257 1818.788635 0 1536.011446 0zM514.460823 921.606867a409.618313 409.618313 0 1 1 409.595422-409.595421A409.595422 409.595422 0 0 1 514.460823 921.606867z" fill="#CCCCCC" p-id="7318"></path>';
     const svgOn = '<path d="M1536.011446 0H512.011446C229.234257 0 0 229.234257 0 512.011446c0 282.754298 229.234257 511.988554 512.011446 511.988554H1536.011446c282.777189 0 512.011446-229.234257 512.011445-511.988554C2048.022891 229.234257 1818.788635 0 1536.011446 0z m0 921.606867a409.618313 409.618313 0 1 1 409.595421-409.595421A409.595422 409.595422 0 0 1 1536.011446 921.606867z" fill="#4CAF50" p-id="7474"></path>';
+
+    // 操作图标（用于需要确认的选项）
+    const svgAction = '<svg t="1768966199939" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8663" width="18" height="18"><path d="M892 928.1H134c-19.9 0-36-16.1-36-36v-758c0-19.9 16.1-36 36-36h314.1c19.9 0 36 16.1 36 36s-16.1 36-36 36H170v686h686V579.6c0-19.9 16.1-36 36-36s36 16.1 36 36v312.5c0 19.9-16.1 36-36 36z" fill="#888888" p-id="8664"></path><path d="M927.9 131.6v-0.5c-0.1-1.7-0.4-3.3-0.7-4.9 0-0.1 0-0.2-0.1-0.3-0.4-1.7-0.9-3.3-1.5-4.9v-0.1c-0.6-1.6-1.4-3.1-2.2-4.6 0-0.1-0.1-0.1-0.1-0.2-0.8-1.4-1.7-2.8-2.7-4.1-0.1-0.1-0.2-0.3-0.3-0.4-0.5-0.6-0.9-1.1-1.4-1.7 0-0.1-0.1-0.1-0.1-0.2-0.5-0.6-1-1.1-1.6-1.6l-0.4-0.4c-0.5-0.5-1.1-1-1.6-1.5l-0.1-0.1c-0.6-0.5-1.2-1-1.9-1.4-0.1-0.1-0.3-0.2-0.4-0.3-1.4-1-2.8-1.8-4.3-2.6l-0.1-0.1c-1.6-0.8-3.2-1.5-4.9-2-1.6-0.5-3.3-1-5-1.2-0.1 0-0.2 0-0.3-0.1l-2.4-0.3h-0.3c-0.7-0.1-1.3-0.1-2-0.1H640.1c-19.9 0-36 16.1-36 36s16.1 36 36 36h165L487.6 487.6c-14.1 14.1-14.1 36.9 0 50.9 7 7 16.2 10.5 25.5 10.5 9.2 0 18.4-3.5 25.5-10.5L856 221v162.8c0 19.9 16.1 36 36 36s36-16.1 36-36V134.1c0-0.8 0-1.7-0.1-2.5z" fill="#888888" p-id="8665"></path></svg>';
+
+    // 关闭按钮图标
+    const svgClose = '<svg t="1768962858078" class="icon" viewBox="0 0 1070 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5514" width="20" height="20"><path d="M50.368584 96.533526l30.769579 30.77162 82.037931 82.03793 117.900068 117.900068 138.353952 138.353953 143.399585 143.397544 133.036963 133.036963 107.268128 107.268129 66.091042 66.093081 13.582195 13.580155c12.576334 12.576334 33.589257 12.576334 46.165591 0s12.576334-33.589257 0-46.165591l-30.76958-30.769579-82.03793-82.039971-117.900068-117.898028-138.353953-138.353952-143.397544-143.399585-133.036963-133.036963-107.268128-107.268128L110.11433 63.950131l-13.582196-13.580156c-12.576334-12.578374-33.589257-12.578374-46.165591 0-12.576334 12.576334-12.576334 33.587217 0.002041 46.163551z" fill="" p-id="5515"></path><path d="M882.805987 50.369975l-30.76958 30.76958-82.03997 82.03793-117.898028 117.900068-138.353953 138.353953-143.399584 143.399584-133.036963 133.036963-107.268129 107.268129a2018478.867876 2018478.867876 0 0 1-66.093081 66.091041l-13.580156 13.582196c-12.578374 12.576334-12.578374 33.589257 0 46.165591 12.576334 12.576334 33.589257 12.576334 46.165591 0l30.77162-30.76958 82.037931-82.03793 117.900068-117.900068 138.353952-138.353953 143.397545-143.397544 133.036962-133.036963 107.268129-107.268129 66.093081-66.091041 13.580156-13.582196c12.576334-12.576334 12.576334-33.589257 0-46.16559-12.578374-12.580414-33.589257-12.580414-46.165591-0.002041z" fill="" p-id="5516"></path></svg>';
+
+    // 初始化关闭按钮图标
+    const confirmDialogClose = document.getElementById('confirm-dialog-close');
+    if (confirmDialogClose) {
+        confirmDialogClose.innerHTML = svgClose;
+    }
+
+    // 确认对话框相关元素
+    const confirmDialog = document.getElementById('confirm-dialog');
+    const confirmDialogTitle = document.getElementById('confirm-dialog-title');
+    const confirmDialogMessage = document.getElementById('confirm-dialog-message');
+    const confirmDialogOk = document.getElementById('confirm-dialog-ok');
+    const confirmDialogCancel = document.getElementById('confirm-dialog-cancel');
+    const confirmDialogOverlay = document.querySelector('.confirm-dialog-overlay');
+
+    // 确认操作映射表
+    const confirmActions = {
+        'reset-wallpaper': {
+            title: '重置壁纸',
+            message: '确定要重置为默认壁纸吗？',
+            onOk: function() {
+                // 执行重置壁纸逻辑
+                sendNotice('壁纸已重置为默认', 'info');
+            }
+        }
+    };
+
+    // 打开确认对话框
+    function openConfirmDialog(actionId) {
+        const action = confirmActions[actionId];
+        if (!action) return;
+
+        if (confirmDialogTitle) confirmDialogTitle.textContent = action.title;
+        if (confirmDialogMessage) confirmDialogMessage.textContent = action.message;
+        
+        // 存储当前操作
+        confirmDialog.dataset.currentAction = actionId;
+        
+        if (confirmDialog) {
+            confirmDialog.classList.add('active');
+            setBackgroundBlur(true);
+        }
+    }
+
+    // 关闭确认对话框
+    function closeConfirmDialog() {
+        if (confirmDialog) {
+            confirmDialog.classList.remove('active');
+            // 如果设置面板没有打开，则移除背景模糊
+            if (!settingsModal || !settingsModal.classList.contains('active')) {
+                setBackgroundBlur(false);
+            }
+        }
+    }
+
+    // 点击确认按钮
+    if (confirmDialogOk) {
+        confirmDialogOk.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const actionId = confirmDialog.dataset.currentAction;
+            const action = confirmActions[actionId];
+            if (action && action.onOk) {
+                action.onOk();
+            }
+            closeConfirmDialog();
+        });
+    }
+
+    // 点击取消按钮
+    if (confirmDialogCancel) {
+        confirmDialogCancel.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeConfirmDialog();
+        });
+    }
+
+    // 点击关闭按钮
+    if (confirmDialogClose) {
+        confirmDialogClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeConfirmDialog();
+        });
+    }
+
+    // 点击遮罩层关闭
+    if (confirmDialogOverlay) {
+        confirmDialogOverlay.addEventListener('click', function() {
+            closeConfirmDialog();
+        });
+    }
+
+    // ESC键关闭确认对话框
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && confirmDialog && confirmDialog.classList.contains('active')) {
+            closeConfirmDialog();
+        }
+    });
+
+    // 初始化操作项图标
+    function initActionItems() {
+        const actionItems = document.querySelectorAll('.setting-item-action');
+        actionItems.forEach(item => {
+            const textSpan = item.querySelector('.setting-item-text');
+            if (textSpan && !item.querySelector('.action-icon')) {
+                const iconSpan = document.createElement('span');
+                iconSpan.className = 'action-icon';
+                iconSpan.innerHTML = svgAction;
+                iconSpan.style.marginLeft = '8px';
+                iconSpan.style.display = 'inline-flex';
+                iconSpan.style.alignItems = 'center';
+                textSpan.parentNode.insertBefore(iconSpan, textSpan.nextSibling);
+            }
+        });
+    }
+
+    // 点击操作项显示确认对话框
+    settingItems.forEach(item => {
+        if (item.classList.contains('setting-item-action')) {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const actionId = this.dataset.setting;
+                openConfirmDialog(actionId);
+            });
+        }
+    });
 
     // 初始化设置项状态图标
     function initSettingItems() {
