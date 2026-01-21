@@ -60,10 +60,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 按 id 排序
             quickAccessData.sort((a, b) => a.id - b.id);
 
-            // 保存系统图标（编辑）的HTML
-            const systemIconHTML = menuItemsContainer.innerHTML;
-
-            // 系统图标的HTML模板（硬编码，避免提取错误）
+            // 系统图标的HTML模板（硬编码）
             const addIconHTML = `<div class="menu-item" data-action="add">
                 <div class="menu-icon-wrapper">
                     <div class="menu-item-bg"></div>
@@ -89,40 +86,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             quickAccessData.forEach(item => {
                 if (deletedPresets.includes(item.id)) return;
                 const menuItem = document.createElement('div');
-                menuItem.className = 'menu-item';
+                menuItem.className = 'menu-item preset-item';
                 menuItem.setAttribute('data-url', item.url);
-                                    menuItem.innerHTML = `
-                                        <div class="menu-icon-wrapper">
-                                            <div class="menu-item-bg"></div>
-                                            <div class="menu-icon">${item.icon}</div>
-                                        </div>
-                                        <div class="menu-text" title="${item.title}">${item.title}</div>
-                                    `;
-                // 获取点击区域元素
-                const menuBg = menuItem.querySelector('.menu-item-bg');
-                const menuText = menuItem.querySelector('.menu-text');
-                
-                // 点击背景板或文字跳转
-                function handleItemClick(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // 如果url是占位符"#"，则不打开新标签页
-                    if (item.url && item.url !== '#') {
-                        window.open(item.url, '_blank');
-                    }
-                    // 点击后关闭菜单
-                    contextMenu.classList.remove('active');
-                    document.documentElement.style.removeProperty('--search-box-top');
-                    setBackgroundBlur(false);
-                    if (settings) settings.style.display = 'none';
-                    // 恢复通知位置
-                    const notices = document.getElementById('notices');
-                    if (notices) notices.style.top = '20px';
-                }
-                
-                menuBg.addEventListener('click', handleItemClick);
-                menuText.addEventListener('click', handleItemClick);
-
+                menuItem.setAttribute('data-preset-id', item.id);
+                menuItem.innerHTML = `
+                    <div class="menu-icon-wrapper">
+                        <div class="menu-item-bg"></div>
+                        <div class="menu-icon">${item.icon}</div>
+                    </div>
+                    <div class="menu-text" title="${item.title}">${item.title}</div>
+                `;
                 menuItemsContainer.appendChild(menuItem);
             });
 
@@ -131,13 +104,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (customShortcuts.length > 0) {
                 customShortcuts.forEach(item => {
                     const menuItem = document.createElement('div');
-                    menuItem.className = 'menu-item';
+                    menuItem.className = 'menu-item custom-item';
                     menuItem.setAttribute('data-url', item.url);
+                    menuItem.setAttribute('data-custom-id', item.id);
                     
                     // 确定图标HTML
                     let iconContent;
                     if (item.icon && item.icon.trim()) {
-                        // 使用 encodeURI 避免 URL 中的特殊字符问题
                         const escapedIcon = encodeURI(item.icon.trim());
                         iconContent = '<img src="' + escapedIcon + '" class="favicon-img" width="32" height="32" onerror="this.classList.add(\'favicon-error\')">';
                     } else {
@@ -151,56 +124,62 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </div>
                         <div class="menu-text" title="${item.title}">${item.title}</div>
                     `;
-
-                    // 点击整个菜单项跳转
-                    menuItem.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (item.url && item.url !== '#') {
-                            window.open(item.url, '_blank');
-                        }
-                        // 点击后关闭菜单
-                        contextMenu.classList.remove('active');
-                        document.documentElement.style.removeProperty('--search-box-top');
-                        setBackgroundBlur(false);
-                        if (settings) settings.style.display = 'none';
-                        // 恢复通知位置
-                        const notices = document.getElementById('notices');
-                        if (notices) notices.style.top = '20px';
-                    });
-
                     menuItemsContainer.appendChild(menuItem);
                 });
             }
 
-            // 恢复"添加"按钮
-            if (addIconHTML) {
-                menuItemsContainer.innerHTML += addIconHTML;
-            }
+            // 恢复"添加"和"编辑"按钮
+            menuItemsContainer.insertAdjacentHTML('beforeend', addIconHTML);
+            menuItemsContainer.insertAdjacentHTML('beforeend', editIconHTML);
 
-            // 恢复"编辑"系统图标
-            if (editIconHTML) {
-                menuItemsContainer.innerHTML += editIconHTML;
-            }
-
-            // 绑定"添加"按钮点击事件
-            const addIcons = menuItemsContainer.querySelectorAll('.menu-item[data-action="add"]');
-            addIcons.forEach(item => {
-                function handleAddClick(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    openAddShortcutPanel();
-                }
-                item.addEventListener('click', handleAddClick, true);
-            });
         } catch (error) {
             console.error('Error loading quick access data:', error);
         }
     }
 
+    // 事件委托 - 在容器上统一处理点击事件（只绑定一次）
+    function setupMenuItemDelegation() {
+        menuItemsContainer.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('.menu-item');
+            if (!menuItem) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 处理"添加"按钮
+            if (menuItem.dataset.action === 'add') {
+                openAddShortcutPanel();
+                return;
+            }
+
+            // 处理"编辑"按钮
+            if (menuItem.dataset.action === 'edit') {
+                openEditShortcutPanel();
+                return;
+            }
+
+            // 获取URL并跳转
+            const url = menuItem.dataset.url;
+            if (url && url !== '#') {
+                window.open(url, '_blank');
+            }
+
+            // 点击后关闭菜单
+            contextMenu.classList.remove('active');
+            document.documentElement.style.removeProperty('--search-box-top');
+            setBackgroundBlur(false);
+            if (settings) settings.style.display = 'none';
+            // 恢复通知位置
+            const notices = document.getElementById('notices');
+            if (notices) notices.style.top = '20px';
+        });
+    }
+
     // 初始化快捷访问菜单
     await loadQuickAccessMenu();
+    
+    // 设置事件委托（只绑定一次）
+    setupMenuItemDelegation();
 
     // 获取所有圆形搜索框
     const circleSearchBoxes = document.querySelectorAll('.search-box-circle');
