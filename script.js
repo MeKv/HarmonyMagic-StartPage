@@ -1097,7 +1097,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             !e.target.closest('.settings-modal') &&
             !e.target.closest('.setting-button') &&
             !e.target.closest('#settings-close') &&
-            !e.target.closest('#add-shortcut-panel')) {
+            !e.target.closest('#add-shortcut-panel') &&
+            !e.target.closest('.confirm-dialog') &&
+            !e.target.closest('.confirm-dialog-overlay')) {
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
             setBackgroundBlur(false); // 移除背景模糊
