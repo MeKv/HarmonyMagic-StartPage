@@ -33,6 +33,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 保存系统图标（编辑）的HTML
             const systemIconHTML = menuItemsContainer.innerHTML;
 
+            // 提取"添加"按钮（包含完整的menu-item div）
+            // 匹配从 data-action="add" 的div开始，到 </div> 后面跟着 <!-- 系统图标：编辑
+            const addIconMatch = systemIconHTML.match(/<div[^>]*data-action="add"[^>]*>[\s\S]*?<\/div>\s*<!-- 系统图标：编辑/);
+            const addIconHTML = addIconMatch ? addIconMatch[0].replace(/\s*<!-- 系统图标：编辑$/, '') : '';
+            
+            // 移除"添加"按钮后获取"编辑"按钮
+            const editIconHTML = systemIconHTML.replace(/<div[^>]*data-action="add"[^>]*>[\s\S]*?<\/div>\s*<!-- 系统图标：编辑/, '<!-- 系统图标：编辑');
+
             // 清空现有菜单项
             menuItemsContainer.innerHTML = '';
 
@@ -77,9 +85,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 menuItemsContainer.appendChild(menuItem);
             });
 
-            // 恢复系统图标（编辑）
-            if (systemIconHTML) {
-                menuItemsContainer.innerHTML += systemIconHTML;
+            // 恢复"添加"按钮
+            if (addIconHTML) {
+                menuItemsContainer.innerHTML += addIconHTML;
+            }
+
+            // 恢复"编辑"系统图标
+            if (editIconHTML) {
+                menuItemsContainer.innerHTML += editIconHTML;
             }
         } catch (error) {
             console.error('Error loading quick access data:', error);
@@ -110,6 +123,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         menuBg.addEventListener('click', handleSystemClick);
         menuText.addEventListener('click', handleSystemClick);
+    });
+
+    // 初始化"添加"图标的点击事件
+    const addIcons = menuItemsContainer.querySelectorAll('.menu-item[data-action="add"]');
+    addIcons.forEach(item => {
+        const menuBg = item.querySelector('.menu-item-bg');
+        const menuText = item.querySelector('.menu-text');
+        
+        function handleAddClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // 点击后关闭菜单（暂不关联用途）
+            contextMenu.classList.remove('active');
+            document.documentElement.style.removeProperty('--search-box-top');
+            setBackgroundBlur(false);
+            if (settings) settings.style.display = 'none';
+            // 恢复通知位置
+            const notices = document.getElementById('notices');
+            if (notices) notices.style.top = '20px';
+            // 显示添加功能开发中通知
+            sendNotice('添加功能开发中', 'info');
+        }
+        
+        menuBg.addEventListener('click', handleAddClick);
+        menuText.addEventListener('click', handleAddClick);
     });
 
     // 获取所有圆形搜索框
