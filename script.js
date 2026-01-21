@@ -1456,8 +1456,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // 壁纸设置 - 打开壁纸面板
                     openWallpaperPanel();
                 } else if (action === 'about') {
-                    // 关于 - 待实现
-                    sendNotice('关于功能开发中', 'info');
+                    // 关于 - 打开关于面板
+                    openAboutPanel();
                 }
             });
         });
@@ -1584,6 +1584,49 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (itemId === selectedId) {
                 item.classList.add('selected');
             }
+        });
+    }
+
+    // ==================== 关于面板功能 ====================
+    const aboutPanel = document.getElementById('about-panel');
+    const aboutClose = document.getElementById('about-close');
+    const aboutPanelOverlay = document.querySelector('#about-panel .settings-modal-overlay');
+
+    // 初始化关闭按钮图标
+    if (aboutClose) {
+        aboutClose.innerHTML = svgClose;
+    }
+
+    // 打开关于面板
+    function openAboutPanel() {
+        if (aboutPanel) {
+            aboutPanel.classList.add('active');
+            setBackgroundBlur(true);
+        }
+    }
+
+    // 关闭关于面板
+    function closeAboutPanel() {
+        if (aboutPanel) {
+            aboutPanel.classList.remove('active');
+            if (!contextMenu.classList.contains('active')) {
+                setBackgroundBlur(false);
+            }
+        }
+    }
+
+    // 点击关闭按钮
+    if (aboutClose) {
+        aboutClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAboutPanel();
+        });
+    }
+
+    // 点击遮罩层关闭
+    if (aboutPanelOverlay) {
+        aboutPanelOverlay.addEventListener('click', function() {
+            closeAboutPanel();
         });
     }
 
@@ -1892,6 +1935,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             closeConfirmDialog();
         });
     }
+
+    // ESC键关闭关于面板
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && aboutPanel && aboutPanel.classList.contains('active')) {
+            closeAboutPanel();
+        }
+    });
 
     // ESC键关闭确认对话框
     document.addEventListener('keydown', function(e) {

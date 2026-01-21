@@ -2207,3 +2207,116 @@ body::after {
     text-align: center;
     border-radius: 0 0 10px 10px;
 }
+
+/* 关于面板样式 */
+.about-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+#about-panel .settings-modal-content {
+    width: 500px;
+}
+
+.about-title {
+    text-align: center;
+}
+
+.about-title p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.about-copyright,
+.about-license,
+.about-icons,
+.about-links {
+    text-align: center;
+}
+
+.about-copyright p {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+}
+
+.about-license p,
+.about-icons p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.about-license a,
+.about-icons a {
+    color: #007AFF;
+    text-decoration: none;
+}
+
+.about-license a:hover,
+.about-icons a:hover {
+    text-decoration: underline;
+}
+
+.about-links {
+    margin-top: 8px;
+}
+
+.about-links > p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 12px 0;
+}
+
+.about-link-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.about-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid #DDD;
+    border-radius: 6px;
+    background: #F5F5F5;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.about-link-btn:hover {
+    background: #E0E0E0;
+    border-color: #CCC;
+}
+
+.about-link-btn.primary {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.about-link-btn.primary:hover {
+    background: #45a049;
+    border-color: #45a049;
+}
+
+.about-link-btn svg {
+    flex-shrink: 0;
+}
+
+.main-badge {
+    font-size: 10px;
+    padding: 2px 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    margin-left: 4px;
+}
