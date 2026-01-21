@@ -1110,7 +1110,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (contextMenu.classList.contains('active') && 
             !e.target.closest('.menu-items') &&
             !e.target.closest('.settings-modal') &&
-            !e.target.closest('.setting-button') &&
+            !e.target.closest('.settings-button') &&
+            !e.target.closest('.settings-dropdown') &&
             !e.target.closest('#settings-close') &&
             !e.target.closest('#add-shortcut-panel') &&
             !e.target.closest('.confirm-dialog') &&
@@ -1123,6 +1124,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             searchBox.style.opacity = '1';
             searchBox.style.visibility = 'visible';
             if (settings) settings.style.display = 'none';
+            closeSettingsDropdown();
             // 恢复通知位置
             const notices = document.getElementById('notices');
             if (notices) notices.style.top = '20px';
@@ -1387,11 +1389,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.resourceBlockedNotice = resourceBlockedNotice;
 
     // ==================== 设置菜单功能 ====================
-    const settingButton = document.getElementById('setting-button');
+    const settingsButton = document.getElementById('settings-button');
+    const settingsDropdown = document.getElementById('settings-dropdown');
     const settingsModal = document.getElementById('settings-modal');
     const settingsClose = document.getElementById('settings-close');
     const settingsModalOverlay = document.querySelector('.settings-modal-overlay');
     const settingItems = document.querySelectorAll('.setting-item');
+    const settingsMenuItems = document.querySelectorAll('.settings-menu-item');
 
     // 打开设置菜单
     function openSettingsModal() {
@@ -1414,12 +1418,48 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // 点击设置按钮打开菜单
-    if (settingButton) {
-        settingButton.addEventListener('click', function(e) {
+    // 切换设置下拉菜单
+    function toggleSettingsDropdown() {
+        if (settingsDropdown) {
+            settingsDropdown.classList.toggle('active');
+        }
+    }
+
+    // 关闭设置下拉菜单
+    function closeSettingsDropdown() {
+        if (settingsDropdown) {
+            settingsDropdown.classList.remove('active');
+        }
+    }
+
+    // 点击设置按钮显示下拉菜单
+    if (settingsButton) {
+        settingsButton.addEventListener('click', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            openSettingsModal();
+            toggleSettingsDropdown();
+        });
+    }
+
+    // 设置菜单项点击事件
+    if (settingsMenuItems) {
+        settingsMenuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const action = this.dataset.action;
+                closeSettingsDropdown();
+                
+                if (action === 'general') {
+                    // 常规设置 - 打开现有设置面板
+                    openSettingsModal();
+                } else if (action === 'appearance') {
+                    // 外观设置 - 待实现
+                    sendNotice('外观设置功能开发中', 'info');
+                } else if (action === 'about') {
+                    // 关于 - 待实现
+                    sendNotice('关于功能开发中', 'info');
+                }
+            });
         });
     }
 
