@@ -1497,6 +1497,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             title: '放弃更改',
             message: '有未保存的更改，确定要放弃吗？',
             onOk: function() {
+                // 回滚隐藏状态 - 使用原始值重新保存到cookie
+                const rollbackValue = originalHiddenPresets.join(',');
+                const encodedRollback = encodeURIComponent(rollbackValue);
+                document.cookie = 'hidden_presets=' + encodedRollback + ';path=/;expires=' + new Date(Date.now() + 365*24*60*60*1000).toUTCString();
+                // 重新加载菜单
+                loadQuickAccessMenu();
                 closeEditShortcutPanel();
             }
         },
@@ -1541,28 +1547,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             title: '还原预设快捷访问',
             message: '确定要还原所有被隐藏的预设快捷访问吗？',
             onOk: function() {
-                let hiddenPresets = [];
-                // 使用逗号分隔格式读取hidden_presets
-                const hiddenPresetsStr = decodeURIComponent(getCookieRaw('hidden_presets') || '');
-                hiddenPresets = hiddenPresetsStr ? hiddenPresetsStr.split(',').filter(Boolean).map(Number) : [];
-                if (hiddenPresets.length === 0) {
-                    sendNotice('没有需要还原的预设快捷访问', 'info');
-                    return;
-                }
-                // 重新加载预设并过滤掉被隐藏的
-                const allPresets = loadPresetShortcuts();
-                const presetsToRestore = allPresets.filter(p => hiddenPresets.includes(p.presetId));
-                // 按id正序排序
-                presetsToRestore.sort((a, b) => a.presetId - b.presetId);
-                // 添加到列表最下面
-                presetsToRestore.forEach(preset => {
-                    editShortcutItems.push(preset);
+                // 只更新editShortcutItems中隐藏项目的状态，不立即保存
+                editShortcutItems.forEach(item => {
+                    if (item.isPreset && item.isHidden) {
+                        item.isHidden = false;
+                    }
                 });
-                // 清空已隐藏记录
-                setCookie('hidden_presets', []);
                 editShortcutHasChanges = true;
                 renderEditShortcutList();
-                sendNotice(`已还原 ${presetsToRestore.length} 个预设快捷访问`, 'info');
+                sendNotice('已还原所有隐藏的预设快捷访问', 'info');
             }
         }
     };
@@ -1913,8 +1906,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     let editShortcutItems = []; // 当前编辑的项目列表
     let editShortcutOriginalOrder = []; // 原始顺序，用于检测更改
     let editShortcutHasChanges = false; // 是否有更改
-    let hiddenPresetIds = []; // 本次编辑会话中隐藏的预设ID列表
-
+                let hiddenPresetIds = []; // 本次编辑会话中隐藏的预设ID列表
+                let originalHiddenPresets = []; // 打开面板时的原始隐藏状态
     // 打开编辑快捷访问面板
     function openEditShortcutPanel() {
         if (editShortcutPanel) {
@@ -1924,6 +1917,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             editShortcutItems = loadAllShortcuts();
             // 保存原始顺序
             editShortcutOriginalOrder = editShortcutItems.map(item => item.id);
+            // 保存原始隐藏预设ID列表
+            const hiddenPresetsStr = decodeURIComponent(getCookieRaw('hidden_presets') || '');
+            originalHiddenPresets = hiddenPresetsStr ? hiddenPresetsStr.split(',').filter(Boolean).map(Number) : [];
             editShortcutHasChanges = false;
             // 渲染列表
             renderEditShortcutList();
@@ -2114,24 +2110,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const item = editShortcutItems[index];
                 
                 if (item.isPreset) {
-                    // 切换隐藏状态
-                    const newHiddenState = !item.isHidden;
-                    
-                    // 更新内存中的数据
-                    editShortcutItems[index].isHidden = newHiddenState;
+                    // 只切换内存中的状态，不立即保存
+                    editShortcutItems[index].isHidden = !item.isHidden;
                     editShortcutHasChanges = true;
-                    
-                    // 立即保存到cookie - 直接从editShortcutItems提取
-                    const hiddenPresets = editShortcutItems
-                        .filter(i => i.isPreset && i.isHidden)
-                        .map(i => i.presetId);
-                    
-                    // 使用逗号分隔的字符串格式，避免JSON数组的[]字符被过滤
-                    const cookieValue = hiddenPresets.join(',');
-                    const encodedValue = encodeURIComponent(cookieValue);
-                    
-                    document.cookie = 'hidden_presets=' + encodedValue + ';path=/;expires=' + new Date(Date.now() + 365*24*60*60*1000).toUTCString();
-                    
                     renderEditShortcutList();
                 }
             });
