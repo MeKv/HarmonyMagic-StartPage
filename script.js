@@ -1479,9 +1479,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             onOk: function() {
                 // 删除快捷访问cookie
                 setCookie('custom_shortcuts', []);
+                // 关闭编辑面板
+                closeEditShortcutPanel();
                 // 重新加载菜单
                 loadQuickAccessMenu();
                 sendNotice('快捷访问已重置', 'info');
+            }
+        },
+        'discard-changes': {
+            title: '放弃更改',
+            message: '有未保存的更改，确定要放弃吗？',
+            onOk: function() {
+                closeEditShortcutPanel();
             }
         }
     };
@@ -1979,14 +1988,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (editShortcutReset) {
         editShortcutReset.addEventListener('click', function(e) {
             e.stopPropagation();
-            // 确认重置
-            if (confirm('确定要重置快捷访问吗？这将删除所有自定义快捷方式。')) {
-                setCookie('custom_shortcuts', []);
-                setCookie('quick_access_order', []);
-                sendNotice('快捷访问已重置', 'info');
-                closeEditShortcutPanel();
-                loadQuickAccessMenu();
-            }
+            // 使用确认对话框
+            openConfirmDialog('reset-shortcuts');
         });
     }
 
@@ -1995,9 +1998,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         editShortcutCancel.addEventListener('click', function(e) {
             e.stopPropagation();
             if (editShortcutHasChanges) {
-                if (confirm('有未保存的更改，确定要放弃吗？')) {
-                    closeEditShortcutPanel();
-                }
+                openConfirmDialog('discard-changes');
+            } else {
+                closeEditShortcutPanel();
+            }
+        });
+    }
+
+    // 点击关闭按钮
+    if (editShortcutClose) {
+        editShortcutClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (editShortcutHasChanges) {
+                openConfirmDialog('discard-changes');
             } else {
                 closeEditShortcutPanel();
             }
