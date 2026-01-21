@@ -37,6 +37,71 @@
         </div>
     </div>
 
+    <!-- 壁纸设置面板 -->
+    <div id="wallpaper-panel" class="settings-modal">
+        <div class="settings-modal-overlay"></div>
+        <div class="settings-modal-content">
+            <div class="settings-header">
+                <span class="settings-title">壁纸设置</span>
+                <div id="wallpaper-close" class="settings-close">
+                    <svg t="1768962858078" class="icon" viewBox="0 0 1070 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5514" width="20" height="20"><path d="M50.368584 96.533526l30.769579 30.77162 82.037931 82.03793 117.900068 117.900068 138.353952 138.353953 143.399585 143.397544 133.036963 133.036963 107.268128 107.268129 66.091042 66.093081 13.582195 13.580155c12.576334 12.576334 33.589257 12.576334 46.165591 0s12.576334-33.589257 0-46.165591l-30.76958-30.769579-82.03793-82.039971-117.900068-117.898028-138.353953-138.353952-143.397544-143.399585-133.036963-133.036963-107.268128-107.268128L110.11433 63.950131l-13.582196-13.580156c-12.576334-12.578374-33.589257-12.578374-46.165591 0-12.576334 12.576334-12.576334 33.587217 0.002041 46.163551z" fill="" p-id="5515"></path><path d="M882.805987 50.369975l-30.76958 30.76958-82.03997 82.03793-117.898028 117.900068-138.353953 138.353953-143.399584 143.399584-133.036963 133.036963-107.268129 107.268129a2018478.867876 2018478.867876 0 0 1-66.093081 66.091041l-13.580156 13.582196c-12.578374 12.576334-12.578374 33.589257 0 46.165591 12.576334 12.576334 33.589257 12.576334 46.165591 0l30.77162-30.76958 82.037931-82.03793 117.900068-117.900068 138.353952-138.353953 143.397545-143.397544 133.036962-133.036963 107.268129-107.268129 66.093081-66.091041 13.580156-13.582196c12.576334-12.576334 12.576334-33.589257 0-46.16559-12.578374-12.580414-33.589257-12.580414-46.165591-0.002041z" fill="" p-id="5516"></path></svg>
+                </div>
+            </div>
+            <div class="wallpaper-body">
+                <!-- 自定义壁纸区域 -->
+                <div class="wallpaper-section">
+                    <div class="wallpaper-section-label">自定义</div>
+                    <div class="wallpaper-custom-row">
+                        <!-- 预览图 -->
+                        <div class="wallpaper-preview">
+                            <div id="wallpaper-preview-img" class="wallpaper-preview-img" style="background-image: none;">
+                                <svg class="wallpaper-placeholder-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7106" width="48" height="48"><path d="M950.869333 73.130667H73.130667s-36.565333 0-36.565334 36.565333V914.346667c0 36.565333 36.565333 36.565333 36.565334 36.565333h877.738666s36.565333 0 36.565334-36.565333V109.653333s0-36.565333-36.565334-36.565333z m-36.565333 804.565333H109.653333V146.346667H914.346667V877.653333zM292.565333 402.346667a73.130667 73.130667 0 1 0 0-146.346667 73.130667 73.130667 0 0 0 0 146.346667z m365.738667-21.333334l-216.746667 328.277334-112.426666-167.594667-182.826667 281.173333H877.653333L658.346667 381.013333z" fill="#999999" p-id="7107"></path></svg>
+                            </div>
+                        </div>
+                        <!-- 选项按钮 -->
+                        <div class="wallpaper-custom-options">
+                            <div class="wallpaper-option-tabs">
+                                <button class="wallpaper-tab-btn active" data-tab="local">本地图片</button>
+                                <button class="wallpaper-tab-btn" data-tab="online">在线图片</button>
+                            </div>
+                            <!-- 本地图片选项 -->
+                            <div class="wallpaper-tab-content active" id="wallpaper-tab-local">
+                                <input type="text" id="wallpaper-local-url" class="wallpaper-input" placeholder="file:///..." readonly>
+                                <input type="file" id="wallpaper-local-file" class="wallpaper-file-input" accept="image/*">
+                                <button id="wallpaper-local-browse" class="wallpaper-browse-btn">浏览</button>
+                            </div>
+                            <!-- 在线图片选项 -->
+                            <div class="wallpaper-tab-content" id="wallpaper-tab-online">
+                                <input type="url" id="wallpaper-online-url" class="wallpaper-input" placeholder="https://...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 预设壁纸区域 -->
+                <div class="wallpaper-section">
+                    <div class="wallpaper-section-label">预设</div>
+                    <div class="wallpaper-presets">
+                        <div class="wallpaper-preset-item" data-id="1">
+                            <div class="wallpaper-preset-img" style="background-image: url('https://www.bing.com/th?id=OHR.BubblesAbraham_ZH-CN7203734882_1920x1080.jpg&width=240&height=135&crop=1');"></div>
+                            <div class="wallpaper-preset-name">Bubbles</div>
+                            <div class="wallpaper-preset-checkmark">✓</div>
+                        </div>
+                        <div class="wallpaper-preset-item" data-id="2">
+                            <div class="wallpaper-preset-img" style="background-image: url('https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg&width=240&height=135&crop=1');"></div>
+                            <div class="wallpaper-preset-name">Sunbeams</div>
+                            <div class="wallpaper-preset-checkmark">✓</div>
+                        </div>
+                        <div class="wallpaper-preset-item" data-id="3">
+                            <div class="wallpaper-preset-img" style="background-image: url('https://www.bing.com/th?id=OHR.WhiteSandsNM_ZH-CN7070772772_1920x1080.jpg&width=240&height=135&crop=1');"></div>
+                            <div class="wallpaper-preset-name">WhiteSands</div>
+                            <div class="wallpaper-preset-checkmark">✓</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 设置菜单弹窗 -->
     <div id="settings-modal" class="settings-modal">
         <div class="settings-modal-overlay"></div>

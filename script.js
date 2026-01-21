@@ -1453,8 +1453,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // 常规设置 - 打开现有设置面板
                     openSettingsModal();
                 } else if (action === 'appearance') {
-                    // 外观设置 - 待实现
-                    sendNotice('外观设置功能开发中', 'info');
+                    // 壁纸设置 - 打开壁纸面板
+                    openWallpaperPanel();
                 } else if (action === 'about') {
                     // 关于 - 待实现
                     sendNotice('关于功能开发中', 'info');
@@ -1495,6 +1495,235 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 关闭按钮图标
     const svgClose = '<svg t="1768962858078" class="icon" viewBox="0 0 1070 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5514" width="20" height="20"><path d="M50.368584 96.533526l30.769579 30.77162 82.037931 82.03793 117.900068 117.900068 138.353952 138.353953 143.399585 143.397544 133.036963 133.036963 107.268128 107.268129 66.091042 66.093081 13.582195 13.580155c12.576334 12.576334 33.589257 12.576334 46.165591 0s12.576334-33.589257 0-46.165591l-30.76958-30.769579-82.03793-82.039971-117.900068-117.898028-138.353953-138.353952-143.397544-143.399585-133.036963-133.036963-107.268128-107.268128L110.11433 63.950131l-13.582196-13.580156c-12.576334-12.578374-33.589257-12.578374-46.165591 0-12.576334 12.576334-12.576334 33.587217 0.002041 46.163551z" fill="" p-id="5515"></path><path d="M882.805987 50.369975l-30.76958 30.76958-82.03997 82.03793-117.898028 117.900068-138.353953 138.353953-143.399584 143.399584-133.036963 133.036963-107.268129 107.268129a2018478.867876 2018478.867876 0 0 1-66.093081 66.091041l-13.580156 13.582196c-12.578374 12.576334-12.578374 33.589257 0 46.165591 12.576334 12.576334 33.589257 12.576334 46.165591 0l30.77162-30.76958 82.037931-82.03793 117.900068-117.900068 138.353952-138.353953 143.397545-143.397544 133.036962-133.036963 107.268129-107.268129 66.093081-66.091041 13.580156-13.582196c12.576334-12.576334 12.576334-33.589257 0-46.16559-12.578374-12.580414-33.589257-12.580414-46.165591-0.002041z" fill="" p-id="5516"></path></svg>';
+
+    // ==================== 壁纸设置面板功能 ====================
+    const wallpaperPanel = document.getElementById('wallpaper-panel');
+    const wallpaperClose = document.getElementById('wallpaper-close');
+    const wallpaperPanelOverlay = document.querySelector('#wallpaper-panel .settings-modal-overlay');
+    const wallpaperPreviewImg = document.getElementById('wallpaper-preview-img');
+    const wallpaperTabBtns = document.querySelectorAll('.wallpaper-tab-btn');
+    const wallpaperTabContents = document.querySelectorAll('.wallpaper-tab-content');
+    const wallpaperLocalFile = document.getElementById('wallpaper-local-file');
+    const wallpaperLocalBrowse = document.getElementById('wallpaper-local-browse');
+    const wallpaperLocalUrl = document.getElementById('wallpaper-local-url');
+    const wallpaperOnlineUrl = document.getElementById('wallpaper-online-url');
+    const wallpaperPresetItems = document.querySelectorAll('.wallpaper-preset-item');
+
+    // 预设壁纸列表
+    const presetWallpapers = {
+        1: 'https://www.bing.com/th?id=OHR.BubblesAbraham_ZH-CN7203734882_1920x1080.jpg',
+        2: 'https://www.bing.com/th?id=OHR.SunbeamsForest_ZH-CN5358008117_1920x1080.jpg',
+        3: 'https://www.bing.com/th?id=OHR.WhiteSandsNM_ZH-CN7070772772_1920x1080.jpg'
+    };
+
+    // 打开壁纸面板
+    function openWallpaperPanel() {
+        if (wallpaperPanel) {
+            loadWallpaperSettings();
+            wallpaperPanel.classList.add('active');
+            setBackgroundBlur(true);
+        }
+    }
+
+    // 关闭壁纸面板
+    function closeWallpaperPanel() {
+        if (wallpaperPanel) {
+            wallpaperPanel.classList.remove('active');
+            if (!contextMenu.classList.contains('active')) {
+                setBackgroundBlur(false);
+            }
+        }
+    }
+
+    // 加载壁纸设置
+    function loadWallpaperSettings() {
+        const cookieValue = getCookieRaw('wallpaper_settings') || '';
+        let settings = { id: 1, customUrl: '', customMode: 'local' };
+        
+        if (cookieValue) {
+            try {
+                const decoded = decodeURIComponent(cookieValue);
+                settings = JSON.parse(decoded);
+            } catch (e) {
+                console.error('解析壁纸设置失败:', e);
+            }
+        }
+
+        // 更新预览图
+        updateWallpaperPreview(settings);
+
+        // 更新选中状态
+        updateWallpaperSelection(settings.id);
+
+        // 更新自定义选项
+        if (settings.customMode === 'local') {
+            wallpaperLocalUrl.value = settings.customUrl || '';
+            switchTab('local');
+        } else {
+            wallpaperOnlineUrl.value = settings.customUrl || '';
+            switchTab('online');
+        }
+    }
+
+    // 更新壁纸预览
+    function updateWallpaperPreview(settings) {
+        if (settings.id === 0 && settings.customUrl) {
+            wallpaperPreviewImg.style.backgroundImage = `url('${settings.customUrl}')`;
+            wallpaperPreviewImg.classList.add('selected');
+        } else {
+            wallpaperPreviewImg.style.backgroundImage = 'none';
+            wallpaperPreviewImg.classList.remove('selected');
+        }
+    }
+
+    // 更新壁纸选中状态
+    function updateWallpaperSelection(selectedId) {
+        wallpaperPresetItems.forEach(item => {
+            const itemId = parseInt(item.dataset.id);
+            item.classList.remove('selected');
+            if (itemId === selectedId) {
+                item.classList.add('selected');
+            }
+        });
+    }
+
+    // 切换标签页
+    function switchTab(tabName) {
+        wallpaperTabBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+        wallpaperTabContents.forEach(content => {
+            content.classList.toggle('active', content.id === `wallpaper-tab-${tabName}`);
+        });
+    }
+
+    // 保存壁纸设置
+    function saveWallpaperSettings(id, customUrl, customMode) {
+        const settings = { id, customUrl, customMode };
+        const encodedValue = encodeURIComponent(JSON.stringify(settings));
+        document.cookie = `wallpaper_settings=${encodedValue};path=/;expires=${new Date(Date.now() + 365*24*60*60*1000).toUTCString()}`;
+        
+        // 应用壁纸
+        applyWallpaper(settings);
+    }
+
+    // 应用壁纸
+    function applyWallpaper(settings) {
+        let wallpaperUrl = '';
+        
+        if (settings.id === 0) {
+            wallpaperUrl = settings.customUrl;
+        } else if (presetWallpapers[settings.id]) {
+            wallpaperUrl = presetWallpapers[settings.id];
+        } else {
+            // 默认使用 id 1
+            wallpaperUrl = presetWallpapers[1];
+        }
+
+        if (wallpaperUrl) {
+            document.body.style.setProperty('--wallpaper-url', `url('${wallpaperUrl}')`);
+            setCookie('wallpaper_url', wallpaperUrl);
+        }
+    }
+
+    // 点击关闭按钮
+    if (wallpaperClose) {
+        wallpaperClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeWallpaperPanel();
+        });
+    }
+
+    // 点击遮罩层关闭
+    if (wallpaperPanelOverlay) {
+        wallpaperPanelOverlay.addEventListener('click', function() {
+            closeWallpaperPanel();
+        });
+    }
+
+    // 标签页切换
+    wallpaperTabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
+        });
+    });
+
+    // 浏览按钮点击
+    if (wallpaperLocalBrowse) {
+        wallpaperLocalBrowse.addEventListener('click', function() {
+            wallpaperLocalFile.click();
+        });
+    }
+
+    // 本地文件选择
+    if (wallpaperLocalFile) {
+        wallpaperLocalFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileUrl = `file:///${file.path}`;
+                wallpaperLocalUrl.value = fileUrl;
+                wallpaperPreviewImg.style.backgroundImage = `url('${fileUrl}')`;
+                wallpaperPreviewImg.classList.add('selected');
+                saveWallpaperSettings(0, fileUrl, 'local');
+            }
+        });
+    }
+
+    // 在线URL输入
+    if (wallpaperOnlineUrl) {
+        let timeout;
+        wallpaperOnlineUrl.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const url = this.value.trim();
+                if (url) {
+                    wallpaperPreviewImg.style.backgroundImage = `url('${url}')`;
+                    wallpaperPreviewImg.classList.add('selected');
+                    saveWallpaperSettings(0, url, 'online');
+                }
+            }, 500);
+        });
+    }
+
+    // 自定义缩略图点击 - 切换到自定义模式
+    if (wallpaperPreviewImg) {
+        wallpaperPreviewImg.addEventListener('click', function() {
+            // 取消预设的选择
+            wallpaperPresetItems.forEach(i => i.classList.remove('selected'));
+            
+            // 选中自定义预览
+            this.classList.add('selected');
+            
+            // 获取当前自定义URL
+            const isLocalTab = document.querySelector('.wallpaper-tab-btn[data-tab="local"]').classList.contains('active');
+            const customUrl = isLocalTab ? wallpaperLocalUrl.value : wallpaperOnlineUrl.value;
+            const customMode = isLocalTab ? 'local' : 'online';
+            
+            if (customUrl) {
+                saveWallpaperSettings(0, customUrl, customMode);
+            }
+        });
+    }
+
+    // 预设壁纸点击
+    wallpaperPresetItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            
+            // 取消之前的选择
+            wallpaperPresetItems.forEach(i => i.classList.remove('selected'));
+            
+            // 选中当前
+            this.classList.add('selected');
+            
+            // 更新预览
+            wallpaperPreviewImg.classList.remove('selected');
+            wallpaperPreviewImg.style.backgroundImage = 'none';
+            
+            // 保存设置
+            saveWallpaperSettings(id, '', 'local');
+        });
+    });
 
     // 初始化关闭按钮图标
     const confirmDialogClose = document.getElementById('confirm-dialog-close');
@@ -2385,4 +2614,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         originalOpenSettingsModal();
         initSettingItems();
     }
+
+    // 初始化壁纸设置
+    function initWallpaper() {
+        const cookieValue = getCookieRaw('wallpaper_settings') || '';
+        if (cookieValue) {
+            try {
+                const decoded = decodeURIComponent(cookieValue);
+                const settings = JSON.parse(decoded);
+                applyWallpaper(settings);
+            } catch (e) {
+                console.error('初始化壁纸失败:', e);
+            }
+        }
+    }
+    initWallpaper();
 });
