@@ -950,6 +950,17 @@ body::after {
 .setting-item-text {
     font-size: 14px;
     color: #333333;
+    flex: 1;
+    word-break: break-word;
+}
+
+/* 纯文本操作项样式（无开关） */
+.setting-item-action {
+    justify-content: flex-start !important;
+}
+
+.setting-item-action .setting-item-text {
+    text-align: left;
 }
 
 .status-indicator {
