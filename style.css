@@ -554,6 +554,11 @@ body::after {
     z-index: 2;
     position: relative;
     pointer-events: auto; /* 文字可以点击 */
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
 }
 
 @media (max-width: 768px) {

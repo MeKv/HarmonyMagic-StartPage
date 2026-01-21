@@ -86,14 +86,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const menuItem = document.createElement('div');
                 menuItem.className = 'menu-item';
                 menuItem.setAttribute('data-url', item.url);
-                menuItem.innerHTML = `
-                    <div class="menu-icon-wrapper">
-                        <div class="menu-item-bg"></div>
-                        <div class="menu-icon">${item.icon}</div>
-                    </div>
-                    <div class="menu-text">${item.title}</div>
-                `;
-
+                                    menuItem.innerHTML = `
+                                        <div class="menu-icon-wrapper">
+                                            <div class="menu-item-bg"></div>
+                                            <div class="menu-icon">${item.icon}</div>
+                                        </div>
+                                        <div class="menu-text" title="${item.title}">${item.title}</div>
+                                    `;
                 // 获取点击区域元素
                 const menuBg = menuItem.querySelector('.menu-item-bg');
                 const menuText = menuItem.querySelector('.menu-text');
@@ -145,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                             <div class="menu-item-bg"></div>
                             <div class="menu-icon">${iconContent}</div>
                         </div>
-                        <div class="menu-text">${item.title}</div>
+                        <div class="menu-text" title="${item.title}">${item.title}</div>
                     `;
 
                     // 获取点击区域元素
