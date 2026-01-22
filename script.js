@@ -1536,7 +1536,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             removeNotice(notice);
         });
 
-        noticesContainer.appendChild(notice);
+        // 使用 prepend 让新通知显示在左侧/顶部
+        noticesContainer.prepend(notice);
 
         // 自动移除
         setTimeout(() => {
