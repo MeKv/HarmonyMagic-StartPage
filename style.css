@@ -2619,11 +2619,22 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-buttons {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
     gap: 8px;
     padding: 12px 16px;
     border-top: 1px solid #eeeeee;
     flex-shrink: 0;
+}
+
+.search-engine-error-row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.search-engine-btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 .search-engine-btn {

@@ -2325,6 +2325,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 打开搜索引擎设置面板
     function openSearchEnginePanel() {
         if (searchEnginePanel) {
+            // 清空错误提示
+            const countError = document.getElementById('search-engine-count-error');
+            if (countError) countError.textContent = '';
             // 创建设置的内存副本，用于暂存用户操作
             searchEngineSettingsWorking = JSON.parse(JSON.stringify(searchEngineSettings));
             renderSearchEngineLists();
@@ -2626,11 +2629,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             const presetCount = workingSettings.activeEngines.filter(id => id <= 7).length;
             const customCount = workingSettings.activeEngines.filter(id => id > 7).length;
             const totalCount = workingSettings.activeEngines.length;
+            const countError = document.getElementById('search-engine-count-error');
             
             if (totalCount !== 7) {
-                sendNotice(`使用中的引擎数量必须为7个，当前为${totalCount}个`, 'error');
+                if (countError) countError.textContent = `使用中的引擎数量必须为7个，当前为${totalCount}个`;
                 return;
             }
+            if (countError) countError.textContent = '';
             
             // 保存到localStorage
             searchEngineSettings = JSON.parse(JSON.stringify(workingSettings));
