@@ -1573,6 +1573,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const settingsModalOverlay = document.querySelector('.settings-modal-overlay');
     const settingItems = document.querySelectorAll('.setting-item');
     const settingsMenuItems = document.querySelectorAll('.settings-menu-item');
+    let settingsHoverTimeout = null;
 
     // 打开设置菜单
     function openSettingsModal() {
@@ -1615,6 +1616,39 @@ document.addEventListener('DOMContentLoaded', async function() {
             e.stopPropagation();
             e.preventDefault();
             toggleSettingsDropdown();
+        });
+
+        // 悬停打开下拉菜单（桌面端）
+        settingsButton.addEventListener('mouseenter', function() {
+            clearTimeout(settingsHoverTimeout);
+            if (settingsDropdown && !settingsDropdown.classList.contains('active')) {
+                settingsDropdown.classList.add('active');
+            }
+        });
+
+        settingsButton.addEventListener('mouseleave', function() {
+            // 延迟关闭，避免快速移过时闪烁
+            settingsHoverTimeout = setTimeout(() => {
+                closeSettingsDropdown();
+            }, 300);
+        });
+
+        // 触摸屏适配：触摸时切换菜单
+        settingsButton.addEventListener('touchend', function(e) {
+            // 防止触摸时同时触发 mouseenter
+            e.preventDefault();
+            toggleSettingsDropdown();
+        });
+    }
+
+    // 下拉菜单本身悬停保持显示
+    if (settingsDropdown) {
+        settingsDropdown.addEventListener('mouseenter', function() {
+            clearTimeout(settingsHoverTimeout);
+        });
+
+        settingsDropdown.addEventListener('mouseleave', function() {
+            closeSettingsDropdown();
         });
     }
 
@@ -1772,6 +1806,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const aboutPanel = document.getElementById('about-panel');
     const aboutClose = document.getElementById('about-close');
     const aboutPanelOverlay = document.querySelector('#about-panel .settings-modal-overlay');
+    const footerCopyright = document.querySelector('.footer-copyright');
 
     // 初始化关闭按钮图标
     if (aboutClose) {
@@ -1808,6 +1843,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (aboutPanelOverlay) {
         aboutPanelOverlay.addEventListener('click', function() {
             closeAboutPanel();
+        });
+    }
+
+    // 点击底部版权打开关于面板
+    if (footerCopyright) {
+        footerCopyright.addEventListener('click', function() {
+            openAboutPanel();
         });
     }
 
