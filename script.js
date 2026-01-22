@@ -2368,19 +2368,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 渲染单个分类的搜索引擎列表
     function renderSearchEngineCategory(container, engines, category) {
         container.innerHTML = '';
-        engines.forEach(engine => {
+        engines.forEach((engine, index) => {
             const item = document.createElement('div');
             item.className = 'search-engine-item';
             item.dataset.engineId = engine.id;
             const isPreset = engine.id <= 7; // id <= 7 为预设搜索引擎
+            const isFirst = index === 0;
+            const isLast = index === engines.length - 1;
             
             // 根据分类生成不同的操作按钮
             let actionButtons = '';
             if (category === 'active') {
                 // 使用中：显示上移、下移、移至未使用
                 actionButtons = `
-                    <button class="search-engine-move-up" title="上移">${svgArrowUp}</button>
-                    <button class="search-engine-move-down" title="下移">${svgArrowDown}</button>
+                    <button class="search-engine-move-up" title="上移" ${isFirst ? 'disabled' : ''}>${svgArrowUp}</button>
+                    <button class="search-engine-move-down" title="下移" ${isLast ? 'disabled' : ''}>${svgArrowDown}</button>
                     <button class="search-engine-disable" title="移至未使用" data-engine-id="${engine.id}">${svgMinus}</button>
                 `;
             } else if (category === 'preset') {
