@@ -2614,7 +2614,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // 设置为激活状态（添加到工作副本）
         const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
-        workingSettings.activeEngines.push(newId);
+        
+        // 检查是否已存在于使用中列表，避免重复添加
+        if (!workingSettings.activeEngines.includes(newId)) {
+            workingSettings.activeEngines.push(newId);
+        }
+        
+        // 确保新引擎不在未使用的自定义列表中（如果有的话）
+        const disabledCustomIndex = workingSettings.disabledCustoms.indexOf(newId);
+        if (disabledCustomIndex !== -1) {
+            workingSettings.disabledCustoms.splice(disabledCustomIndex, 1);
+        }
         
         // 关闭面板并刷新列表
         closeAddSearchEnginePanel();
