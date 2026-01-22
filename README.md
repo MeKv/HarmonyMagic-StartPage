@@ -1,3 +1,17 @@
+<!--
+  HarmonyMagic StartPage
+  Copyright (C) 2026 anjisuan608 <anjisuan608@petalmail.com> and contributors
+
+  SPDX-License-Identifier: GPL-3.0-or-later
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Full license: ./LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+-->
+
 # HarmonyMagic起始页
 
 一个创新的网页起始页，具有独特的搜索框设计和多引擎搜索解决方案。
