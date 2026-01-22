@@ -2768,6 +2768,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (searchEngineApply || searchEngineOk) {
         const applySettings = () => {
             const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+            
+            // 检查是否有实际更改
+            const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+            if (!hasChanges) {
+                sendNotice('没有未保存的更改', 'info');
+                return;
+            }
+            
             // 验证使用中的引擎数量必须为7
             const presetCount = workingSettings.activeEngines.filter(id => id <= 7).length;
             const customCount = workingSettings.activeEngines.filter(id => id > 7).length;
