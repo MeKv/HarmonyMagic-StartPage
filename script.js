@@ -1382,6 +1382,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             !e.target.closest('.search-engine-delete') &&
             !e.target.closest('.confirm-dialog') &&
             !e.target.closest('.confirm-dialog-overlay')) {
+            // 检查搜索引擎面板是否有未保存的更改
+            if (searchEnginePanel && searchEnginePanel.classList.contains('active')) {
+                const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+                const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+                if (hasChanges) {
+                    openConfirmDialog('discard-search-engine-changes');
+                    return; // 不执行关闭操作，等待用户确认
+                }
+            }
             contextMenu.classList.remove('active');
             document.documentElement.style.removeProperty('--search-box-top');
             setBackgroundBlur(false); // 移除背景模糊
@@ -2229,6 +2238,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                 refreshSearchEngines();
                 sendNotice('搜索引擎排序已还原', 'info');
             }
+        },
+        'discard-search-engine-changes': {
+            title: '放弃更改',
+            message: '有未保存的更改，确定要放弃吗？',
+            onOk: function() {
+                searchEngineSettingsWorking = null;
+                closeSearchEnginePanel();
+            }
         }
     };
 
@@ -2320,6 +2337,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && confirmDialog && confirmDialog.classList.contains('active')) {
             closeConfirmDialog();
+        }
+    });
+
+    // ESC键关闭搜索引擎面板
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && searchEnginePanel && searchEnginePanel.classList.contains('active')) {
+            const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+            const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+            if (hasChanges) {
+                openConfirmDialog('discard-search-engine-changes');
+            } else {
+                searchEngineSettingsWorking = null;
+                closeSearchEnginePanel();
+            }
         }
     });
 
@@ -2746,7 +2777,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 绑定搜索引擎面板事件
     if (searchEngineClose) {
-        searchEngineClose.addEventListener('click', closeSearchEnginePanel);
+        searchEngineClose.addEventListener('click', () => {
+            // 检查是否有未保存的更改
+            const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+            const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+            if (hasChanges) {
+                openConfirmDialog('discard-search-engine-changes');
+            } else {
+                searchEngineSettingsWorking = null;
+                closeSearchEnginePanel();
+            }
+        });
     }
         if (searchEngineAdd) {
             searchEngineAdd.addEventListener('click', openAddSearchEnginePanel);
@@ -2767,12 +2808,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         
         if (searchEngineCancel) {
-        searchEngineCancel.addEventListener('click', () => {
-            // 取消：丢弃内存中的更改
-            searchEngineSettingsWorking = null;
-            closeSearchEnginePanel();
-        });
-    }
+            searchEngineCancel.addEventListener('click', () => {
+                // 检查是否有未保存的更改
+                const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+                const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+                if (hasChanges) {
+                    openConfirmDialog('discard-search-engine-changes');
+                } else {
+                    searchEngineSettingsWorking = null;
+                    closeSearchEnginePanel();
+                }
+            });
+        }
     if (searchEngineApply || searchEngineOk) {
         const applySettings = () => {
             const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
@@ -2885,8 +2932,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     const searchEngineOverlay = document.querySelector('#search-engine-panel .settings-modal-overlay');
     if (searchEngineOverlay) {
         searchEngineOverlay.addEventListener('click', () => {
-            searchEngineSettingsWorking = null;
-            closeSearchEnginePanel();
+            // 检查是否有未保存的更改
+            const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+            const hasChanges = JSON.stringify(workingSettings) !== JSON.stringify(searchEngineSettings);
+            if (hasChanges) {
+                openConfirmDialog('discard-search-engine-changes');
+            } else {
+                searchEngineSettingsWorking = null;
+                closeSearchEnginePanel();
+            }
         });
     }
 
