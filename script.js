@@ -3536,9 +3536,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         editShortcutOverlay.addEventListener('click', function(e) {
             e.stopPropagation();
             if (editShortcutHasChanges) {
-                if (confirm('有未保存的更改，确定要放弃吗？')) {
-                    closeEditShortcutPanel();
-                }
+                openConfirmDialog('discard-changes');
             } else {
                 closeEditShortcutPanel();
             }
@@ -3549,9 +3547,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && editShortcutPanel && editShortcutPanel.classList.contains('active')) {
             if (editShortcutHasChanges) {
-                if (confirm('有未保存的更改，确定要放弃吗？')) {
-                    closeEditShortcutPanel();
-                }
+                openConfirmDialog('discard-changes');
             } else {
                 closeEditShortcutPanel();
             }
