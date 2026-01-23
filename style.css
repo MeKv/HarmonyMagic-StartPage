@@ -887,7 +887,7 @@ body[data-filter-disabled="true"]::after {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 10000;
+    z-index: 10008;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -899,7 +899,7 @@ body[data-filter-disabled="true"]::after {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 10000;
+    z-index: 10244; /* 高于.notices的10000，确保下拉菜单覆盖通知 */
     display: none;
 }
 
@@ -1945,6 +1945,7 @@ body[data-filter-disabled="true"]::after {
     pointer-events: auto;
     animation: slideIn 0.3s ease;
     color: white;
+    z-index: 10240;
 }
 
 .notice-item .notice-title {
