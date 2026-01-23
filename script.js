@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         renderedPresetIds.add(presetId);
                     }
                 } else if (id.startsWith('custom_')) {
-                    const customId = id.replace('custom_', '');
+                    const customId = parseInt(id.replace('custom_', ''));
                     if (customMap[customId]) {
                         const item = customMap[customId];
                         const menuItem = document.createElement('div');
@@ -3509,7 +3509,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     visiblePresetIds.add(presetId);
                 }
             } else if (id.startsWith('custom_')) {
-                const customId = id.replace('custom_', '');
+                const customId = parseInt(id.replace('custom_', ''));
                 if (customMap[customId]) {
                     visibleItems.push({
                         id: id,
@@ -3786,7 +3786,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 保存自定义快捷方式（只保存显示中的自定义）
         const visibleCustomItems = editShortcutVisibleItems.filter(item => !item.isPreset);
         const newCustomShortcuts = visibleCustomItems.map((item, index) => ({
-            id: item.customId,
+            id: parseInt(item.customId) || Date.now(),
             url: item.url,
             title: item.title,
             icon: item.icon,
