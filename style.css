@@ -849,13 +849,7 @@ body[data-filter-disabled="true"]::after {
     }
 
     .wallpaper-preset-item.selected .wallpaper-preset-img {
-        box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3);
-    }
-
-    .wallpaper-preset-checkmark {
-        width: 20px;
-        height: 20px;
-        font-size: 12px;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3), 0 4px 20px rgba(76, 175, 80, 0.3);
     }
 
     .wallpaper-preset-name {
@@ -2209,27 +2203,7 @@ body[data-filter-disabled="true"]::after {
 
 .wallpaper-preset-item.selected .wallpaper-preset-img {
     border-color: #4CAF50;
-}
-
-.wallpaper-preset-checkmark {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    width: 22px;
-    height: 22px;
-    background: #4CAF50;
-    border-radius: 50%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.wallpaper-preset-item.selected .wallpaper-preset-checkmark {
-    display: flex;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3), 0 4px 20px rgba(76, 175, 80, 0.3);
 }
 
 .wallpaper-preset-name {
