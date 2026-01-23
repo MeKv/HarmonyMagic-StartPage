@@ -3497,14 +3497,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.cookie = 'custom_shortcuts=' + encodeURIComponent(JSON.stringify(newCustomShortcuts)) + ';path=/;expires=' + new Date(Date.now() + 365*24*60*60*1000).toUTCString();
     }
 
-    // 点击关闭按钮
-    if (editShortcutClose) {
-        editShortcutClose.addEventListener('click', function(e) {
-            e.stopPropagation();
-            closeEditShortcutPanel();
-        });
-    }
-
     // 点击重置按钮
     if (editShortcutReset) {
         editShortcutReset.addEventListener('click', function(e) {
