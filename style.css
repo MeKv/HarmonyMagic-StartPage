@@ -1690,6 +1690,10 @@ body[data-filter-disabled="true"]::after {
     border-bottom: none;
 }
 
+.edit-shortcut-item:hover {
+    background: #fafafa;
+}
+
 .edit-shortcut-item-icon {
     width: 32px;
     height: 32px;
