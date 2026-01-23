@@ -3681,6 +3681,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             header.addEventListener('click', function() {
                 cat.classList.toggle('collapsed');
             });
+            // 隐藏分类默认折叠
+            if (cat.dataset.category === 'hidden') {
+                cat.classList.add('collapsed');
+            }
         });
     }
 
