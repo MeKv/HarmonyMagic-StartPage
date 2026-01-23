@@ -826,14 +826,13 @@ body[data-filter-disabled="true"]::after {
 
     .wallpaper-presets {
         gap: 10px;
-        grid-template-columns: repeat(3, 1fr);
-        max-height: 150px;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     }
 
     .wallpaper-preset-item {
-        width: calc((95% - 20px) / 3);
+        width: 100%;
         max-width: none;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 10;
         border-radius: 8px;
     }
 
@@ -1339,17 +1338,15 @@ body[data-filter-disabled="true"]::after {
 
 .wallpaper-presets {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 10px;
     width: 100%;
-    max-height: 150px;
-    overflow-y: auto;
 }
 
 .wallpaper-preset-item {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
     flex-shrink: 0;
     cursor: pointer;
 }
@@ -2234,12 +2231,10 @@ body[data-filter-disabled="true"]::after {
 
 .wallpaper-presets {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 10px;
     width: 100%;
     max-width: 100%;
-    max-height: 150px;
-    overflow-y: auto;
 }
 
 .wallpaper-preset-item {
