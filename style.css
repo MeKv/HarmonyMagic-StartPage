@@ -802,6 +802,16 @@ body[data-filter-disabled="true"]::after {
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+    }
+
+    .wallpaper-preview-img > svg {
+        position: absolute;
+        z-index: 0;
+    }
+
+    .wallpaper-preview-img:not([style*="background-image: none"]) > svg {
+        z-index: -1;
     }
 
     .wallpaper-preview-img.selected {
@@ -2045,6 +2055,16 @@ body[data-filter-disabled="true"]::after {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.wallpaper-preview-img > svg {
+    position: absolute;
+    z-index: 0;
+}
+
+.wallpaper-preview-img:not([style*="background-image: none"]) > svg {
+    z-index: -1;
 }
 
 .wallpaper-placeholder-icon {

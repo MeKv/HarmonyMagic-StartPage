@@ -2009,6 +2009,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (!contextMenu.classList.contains('active')) {
                 setBackgroundBlur(false);
             }
+            // 关闭时清除自定义预览框背景图
+            wallpaperPreviewImg.style.backgroundImage = 'none';
+            wallpaperPreviewImg.classList.remove('selected');
         }
     }
 
@@ -2230,7 +2233,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const items = window.wallpaperPresetItems || document.querySelectorAll('.wallpaper-preset-item');
             items.forEach(i => i.classList.remove('selected'));
             
-            // 选中自定义预览
+            // 选中自定义预览并恢复背景图
             this.classList.add('selected');
             
             // 获取当前自定义URL
@@ -2239,6 +2242,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const customMode = isLocalTab ? 'local' : 'online';
             
             if (customUrl) {
+                this.style.backgroundImage = `url('${customUrl}')`;
                 saveWallpaperSettings(0, customUrl, customMode);
             }
         });
@@ -2259,9 +2263,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 选中当前
             item.classList.add('selected');
             
-            // 更新预览
+            // 取消自定义预览选中状态，但不清除背景图
             wallpaperPreviewImg.classList.remove('selected');
-            wallpaperPreviewImg.style.backgroundImage = 'none';
             
             // 保存设置
             saveWallpaperSettings(id, '', 'local');
