@@ -2835,12 +2835,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (disabledCustomIndex !== -1) {
             workingSettings.disabledCustoms.splice(disabledCustomIndex, 1);
         }
-        
-        // 关闭面板并刷新列表
+
+        // 先清除输入，再关闭面板（避免保存成功后又弹出警告）
+        clearAddSearchEngineInputs();
         closeAddSearchEnginePanel();
         renderSearchEngineLists();
         sendNotice('搜索引擎已添加', 'info');
-        
+
         return true;
     }
 
@@ -3300,10 +3301,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             };
             customShortcuts.push(newShortcut);
             setCookie('custom_shortcuts', customShortcuts);
-            
-            sendNotice('快捷方式已保存', 'info');
+
+            // 先清除输入，再关闭面板（避免保存成功后又弹出警告）
+            clearAddShortcutInputs();
             closeAddShortcutPanel();
-            
+
             // 重新加载菜单
             loadQuickAccessMenu();
         });
