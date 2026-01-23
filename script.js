@@ -335,20 +335,49 @@ document.addEventListener('DOMContentLoaded', async function() {
             try {
                 const cookieValue = decodeURIComponent(getCookieRaw('hidden_presets') || '');
                 hiddenPresets = (cookieValue || '').split(',').filter(Boolean).map(Number);
-                // 确保是数组
                 if (!Array.isArray(hiddenPresets)) {
                     hiddenPresets = [];
                 }
             } catch (e) {
                 hiddenPresets = [];
             }
+            
+            // 读取保存的预设顺序
+            let savedPresetOrder = [];
+            try {
+                const savedOrderStr = decodeURIComponent(getCookieRaw('quick_access_order') || '[]');
+                savedPresetOrder = JSON.parse(savedOrderStr);
+            } catch (e) {
+                savedPresetOrder = [];
+            }
+            
+            // 创建预设映射
+            const presetMap = {};
             quickAccessData.forEach(item => {
-                const isHidden = hiddenPresets.includes(item.id);
+                presetMap[item.id] = item;
+            });
+            
+            // 按保存的顺序排列预设
+            const visiblePresets = [];
+            savedPresetOrder.forEach(presetId => {
+                if (presetMap[presetId] && !hiddenPresets.includes(presetId)) {
+                    visiblePresets.push(presetMap[presetId]);
+                }
+            });
+            
+            // 添加未保存顺序的预设（新增的）
+            quickAccessData.forEach(item => {
+                if (!savedPresetOrder.includes(item.id) && !hiddenPresets.includes(item.id)) {
+                    visiblePresets.push(item);
+                }
+            });
+            
+            // 渲染可见的预设
+            visiblePresets.forEach(item => {
                 const menuItem = document.createElement('div');
-                menuItem.className = 'menu-item preset-item' + (isHidden ? ' is-hidden' : '');
+                menuItem.className = 'menu-item preset-item';
                 menuItem.setAttribute('data-url', item.url);
                 menuItem.setAttribute('data-preset-id', item.id);
-                menuItem.style.display = isHidden ? 'none' : '';
                 menuItem.innerHTML = `
                     <div class="menu-icon-wrapper">
                         <div class="menu-item-bg"></div>
@@ -3424,28 +3453,72 @@ document.addEventListener('DOMContentLoaded', async function() {
         const hiddenPresetsStr = decodeURIComponent(getCookieRaw('hidden_presets') || '');
         hiddenPresets = hiddenPresetsStr ? hiddenPresetsStr.split(',').filter(Boolean).map(Number) : [];
         
-        // 处理预设快捷访问
+        // 读取保存的预设顺序
+        let savedPresetOrder = [];
+        const savedOrderStr = decodeURIComponent(getCookieRaw('quick_access_order') || '[]');
+        try {
+            savedPresetOrder = JSON.parse(savedOrderStr);
+        } catch (e) {
+            savedPresetOrder = [];
+        }
+        
+        // 读取保存的自定义快捷方式
+        const customShortcuts = getLocalStorageItem('custom_shortcuts') || [];
+        
+        // 按保存的顺序排列预设
+        const presetMap = {};
         quickAccessData.forEach(item => {
-            const isHidden = hiddenPresets.includes(item.id);
-            const shortcutItem = {
-                id: 'preset_' + item.id,
-                presetId: item.id,
-                url: item.url,
-                title: item.title,
-                icon: item.icon,
-                isPreset: true,
-                isHidden: isHidden
-            };
-            if (isHidden) {
-                hiddenPresetItems.push(shortcutItem);
-            } else {
-                visiblePresets.push(shortcutItem);
+            presetMap[item.id] = item;
+        });
+        
+        // 先按保存的顺序添加预设
+        savedPresetOrder.forEach(presetId => {
+            if (presetMap[presetId] && !hiddenPresets.includes(presetId)) {
+                visiblePresets.push({
+                    id: 'preset_' + presetId,
+                    presetId: presetId,
+                    url: presetMap[presetId].url,
+                    title: presetMap[presetId].title,
+                    icon: presetMap[presetId].icon,
+                    isPreset: true,
+                    isHidden: false
+                });
             }
         });
         
-        // 加载自定义快捷方式（都添加到显示中）
-        const customShortcuts = getLocalStorageItem('custom_shortcuts') || [];
-        customShortcuts.forEach(item => {
+        // 添加隐藏的预设
+        hiddenPresets.forEach(presetId => {
+            if (presetMap[presetId]) {
+                hiddenPresetItems.push({
+                    id: 'preset_' + presetId,
+                    presetId: presetId,
+                    url: presetMap[presetId].url,
+                    title: presetMap[presetId].title,
+                    icon: presetMap[presetId].icon,
+                    isPreset: true,
+                    isHidden: true
+                });
+            }
+        });
+        
+        // 添加未保存顺序的预设（新增的预设）
+        quickAccessData.forEach(item => {
+            if (!savedPresetOrder.includes(item.id) && !hiddenPresets.includes(item.id)) {
+                visiblePresets.push({
+                    id: 'preset_' + item.id,
+                    presetId: item.id,
+                    url: item.url,
+                    title: item.title,
+                    icon: item.icon,
+                    isPreset: true,
+                    isHidden: false
+                });
+            }
+        });
+        
+        // 按保存的位置排序自定义快捷方式
+        const sortedCustoms = [...customShortcuts].sort((a, b) => (a.position || 0) - (b.position || 0));
+        sortedCustoms.forEach(item => {
             visibleCustoms.push({
                 id: 'custom_' + item.id,
                 customId: item.id,
@@ -3576,8 +3649,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         container.querySelectorAll('.edit-shortcut-move-up').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
+                const category = btn.dataset.category;
+                const index = parseInt(btn.dataset.index);
                 moveEditShortcutItem(category, index, -1);
             });
         });
@@ -3586,8 +3659,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         container.querySelectorAll('.edit-shortcut-move-down').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
+                const category = btn.dataset.category;
+                const index = parseInt(btn.dataset.index);
                 moveEditShortcutItem(category, index, 1);
             });
         });
@@ -3596,8 +3669,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         container.querySelectorAll('.edit-shortcut-delete').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
+                const category = btn.dataset.category;
+                const index = parseInt(btn.dataset.index);
                 confirmDialog.dataset.category = category;
                 confirmDialog.dataset.targetIndex = index;
                 openConfirmDialog('delete-custom-shortcut');
@@ -3611,38 +3684,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const category = btn.dataset.category;
                 const index = parseInt(btn.dataset.index);
                 toggleEditShortcutCategory(category, index);
-            });
-        });
-
-        // 绑定上移按钮事件
-        container.querySelectorAll('.edit-shortcut-move-up').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const category = btn.dataset.category;
-                const index = parseInt(btn.dataset.index);
-                moveEditShortcutItem(category, index, -1);
-            });
-        });
-        
-        // 绑定下移按钮事件
-        container.querySelectorAll('.edit-shortcut-move-down').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const category = btn.dataset.category;
-                const index = parseInt(btn.dataset.index);
-                moveEditShortcutItem(category, index, 1);
-            });
-        });
-        
-        // 绑定删除按钮事件（自定义项目）
-        container.querySelectorAll('.edit-shortcut-delete').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const category = btn.dataset.category;
-                const index = parseInt(btn.dataset.index);
-                confirmDialog.dataset.category = category;
-                confirmDialog.dataset.targetIndex = index;
-                openConfirmDialog('delete-custom-shortcut');
             });
         });
     }
