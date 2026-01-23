@@ -2371,6 +2371,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 searchEngineSettings = null;
                 searchEngineSettingsWorking = null;
                 refreshSearchEngines();
+                // 同时刷新主页搜索框
+                loadSearchEngines();
                 sendNotice('搜索引擎已重置', 'info');
             }
         },
@@ -2383,6 +2385,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 searchEngineSettings = null;
                 searchEngineSettingsWorking = null;
                 refreshSearchEngines();
+                // 同时刷新主页搜索框
+                loadSearchEngines();
                 sendNotice('搜索引擎排序已还原', 'info');
             }
         },
