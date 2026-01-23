@@ -2246,6 +2246,22 @@ document.addEventListener('DOMContentLoaded', async function() {
                 searchEngineSettingsWorking = null;
                 closeSearchEnginePanel();
             }
+        },
+        'discard-add-search-engine': {
+            title: '放弃添加',
+            message: '确定要放弃添加搜索引擎吗？输入的内容将不会保存。',
+            onOk: function() {
+                clearAddSearchEngineInputs();
+                closeAddSearchEnginePanel();
+            }
+        },
+        'discard-add-shortcut': {
+            title: '放弃添加',
+            message: '确定要放弃添加快捷访问吗？输入的内容将不会保存。',
+            onOk: function() {
+                clearAddShortcutInputs();
+                closeAddShortcutPanel();
+            }
         }
     };
 
@@ -2740,10 +2756,28 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // 关闭添加搜索引擎面板
-    function closeAddSearchEnginePanel() {
+    function closeAddSearchEnginePanel(checkInput = true) {
+        if (checkInput && hasAddSearchEngineInput()) {
+            openConfirmDialog('discard-add-search-engine');
+            return;
+        }
         if (addSearchEnginePanel) {
             addSearchEnginePanel.classList.remove('active');
         }
+    }
+
+    // 检查添加搜索引擎面板是否有输入内容
+    function hasAddSearchEngineInput() {
+        const name = addSearchEngineName?.value.trim();
+        const url = addSearchEngineUrl?.value.trim();
+        return !!(name || url);
+    }
+
+    // 清除添加搜索引擎面板的输入
+    function clearAddSearchEngineInputs() {
+        if (addSearchEngineName) addSearchEngineName.value = '';
+        if (addSearchEngineUrl) addSearchEngineUrl.value = '';
+        if (addSearchEngineUrlError) addSearchEngineUrlError.textContent = '';
     }
 
     // 验证搜索引擎URL格式
@@ -3100,7 +3134,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // 关闭添加快捷方式面板
-    function closeAddShortcutPanel() {
+    function closeAddShortcutPanel(checkInput = true) {
+        if (checkInput && hasAddShortcutInput()) {
+            openConfirmDialog('discard-add-shortcut');
+            return;
+        }
         if (addShortcutPanel) {
             addShortcutPanel.classList.remove('active');
             // 取消进行中的请求
@@ -3109,6 +3147,24 @@ document.addEventListener('DOMContentLoaded', async function() {
                 addPanelAbortController = null;
             }
             // 不关闭背景模糊，保留快捷访问菜单
+        }
+    }
+
+    // 检查添加快捷访问面板是否有输入内容
+    function hasAddShortcutInput() {
+        const url = addShortcutUrl?.value.trim();
+        const name = addShortcutName?.value.trim();
+        const icon = addShortcutIcon?.value.trim();
+        return !!(url || name || icon);
+    }
+
+    // 清除添加快捷访问面板的输入
+    function clearAddShortcutInputs() {
+        if (addShortcutUrl) addShortcutUrl.value = '';
+        if (addShortcutName) addShortcutName.value = '';
+        if (addShortcutIcon) addShortcutIcon.value = '';
+        if (addShortcutPreviewIcon) {
+            addShortcutPreviewIcon.innerHTML = defaultIconSVG;
         }
     }
 
