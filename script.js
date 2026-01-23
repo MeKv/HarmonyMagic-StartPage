@@ -2128,7 +2128,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         wallpaperLocalFile.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                const fileUrl = `file:///${file.path}`;
+                const fileUrl = URL.createObjectURL(file);
                 wallpaperLocalUrl.value = fileUrl;
                 wallpaperPreviewImg.style.backgroundImage = `url('${fileUrl}')`;
                 wallpaperPreviewImg.classList.add('selected');
