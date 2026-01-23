@@ -2188,6 +2188,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 setCookie('hidden_presets', []);
                 // 重新加载菜单（保持context-menu打开，搜索框保持隐藏）
                 loadQuickAccessMenu();
+                // 重新渲染编辑面板列表
+                loadAllShortcuts();
+                renderEditShortcutList();
                 sendNotice('快捷访问已重置', 'info');
             }
         },
