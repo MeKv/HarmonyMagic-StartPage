@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wallpapers>
+    <!-- 注意: id的值不能用"0", 与自定义的壁纸id冲突! -->
     <wallpaper id="1">
         <title>Bubbles</title>
         <comment>彩色气泡</comment>
