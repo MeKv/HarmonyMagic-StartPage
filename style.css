@@ -1396,6 +1396,7 @@ body[data-filter-disabled="true"]::after {
 /* 添加快捷方式面板样式 */
 #add-shortcut-panel {
     display: none;
+    z-index: 10002; /* 高于编辑快捷访问面板的10001 */
 }
 
 #add-shortcut-panel.active {
