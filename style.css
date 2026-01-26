@@ -1817,16 +1817,17 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
+    color: #2196F3 !important;
 }
 
 .edit-shortcut-edit svg {
     width: 14px;
     height: 14px;
-    fill: #666;
+    fill: currentColor !important;
 }
 
 .edit-shortcut-edit:hover {
-    background: #e0e0e0;
+    background: #E3F2FD;
 }
 
 .edit-shortcut-buttons {
