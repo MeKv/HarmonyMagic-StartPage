@@ -4185,6 +4185,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 item.icon = item.originalData.icon;
             }
             renderEditShortcutList();
+            // 丢弃更改后，重置外层编辑面板的更改状态
+            editShortcutHasChanges = false;
         }
 
         if (editShortcutItemPanel) {
@@ -4212,13 +4214,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         img.src = iconUrl;
     }
 
-    // 检查编辑快捷访问面板是否有更改（比较临时数据）
+    // 检查编辑快捷访问面板是否有更改（比较临时数据与原始数据）
     function hasEditShortcutItemChanges() {
-        if (!currentEditShortcut || !currentEditShortcut.tempData) return false;
-        const tempData = currentEditShortcut.tempData;
-        return (editShortcutItemUrl?.value.trim() || '') !== (tempData.url || '') ||
-               (editShortcutItemName?.value.trim() || '') !== (tempData.title || '') ||
-               (editShortcutItemIcon?.value.trim() || '') !== (tempData.icon || '');
+        if (!currentEditShortcut || !currentEditShortcut.item) return false;
+        const item = currentEditShortcut.item;
+        const originalData = item.originalData || item;
+        return (editShortcutItemUrl?.value.trim() || '') !== (originalData.url || '') ||
+               (editShortcutItemName?.value.trim() || '') !== (originalData.title || '') ||
+               (editShortcutItemIcon?.value.trim() || '') !== (originalData.icon || '');
     }
 
     // 保存编辑的快捷访问项目（只更新内存，不写入localStorage）
@@ -4251,6 +4254,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 更新列表显示
         renderEditShortcutList();
 
+        // 更新外层编辑面板的更改状态
+        editShortcutHasChanges = true;
         editShortcutItemHasChanges = false;
 
         if (closePanel) {
