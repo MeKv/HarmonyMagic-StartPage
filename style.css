@@ -1512,41 +1512,38 @@ body[data-filter-disabled="true"]::after {
 /* 编辑快捷访问面板 */
 .edit-shortcut-header-btns {
     display: flex;
-    align-items: center;
-    background: #f5f5f5;
-    border-radius: 4px;
-    padding: 2px;
+    gap: 8px;
 }
 
 .edit-shortcut-header-btns .settings-reset-btn {
     border: none;
     background: transparent;
-    border-radius: 0;
+    border-radius: 4px;
     padding: 6px 10px;
     margin: 0;
 }
 
 .edit-shortcut-header-btns .settings-reset-btn:first-child {
-    border-radius: 3px 0 0 3px;
+    border-radius: 4px;
 }
 
 .edit-shortcut-header-btns .settings-reset-btn:last-of-type {
     border-right: none;
-    border-radius: 0;
+    border-radius: 4px;
 }
 
 .edit-shortcut-header-btns .settings-reset-btn:hover {
-    background: #e8e8e8;
+    background: #e0e0e0;
 }
 
 .edit-shortcut-header-btns .settings-close {
     padding: 6px 8px;
     margin: 0;
-    border-radius: 0 3px 3px 0;
+    border-radius: 4px;
 }
 
 .edit-shortcut-header-btns .settings-close:hover {
-    background: #e8e8e8 !important;
+    background: transparent !important;
 }
 
 .settings-reset-btn {
