@@ -901,6 +901,12 @@ body[data-filter-disabled="true"]::after {
     z-index: 100;
 }
 
+/* 快捷访问菜单打开时，footer保持可点击 */
+.context-menu.active ~ .footer-copyright,
+.context-menu.active + .footer-copyright {
+    z-index: 3001 !important;
+}
+
 .footer-text {
     padding: 4px 20px;
     text-align: center;
