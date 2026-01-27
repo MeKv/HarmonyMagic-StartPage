@@ -28,6 +28,53 @@ html, body {
     -webkit-overflow-scrolling: none; /* 禁用iOS弹性滚动 */
 }
 
+/* ==================== 深色模式变量 ==================== */
+:root {
+    /* 浅色模式变量（默认） */
+    --bg-color: #f5f5f5;
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --border-color: #e0e0e0;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-bg-hover: rgba(255, 255, 255, 0.95);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-focus-bg: rgba(255, 255, 255, 1);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --overlay-bg: rgba(0, 0, 0, 0.3);
+    --modal-bg: #ffffff;
+    --modal-text: #333333;
+    --button-bg: #f0f0f0;
+    --button-hover: #e0e0e0;
+    --icon-color: #7a7a7a;
+    --icon-hover: #555555;
+    --divider-color: #e5e5e5;
+    --danger-color: #d32f2f;
+    --success-color: #388e3c;
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
+    --border-color: #404040;
+    --card-bg: rgba(40, 40, 40, 0.85);
+    --card-bg-hover: rgba(60, 60, 60, 0.95);
+    --input-bg: rgba(50, 50, 50, 0.9);
+    --input-focus-bg: rgba(60, 60, 60, 1);
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: #2d2d2d;
+    --modal-text: #e0e0e0;
+    --button-bg: #3a3a3a;
+    --button-hover: #4a4a4a;
+    --icon-color: #a0a0a0;
+    --icon-hover: #c0c0c0;
+    --divider-color: #404040;
+}
+
 body {
     font-family: inherit;
     background: #333;
@@ -159,6 +206,12 @@ body[data-filter-disabled="true"]::after {
     z-index: 1;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-box-circle {
+    background: rgba(60, 60, 60, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 /* 圆形搜索框展开状态 - 未输入状态 */
 .search-box-circle.expanded {
     width: 150px; /* 与中间搜索框的默认宽度相同 */
@@ -169,7 +222,16 @@ body[data-filter-disabled="true"]::after {
 /* 圆形搜索框展开状态 - 输入状态 */
 .search-box-circle.expanded.input-active {
     width: 300px; /* 与中间搜索框的展开宽度相同 */
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* 深色模式适配 - 展开状态 */
+[data-theme="dark"] .search-box-circle.expanded {
+    background: rgba(80, 80, 80, 0.7);
+}
+
+[data-theme="dark"] .search-box-circle.expanded.input-active {
+    background: rgba(100, 100, 100, 0.8);
 }
 
 /* 移动端圆形搜索框直接展开到输入状态 */
@@ -204,6 +266,11 @@ body[data-filter-disabled="true"]::after {
     border-color: #4CAF50;
 }
 
+[data-theme="dark"] .search-box-circle:hover {
+    background: rgba(100, 100, 100, 0.7);
+    border-color: #4CAF50;
+}
+
 .search-circle-content {
     display: flex;
     align-items: center;
@@ -224,6 +291,12 @@ body[data-filter-disabled="true"]::after {
     pointer-events: none;
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
     z-index: 2;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-name {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* 只有进入输入焦点时才显示引擎名称动画 */
@@ -279,6 +352,11 @@ body[data-filter-disabled="true"]::after {
     text-align: center; /* 文字居中对齐 */
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-box-circle .circle-search-input {
+    color: #e0e0e0;
+}
+
 /* 展开状态显示输入框 */
 .search-box-circle.expanded .circle-search-input {
     opacity: 1;
@@ -323,6 +401,11 @@ body[data-filter-disabled="true"]::after {
     color: #45a049;
 }
 
+/* 深色模式适配 - 搜索按钮保持绿色高亮 */
+[data-theme="dark"] .search-box-circle .circle-search-btn {
+    color: #66BB6A;
+}
+
 /* 展开状态下图标位置调整 */
 .search-box-circle.expanded .search-circle-content {
     position: absolute;
@@ -345,6 +428,11 @@ body[data-filter-disabled="true"]::after {
     transition: opacity 0.3s ease,
                 transform 0.3s ease,
                 margin 0.3s ease;
+}
+
+/* 深色模式适配 - 圆形搜索框展开时的图标 */
+[data-theme="dark"] .search-box-circle.expanded .search-icon {
+    filter: brightness(1.8);
 }
 
 .search-box-center {
@@ -376,6 +464,12 @@ body[data-filter-disabled="true"]::after {
     justify-content: center;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-container-shortened {
+    background: rgba(60, 60, 60, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
 /* 中间搜索框未输入展开状态 */
 .search-container-shortened.expanded {
     width: 150px; /* 未输入展开宽度 */
@@ -388,6 +482,15 @@ body[data-filter-disabled="true"]::after {
     width: 300px; /* 输入展开宽度 */
 }
 
+/* 深色模式适配 - 展开状态 */
+[data-theme="dark"] .search-container-shortened.expanded {
+    background: rgba(80, 80, 80, 0.7);
+}
+
+[data-theme="dark"] .search-container-shortened.expanded.input-active {
+    background: rgba(100, 100, 100, 0.8);
+}
+
 #search-input {
     width: 0;
     height: 36px;
@@ -397,7 +500,7 @@ body[data-filter-disabled="true"]::after {
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
-    color: #333;
+    color: var(--text-color);
     user-select: text; /* 输入框允许选择文本 */
     opacity: 0;
     visibility: hidden;
@@ -420,7 +523,7 @@ body[data-filter-disabled="true"]::after {
 #search-input:focus {
     border-color: #4CAF50;
     box-shadow: 0 4px 25px rgba(76, 175, 80, 0.3);
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--input-focus-bg);
 }
 
 #search-btn {
@@ -470,6 +573,16 @@ body[data-filter-disabled="true"]::after {
     color: #45a049;
 }
 
+/* 深色模式适配 - 中间搜索框搜索按钮 */
+[data-theme="dark"] #search-btn {
+    color: #66BB6A;
+}
+
+[data-theme="dark"] #search-btn:hover {
+    background: rgba(102, 187, 106, 0.2);
+    color: #81C784;
+}
+
 .search-icon {
     position: absolute;
     left: 50%;
@@ -482,6 +595,11 @@ body[data-filter-disabled="true"]::after {
     opacity: 1;
     visibility: visible;
     transition: all 0.3s ease;
+}
+
+/* 深色模式适配 - 图标变亮以在深色背景上清晰显示 */
+[data-theme="dark"] .search-icon {
+    filter: brightness(1.8);
 }
 
 /* 展开状态调整图标位置 */
@@ -591,7 +709,12 @@ body[data-filter-disabled="true"]::after {
     height: 48px;
     border-radius: 4px;
     z-index: 1;
-    background: #F5F5F5;
+    background: #F5F5F588;
+}
+
+/* 深色模式适配 - 保持浅灰色背景以显示黑色图标 */
+[data-theme="dark"] .menu-item-bg {
+    background: #23232388;
 }
 
 /* 图标容器 */
@@ -643,6 +766,12 @@ body[data-filter-disabled="true"]::after {
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
+}
+
+/* 深色模式适配：添加和编辑按钮 */
+[data-theme="dark"] .menu-item[data-action="add"] .menu-icon svg path,
+[data-theme="dark"] .menu-item[data-action="edit"] .menu-icon svg path {
+    fill: #e0e0e099 !important;
 }
 
 @media (max-width: 768px) {
@@ -998,6 +1127,12 @@ body[data-filter-disabled="true"]::after {
     z-index: 10002;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .settings-dropdown {
+    background: #2d2d2d;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
 .settings-dropdown.active {
     display: block;
     animation: dropdownFadeIn 0.2s ease;
@@ -1027,6 +1162,11 @@ body[data-filter-disabled="true"]::after {
     background-color: #f5f5f5;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .settings-menu-item:hover {
+    background-color: #3a3a3a;
+}
+
 .settings-menu-icon {
     width: 20px;
     height: 20px;
@@ -1036,6 +1176,15 @@ body[data-filter-disabled="true"]::after {
 .settings-menu-item span {
     font-size: 14px;
     color: #333;
+}
+
+/* 深色模式适配 - 图标和文字 */
+[data-theme="dark"] .settings-menu-icon svg path {
+    fill: #a0a0a0;
+}
+
+[data-theme="dark"] .settings-menu-item span {
+    color: #e0e0e0;
 }
 
 /* 设置菜单弹窗样式 */
@@ -1075,13 +1224,13 @@ body[data-filter-disabled="true"]::after {
     width: 400px;
     max-width: 90%;
     max-height: 80vh;
-    background: #FFFFFF;
+    background: var(--modal-bg);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px var(--shadow-color);
     padding: 20px;
     opacity: 0;
     transform: scale(0.95) translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
     overflow: hidden;
 }
 
@@ -1103,13 +1252,14 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #EEEEEE;
+    border-bottom: 1px solid var(--divider-color);
 }
 
 .settings-title {
     font-size: 16px;
     font-weight: 500;
-    color: #333333;
+    color: var(--modal-text);
+    transition: color 0.3s ease;
 }
 
 .settings-close {
@@ -1154,6 +1304,15 @@ body[data-filter-disabled="true"]::after {
     display: block;
 }
 
+/* 深色模式适配 - 关闭按钮图标变白 */
+[data-theme="dark"] .settings-close svg path {
+    fill: #FFFFFF;
+}
+
+[data-theme="dark"] .settings-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .settings-body {
     max-height: calc(80vh - 60px);
     /* 只有内容溢出时才显示滚动条 */
@@ -1193,13 +1352,13 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     height: 48px;
     padding: 0;
-    border-bottom: 1px solid #F5F5F5;
+    border-bottom: 1px solid var(--divider-color);
     cursor: pointer;
     transition: background 0.2s ease;
 }
 
 .setting-item:hover {
-    background: #FAFAFA;
+    background: var(--button-hover);
     margin: 0 -20px;
     padding-left: 20px;
     padding-right: 20px;
@@ -1211,9 +1370,10 @@ body[data-filter-disabled="true"]::after {
 
 .setting-item-text {
     font-size: 14px;
-    color: #333333;
+    color: var(--modal-text);
     flex: 1;
     word-break: break-word;
+    transition: color 0.3s ease;
 }
 
 /* 纯文本操作项样式（无开关） */
@@ -1223,6 +1383,14 @@ body[data-filter-disabled="true"]::after {
 
 .setting-item-action .setting-item-text {
     text-align: left;
+}
+
+/* 深色模式值显示 */
+.setting-item-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-right: 8px;
+    transition: color 0.3s ease;
 }
 
 .status-indicator {
@@ -1316,6 +1484,15 @@ body[data-filter-disabled="true"]::after {
     height: 20px;
 }
 
+/* 深色模式适配 - 关闭按钮图标变白 */
+[data-theme="dark"] .icon-close svg path {
+    fill: #FFFFFF;
+}
+
+[data-theme="dark"] .icon-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 /* 确认对话框样式 */
 .confirm-dialog {
     position: fixed;
@@ -1361,6 +1538,12 @@ body[data-filter-disabled="true"]::after {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .confirm-dialog-content {
+    background: #2d2d2d;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 .confirm-dialog.active .confirm-dialog-content {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -1379,11 +1562,21 @@ body[data-filter-disabled="true"]::after {
     color: #333333;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .confirm-dialog-title {
+    color: #e0e0e0;
+}
+
 .confirm-dialog-message {
     font-size: 14px;
     color: #666666;
     margin-bottom: 20px;
     line-height: 1.5;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .confirm-dialog-message {
+    color: #b0b0b0;
 }
 
 .confirm-dialog-actions {
@@ -1408,6 +1601,16 @@ body[data-filter-disabled="true"]::after {
 
 .confirm-dialog-cancel:hover {
     background: #EEEEEE;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .confirm-dialog-cancel {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .confirm-dialog-cancel:hover {
+    background: #4a4a4a;
 }
 
 .confirm-dialog-ok {
@@ -1450,24 +1653,27 @@ body[data-filter-disabled="true"]::after {
 .add-shortcut-label {
     display: block;
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 6px;
 }
 
 .add-shortcut-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--input-bg);
+    color: var(--modal-text);
 }
 
 .add-shortcut-input:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    background: var(--input-focus-bg);
 }
 
 .add-shortcut-input::placeholder {
@@ -1518,12 +1724,12 @@ body[data-filter-disabled="true"]::after {
 }
 
 .add-shortcut-cancel {
-    background: #f0f0f0;
-    color: #666;
+    background: var(--button-bg);
+    color: var(--text-secondary);
 }
 
 .add-shortcut-cancel:hover {
-    background: #e0e0e0;
+    background: var(--button-hover);
 }
 
 .add-shortcut-save {
@@ -1562,6 +1768,11 @@ body[data-filter-disabled="true"]::after {
     background: #e0e0e0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-header-btns .settings-reset-btn:hover {
+    background: #3a3a3a;
+}
+
 .edit-shortcut-header-btns .settings-close {
     padding: 6px 8px;
     margin: 0;
@@ -1583,9 +1794,20 @@ body[data-filter-disabled="true"]::after {
     transition: background-color 0.2s;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .settings-reset-btn {
+    color: #e0e0e0;
+}
+
 .settings-reset-btn:hover {
     background: #f0f0f0;
     color: #333;
+}
+
+/* 深色模式悬停适配 */
+[data-theme="dark"] .settings-reset-btn:hover {
+    background: #3a3a3a;
+    color: #ffffff;
 }
 
 /* 编辑面板隐藏按钮样式 */
@@ -1689,6 +1911,23 @@ body[data-filter-disabled="true"]::after {
     color: #333;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-category-header {
+    background: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-category-header:hover {
+    background: #4a4a4a;
+}
+
+[data-theme="dark"] .edit-shortcut-category-title {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .edit-shortcut-collapse-icon {
+    color: #ffffff;
+}
+
 .edit-shortcut-category-content {
     padding: 4px 0;
 }
@@ -1720,6 +1959,15 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-item:hover {
     background: #fafafa;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-item {
+    border-color: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-item:hover {
+    background: #3a3a3a;
 }
 
 .edit-shortcut-item-icon {
@@ -1763,6 +2011,16 @@ body[data-filter-disabled="true"]::after {
     flex-shrink: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-item-text {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .preset-tag {
+    background: #505050;
+    color: #e0e0e0;
+}
+
 .edit-shortcut-item-actions {
     display: flex;
     gap: 5px;
@@ -1783,6 +2041,16 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-move-btn:hover {
     background: #e0e0e0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-move-btn {
+    background: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .edit-shortcut-move-btn:hover {
+    background: #505050;
 }
 
 .edit-shortcut-move-btn:disabled {
@@ -1809,6 +2077,17 @@ body[data-filter-disabled="true"]::after {
     color: #c62828;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-delete {
+    background: #404040;
+    color: #ef5350;
+}
+
+[data-theme="dark"] .edit-shortcut-delete:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
+}
+
 .edit-shortcut-toggle {
     width: 28px;
     height: 28px;
@@ -1826,6 +2105,17 @@ body[data-filter-disabled="true"]::after {
 .edit-shortcut-toggle:hover:not(:disabled) {
     background: #ffebee;
     color: #c62828;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-toggle {
+    background: #404040;
+    color: #ef5350;
+}
+
+[data-theme="dark"] .edit-shortcut-toggle:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
 }
 
 /* 编辑按钮样式 */
@@ -1853,12 +2143,26 @@ body[data-filter-disabled="true"]::after {
     background: #E3F2FD;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-edit {
+    background: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-edit:hover {
+    background: #3a3a3a;
+}
+
 .edit-shortcut-buttons {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
     padding-top: 15px;
     border-top: 1px solid #eee;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-buttons {
+    border-color: #404040;
 }
 
 .edit-shortcut-btn {
@@ -1877,6 +2181,16 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-cancel:hover {
     background: #e0e0e0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-cancel {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .edit-shortcut-cancel:hover {
+    background: #4a4a4a;
 }
 
 .edit-shortcut-apply {
@@ -2074,6 +2388,11 @@ body[data-filter-disabled="true"]::after {
     font-weight: 500;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-section-label {
+    color: #b0b0b0;
+}
+
 .wallpaper-custom-row {
     display: flex;
     gap: 20px;
@@ -2091,6 +2410,11 @@ body[data-filter-disabled="true"]::after {
     cursor: pointer;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-preview {
+    background: #3a3a3a;
+}
+
 .wallpaper-preview-img {
     width: 100%;
     height: 100%;
@@ -2105,6 +2429,12 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     justify-content: center;
     position: relative;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-preview-img {
+    background-color: #3a3a3a;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .wallpaper-preview-img > svg {
@@ -2158,6 +2488,16 @@ body[data-filter-disabled="true"]::after {
     background: #E8E8E8;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-tab-btn {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .wallpaper-tab-btn:hover {
+    background: #4a4a4a;
+}
+
 .wallpaper-tab-btn.active {
     background: #4CAF50;
     color: white;
@@ -2184,6 +2524,18 @@ body[data-filter-disabled="true"]::after {
     font-size: 14px;
     outline: none;
     transition: all 0.3s;
+    color: #333;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-input {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .wallpaper-input::placeholder {
+    color: #888;
 }
 
 .wallpaper-input:focus {
@@ -2207,9 +2559,20 @@ body[data-filter-disabled="true"]::after {
     transition: all 0.3s;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .wallpaper-browse-btn {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
 .wallpaper-browse-btn:hover {
     background: #E8E8E8;
     transform: translateY(-1px);
+}
+
+/* 深色模式悬停适配 */
+[data-theme="dark"] .wallpaper-browse-btn:hover {
+    background: #4a4a4a;
 }
 
 .wallpaper-presets {
@@ -2338,6 +2701,11 @@ body[data-filter-disabled="true"]::after {
     margin: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-title p {
+    color: #e0e0e0;
+}
+
 .about-copyright,
 .about-license,
 .about-icons,
@@ -2351,6 +2719,11 @@ body[data-filter-disabled="true"]::after {
     margin: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-copyright p {
+    color: #b0b0b0;
+}
+
 .about-license p,
 .about-icons p {
     font-size: 14px;
@@ -2358,15 +2731,35 @@ body[data-filter-disabled="true"]::after {
     margin: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-license p,
+[data-theme="dark"] .about-icons p {
+    color: #a0a0a0;
+}
+
 .about-license a,
 .about-icons a {
-    color: #007AFF;
+    color: #9ACD32;
     text-decoration: none;
+    font-weight: 500;
 }
 
 .about-license a:hover,
 .about-icons a:hover {
-    text-decoration: underline;
+    color: #B0DC34;
+    text-decoration: none;
+}
+
+/* Copyright 链接始终浅蓝色 */
+.about-copyright a {
+    color: #5AC8FA !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.about-copyright a:hover {
+    color: #8fd7f8 !important;
+    text-decoration: none;
 }
 
 .about-links {
@@ -2377,6 +2770,11 @@ body[data-filter-disabled="true"]::after {
     font-size: 14px;
     color: #666;
     margin: 0 0 12px 0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .about-links > p {
+    color: #a0a0a0;
 }
 
 .about-link-buttons {
@@ -2400,9 +2798,19 @@ body[data-filter-disabled="true"]::after {
     transition: all 0.2s ease;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-link-btn {
+    border-color: #555;
+}
+
 .about-link-btn:hover {
     background: #8fd7f8;
     border-color: #CCC;
+}
+
+/* 深色模式悬停适配 */
+[data-theme="dark"] .about-link-btn:hover {
+    border-color: #666;
 }
 
 .about-link-btn.primary {
@@ -2509,6 +2917,23 @@ body[data-filter-disabled="true"]::after {
     color: #333;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-category-header {
+    background: #404040;
+}
+
+[data-theme="dark"] .search-engine-category-header:hover {
+    background: #4a4a4a;
+}
+
+[data-theme="dark"] .search-engine-category-title {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .search-engine-collapse-icon {
+    color: #ffffff;
+}
+
 .search-engine-category-content {
     padding: 4px 0;
 }
@@ -2530,7 +2955,7 @@ body[data-filter-disabled="true"]::after {
 }
 
 .search-engine-item:hover {
-    background: #fafafa;
+    background: var(--button-hover);
 }
 
 .search-engine-item-icon {
@@ -2573,10 +2998,15 @@ body[data-filter-disabled="true"]::after {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 14px;
-    color: #333;
+    color: var(--modal-text);
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-item-name {
+    color: #e0e0e0;
 }
 
 .search-engine-item-actions {
@@ -2599,6 +3029,16 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-move-btn:hover {
     background: #e0e0e0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-move-btn {
+    background: #404040;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .search-engine-move-btn:hover {
+    background: #505050;
 }
 
 .search-engine-move-btn:disabled {
@@ -2653,6 +3093,28 @@ body[data-filter-disabled="true"]::after {
     background: #f0f0f0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-disable,
+[data-theme="dark"] .search-engine-enable,
+[data-theme="dark"] .search-engine-delete {
+    background: #404040;
+    color: #aaa;
+}
+
+[data-theme="dark"] .search-engine-disable:hover,
+[data-theme="dark"] .search-engine-enable:hover {
+    background: #505050;
+}
+
+[data-theme="dark"] .search-engine-delete {
+    color: #ef5350;
+}
+
+[data-theme="dark"] .search-engine-delete:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
+}
+
 /* 编辑按钮样式 - 与编辑快捷访问面板一致 */
 .search-engine-edit {
     width: 28px;
@@ -2676,6 +3138,15 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-edit:hover {
     background: #E3F2FD;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-edit {
+    background: #404040;
+}
+
+[data-theme="dark"] .search-engine-edit:hover {
+    background: #3a3a3a;
 }
 
 .search-engine-buttons {
@@ -2714,6 +3185,16 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-cancel:hover {
     background: #e8e8e8;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-cancel {
+    background: #3a3a3a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .search-engine-cancel:hover {
+    background: #4a4a4a;
 }
 
 .search-engine-apply,

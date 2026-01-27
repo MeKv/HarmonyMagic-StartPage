@@ -749,11 +749,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    // ==================== 深色模式模块 ====================
+    
+    // 检测系统是否处于深色模式
+    function isSystemDarkMode() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    
+    // 监听系统深色模式变化
+    function listenSystemDarkModeChange(callback) {
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                callback(e.matches);
+            });
+        }
+    }
+    
+    // 应用深色模式
+    function applyDarkMode(settings) {
+        const darkModeSetting = settings.darkMode; // true=深色, false=浅色, null=跟随系统
+        
+        let isDark;
+        if (darkModeSetting === null) {
+            // 跟随系统设置
+            isDark = isSystemDarkMode();
+        } else {
+            isDark = darkModeSetting;
+        }
+        
+        if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    }
+    
     // ==================== 全局设置（global-settings） ====================
     // 默认设置值
     const defaultGlobalSettings = {
         backgroundBlur: true,      // 背景模糊（默认开启）
-        backgroundFilter: true     // 背景滤镜（默认开启）
+        backgroundFilter: true,    // 背景滤镜（默认开启）
+        darkMode: null             // 深色模式：true=深色, false=浅色, null=跟随系统（默认）
     };
 
     // 加载全局设置
@@ -789,6 +825,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // 应用背景滤镜设置
         setBackgroundFilterEnabled(settings.backgroundFilter);
+        
+        // 应用深色模式设置
+        applyDarkMode(settings);
         
         // 更新设置面板中的开关状态
         updateSettingsPanelStates();
@@ -874,6 +913,45 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             }
         }
+        
+        // 更新深色模式开关状态显示
+        const darkModeToggle = document.querySelector('[data-setting="dark-mode-toggle"]');
+        if (darkModeToggle) {
+            const valueSpan = darkModeToggle.querySelector('#dark-mode-value');
+            const indicator = darkModeToggle.querySelector('.status-indicator');
+            const icon = darkModeToggle.querySelector('.status-icon');
+            
+            if (valueSpan) {
+                const darkMode = settings.darkMode;
+                if (darkMode === null) {
+                    valueSpan.textContent = '跟随系统';
+                } else if (darkMode === true) {
+                    valueSpan.textContent = '深色';
+                } else {
+                    valueSpan.textContent = '浅色';
+                }
+            }
+            
+            // 深色模式使用特殊的状态显示（始终显示启用图标，表示功能已启用）
+            if (indicator && icon) {
+                indicator.classList.add('enabled');
+                icon.innerHTML = svgOn;
+            }
+        }
+    }
+    
+    // 深色模式的三态切换
+    const darkModeCycle = [null, true, false]; // 跟随系统 -> 深色 -> 浅色 -> 跟随系统
+    
+    // 处理深色模式切换
+    function handleDarkModeToggle() {
+        const settings = loadGlobalSettings();
+        const currentIndex = darkModeCycle.indexOf(settings.darkMode);
+        const nextIndex = (currentIndex + 1) % darkModeCycle.length;
+        settings.darkMode = darkModeCycle[nextIndex];
+        saveGlobalSettings(settings);
+        applyDarkMode(settings);
+        updateSettingsPanelStates();
     }
 
     // 处理背景模糊开关的点击事件
@@ -2570,6 +2648,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ==================== 初始化全局设置 ====================
     // 在SVG定义后应用全局设置
     applyGlobalSettings();
+    
+    // 监听系统深色模式变化（当设置为"跟随系统"时）
+    listenSystemDarkModeChange((isDark) => {
+        const settings = loadGlobalSettings();
+        if (settings.darkMode === null) {
+            // 只有设置为"跟随系统"时才响应系统变化
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+    });
 
     // 操作图标（用于需要确认的选项）
     const svgAction = '<svg t="1768966199939" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8663" width="18" height="18"><path d="M892 928.1H134c-19.9 0-36-16.1-36-36v-758c0-19.9 16.1-36 36-36h314.1c19.9 0 36 16.1 36 36s-16.1 36-36 36H170v686h686V579.6c0-19.9 16.1-36 36-36s36 16.1 36 36v312.5c0 19.9-16.1 36-36 36z" fill="#888888" p-id="8664"></path><path d="M927.9 131.6v-0.5c-0.1-1.7-0.4-3.3-0.7-4.9 0-0.1 0-0.2-0.1-0.3-0.4-1.7-0.9-3.3-1.5-4.9v-0.1c-0.6-1.6-1.4-3.1-2.2-4.6 0-0.1-0.1-0.1-0.1-0.2-0.8-1.4-1.7-2.8-2.7-4.1-0.1-0.1-0.2-0.3-0.3-0.4-0.5-0.6-0.9-1.1-1.4-1.7 0-0.1-0.1-0.1-0.1-0.2-0.5-0.6-1-1.1-1.6-1.6l-0.4-0.4c-0.5-0.5-1.1-1-1.6-1.5l-0.1-0.1c-0.6-0.5-1.2-1-1.9-1.4-0.1-0.1-0.3-0.2-0.4-0.3-1.4-1-2.8-1.8-4.3-2.6l-0.1-0.1c-1.6-0.8-3.2-1.5-4.9-2-1.6-0.5-3.3-1-5-1.2-0.1 0-0.2 0-0.3-0.1l-2.4-0.3h-0.3c-0.7-0.1-1.3-0.1-2-0.1H640.1c-19.9 0-36 16.1-36 36s16.1 36 36 36h165L487.6 487.6c-14.1 14.1-14.1 36.9 0 50.9 7 7 16.2 10.5 25.5 10.5 9.2 0 18.4-3.5 25.5-10.5L856 221v162.8c0 19.9 16.1 36 36 36s36-16.1 36-36V134.1c0-0.8 0-1.7-0.1-2.5z" fill="#888888" p-id="8665"></path></svg>';
@@ -3057,6 +3148,33 @@ document.addEventListener('DOMContentLoaded', async function() {
                 renderEditShortcutList();
             }
         },
+        'delete-search-engine': {
+            title: '删除搜索引擎',
+            message: '确定要删除该自定义搜索引擎吗？',
+            onOk: function() {
+                const engineId = parseInt(confirmDialog.dataset.targetEngineId, 10);
+                const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
+                
+                // 标记为待删除
+                if (!workingSettings.pendingDeleteIds) workingSettings.pendingDeleteIds = [];
+                if (!workingSettings.pendingDeleteIds.some(pid => pid == engineId)) {
+                    workingSettings.pendingDeleteIds.push(engineId);
+                }
+                
+                // 从所有列表中移除
+                const activeIndex = workingSettings.activeEngines.indexOf(engineId);
+                if (activeIndex !== -1) workingSettings.activeEngines.splice(activeIndex, 1);
+                
+                const presetIndex = workingSettings.disabledPresets.indexOf(engineId);
+                if (presetIndex !== -1) workingSettings.disabledPresets.splice(presetIndex, 1);
+                
+                const customIndex = workingSettings.disabledCustoms.indexOf(engineId);
+                if (customIndex !== -1) workingSettings.disabledCustoms.splice(customIndex, 1);
+                
+                searchEngineSettingsHasInnerChanges = true;
+                renderSearchEngineLists();
+            }
+        },
         'reset-search-engines': {
             title: '重置搜索引擎',
             message: '确定要重置所有搜索引擎设置吗？这将删除所有自定义搜索引擎和排序设置。',
@@ -3094,6 +3212,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             onOk: function() {
                 searchEngineSettingsWorking = null;
                 searchEngineSettingsHasInnerChanges = false; // 重置内层编辑标志
+                // 清除待删除列表
+                const workingSettings = searchEngineSettings;
+                if (workingSettings) {
+                    delete workingSettings.pendingDeleteIds;
+                }
                 closeSearchEnginePanel();
             }
         },
@@ -3426,17 +3549,23 @@ document.addEventListener('DOMContentLoaded', async function() {
         const activeIds = workingSettings.activeEngines;
         const disabledPresetIds = workingSettings.disabledPresets;
         const disabledCustomIds = workingSettings.disabledCustoms;
+        const pendingDeleteIds = workingSettings.pendingDeleteIds || [];
+        
+        // 排除待删除的引擎（使用 == 进行宽松比较以处理字符串/数字类型差异）
+        const filteredActiveIds = activeIds.filter(id => !pendingDeleteIds.some(pid => pid == id));
+        const filteredDisabledPresetIds = disabledPresetIds.filter(id => !pendingDeleteIds.some(pid => pid == id));
+        const filteredDisabledCustomIds = disabledCustomIds.filter(id => !pendingDeleteIds.some(pid => pid == id));
         
         // 按activeIds顺序渲染使用中的引擎
-        const activeEngines = activeIds.map(id => searchEngines[id]).filter(Boolean);
+        const activeEngines = filteredActiveIds.map(id => searchEngines[id]).filter(Boolean);
         renderSearchEngineCategory(searchEngineActiveList, activeEngines, 'active');
         
         // 渲染未使用的预设
-        const presetEngines = disabledPresetIds.map(id => searchEngines[id]).filter(Boolean);
+        const presetEngines = filteredDisabledPresetIds.map(id => searchEngines[id]).filter(Boolean);
         renderSearchEngineCategory(searchEnginePresetList, presetEngines, 'preset');
         
         // 渲染未使用的自定义
-        const customEngines = disabledCustomIds.map(id => searchEngines[id]).filter(Boolean);
+        const customEngines = filteredDisabledCustomIds.map(id => searchEngines[id]).filter(Boolean);
         renderSearchEngineCategory(searchEngineCustomList, customEngines, 'custom');
     }
 
@@ -3464,10 +3593,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     <button class="search-engine-disable" title="移至未使用" data-engine-id="${engine.id}">${svgMinus}</button>
                 `;
             } else if (category === 'preset') {
-                // 未使用的预设：显示移至使用中、删除（禁用）
+                // 未使用的预设：显示移至使用中
                 actionButtons = `
                     <button class="search-engine-enable" title="移至使用中" data-engine-id="${engine.id}">${svgPlus}</button>
-                    <button class="search-engine-delete" title="删除" data-engine-id="${engine.id}" disabled>${svgClose}</button>
                 `;
             } else {
                 // 未使用的自定义：显示移至使用中、删除
@@ -3514,7 +3642,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 绑定删除按钮事件
             const deleteBtn = item.querySelector('.search-engine-delete');
             if (deleteBtn) {
-                deleteBtn.addEventListener('click', () => deleteSearchEngine(engine.id));
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    confirmDialog.dataset.targetEngineId = engine.id;
+                    openConfirmDialog('delete-search-engine');
+                });
             }
             
             container.appendChild(item);
@@ -3602,37 +3734,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderSearchEngineLists();
     }
 
-    // 删除自定义搜索引擎
-    function deleteSearchEngine(engineId) {
-        // 预设引擎不允许删除
-        const presetIds = searchEngineData.engines.slice(0, presetEngineCount).map(e => e.id);
-        if (presetIds.includes(engineId)) return;
-        
-        const workingSettings = searchEngineSettingsWorking || searchEngineSettings;
-        
-        // 从所有列表中移除
-        const activeIndex = workingSettings.activeEngines.indexOf(engineId);
-        if (activeIndex !== -1) workingSettings.activeEngines.splice(activeIndex, 1);
-        
-        const presetIndex = workingSettings.disabledPresets.indexOf(engineId);
-        if (presetIndex !== -1) workingSettings.disabledPresets.splice(presetIndex, 1);
-        
-        const customIndex = workingSettings.disabledCustoms.indexOf(engineId);
-        if (customIndex !== -1) workingSettings.disabledCustoms.splice(customIndex, 1);
-        
-        // 从searchEngines中移除
-        delete searchEngines[engineId];
-        
-        // 从searchEngineData.engines中移除
-        const engineIndex = searchEngineData.engines.findIndex(e => e.id === engineId);
-        if (engineIndex !== -1) searchEngineData.engines.splice(engineIndex, 1);
-        
-        // 同步更新localStorage
-        saveCustomSearchEngines();
-        
-        renderSearchEngineLists();
-    }
-
     // 打开添加搜索引擎面板
     function openAddSearchEnginePanel() {
         if (addSearchEnginePanel) {
@@ -3672,6 +3773,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     function validateSearchEngineUrl(url) {
         if (!url.trim()) {
             return { valid: false, message: 'URL不能为空' };
+        }
+        // 检查协议是否为 http、https 或 ftp
+        const trimmedUrl = url.trim();
+        if (!/^https?:\/\//i.test(trimmedUrl) && !/^ftp:\/\//i.test(trimmedUrl)) {
+            return { valid: false, message: 'URL协议不支持，仅支持 http://、https:// 和 ftp://' };
         }
         if (!url.includes('%s')) {
             return { valid: false, message: 'URL中必须包含 %s 作为搜索关键词占位符' };
@@ -3815,6 +3921,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             searchEngineSettingsWorking = null;
             searchEngineSettingsHasInnerChanges = false; // 重置内层编辑标志
             
+            // 执行待删除的搜索引擎（从searchEngines和searchEngineData中移除）
+            const pendingDeleteIds = workingSettings.pendingDeleteIds || [];
+            pendingDeleteIds.forEach(engineId => {
+                delete searchEngines[engineId];
+                const engineIndex = searchEngineData.engines.findIndex(e => e.id === engineId);
+                if (engineIndex !== -1) searchEngineData.engines.splice(engineIndex, 1);
+            });
+            saveCustomSearchEngines();
+            
             // 重新渲染主页搜索引擎
             renderSearchEngineIcons();
             sendNotice('搜索引擎设置已保存', 'info');
@@ -3848,6 +3963,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 // 验证通过，保存设置
                 searchEngineSettings = JSON.parse(JSON.stringify(workingSettings));
                 localStorage.setItem('search_engine_settings', JSON.stringify(searchEngineSettings));
+                
+                // 执行待删除的搜索引擎（从searchEngines和searchEngineData中移除）
+                const pendingDeleteIds = workingSettings.pendingDeleteIds || [];
+                pendingDeleteIds.forEach(engineId => {
+                    delete searchEngines[engineId];
+                    const engineIndex = searchEngineData.engines.findIndex(e => e.id === engineId);
+                    if (engineIndex !== -1) searchEngineData.engines.splice(engineIndex, 1);
+                });
+                saveCustomSearchEngines();
                 
                 // 重新渲染主页搜索引擎
                 renderSearchEngineIcons();
@@ -4756,6 +4880,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             const icon = this.querySelector('.status-icon');
             const settingType = this.dataset.setting;
             
+            // 深色模式特殊处理（无开关，直接点击切换）
+            if (settingType === 'dark-mode-toggle') {
+                handleDarkModeToggle();
+                return;
+            }
+            
             if (indicator && icon) {
                 const wasEnabled = indicator.classList.contains('enabled');
                 const isEnabled = !wasEnabled;
@@ -5412,11 +5542,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             } else if (category === 'preset') {
                 actionButtons = `
                     <button class="search-engine-enable" title="移至使用中" data-engine-id="${engine.id}">${svgPlus}</button>
-                    <button class="search-engine-delete" title="删除" data-engine-id="${engine.id}" disabled>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                    </button>
                 `;
             } else {
                 actionButtons = `
@@ -5476,7 +5601,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             // 绑定删除按钮事件
             const deleteBtn = item.querySelector('.search-engine-delete');
             if (deleteBtn) {
-                deleteBtn.addEventListener('click', () => deleteSearchEngine(engine.id));
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    confirmDialog.dataset.targetEngineId = engine.id;
+                    openConfirmDialog('delete-search-engine');
+                });
             }
 
             // 绑定编辑按钮事件
