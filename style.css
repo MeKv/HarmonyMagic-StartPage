@@ -28,6 +28,53 @@ html, body {
     -webkit-overflow-scrolling: none; /* 禁用iOS弹性滚动 */
 }
 
+/* ==================== 深色模式变量 ==================== */
+:root {
+    /* 浅色模式变量（默认） */
+    --bg-color: #f5f5f5;
+    --text-color: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --border-color: #e0e0e0;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-bg-hover: rgba(255, 255, 255, 0.95);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-focus-bg: rgba(255, 255, 255, 1);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --overlay-bg: rgba(0, 0, 0, 0.3);
+    --modal-bg: #ffffff;
+    --modal-text: #333333;
+    --button-bg: #f0f0f0;
+    --button-hover: #e0e0e0;
+    --icon-color: #7a7a7a;
+    --icon-hover: #555555;
+    --divider-color: #e5e5e5;
+    --danger-color: #d32f2f;
+    --success-color: #388e3c;
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
+    --border-color: #404040;
+    --card-bg: rgba(40, 40, 40, 0.85);
+    --card-bg-hover: rgba(60, 60, 60, 0.95);
+    --input-bg: rgba(50, 50, 50, 0.9);
+    --input-focus-bg: rgba(60, 60, 60, 1);
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: #2d2d2d;
+    --modal-text: #e0e0e0;
+    --button-bg: #3a3a3a;
+    --button-hover: #4a4a4a;
+    --icon-color: #a0a0a0;
+    --icon-hover: #c0c0c0;
+    --divider-color: #404040;
+}
+
 body {
     font-family: inherit;
     background: #333;
@@ -119,15 +166,17 @@ body[data-filter-disabled="true"]::after {
 #time {
     font-size: 76px;
     font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px var(--shadow-color);
     margin-bottom: 0.3rem;
+    transition: color 0.3s ease;
 }
 
 #date {
     font-size: 26px; /* 减小字体大小 (1.5rem - 0.3rem ≈ 3px减少) */
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    color: var(--text-color);
+    text-shadow: 1px 1px 2px var(--shadow-color);
+    transition: color 0.3s ease;
 }
 
 .search-boxes-container {
@@ -145,9 +194,9 @@ body[data-filter-disabled="true"]::after {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.45);
+    background: var(--card-bg);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -169,7 +218,7 @@ body[data-filter-disabled="true"]::after {
 /* 圆形搜索框展开状态 - 输入状态 */
 .search-box-circle.expanded.input-active {
     width: 300px; /* 与中间搜索框的展开宽度相同 */
-    background: rgba(255, 255, 255, 0.75);
+    background: var(--card-bg-hover);
 }
 
 /* 移动端圆形搜索框直接展开到输入状态 */
@@ -397,7 +446,7 @@ body[data-filter-disabled="true"]::after {
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
-    color: #333;
+    color: var(--text-color);
     user-select: text; /* 输入框允许选择文本 */
     opacity: 0;
     visibility: hidden;
@@ -420,7 +469,7 @@ body[data-filter-disabled="true"]::after {
 #search-input:focus {
     border-color: #4CAF50;
     box-shadow: 0 4px 25px rgba(76, 175, 80, 0.3);
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--input-focus-bg);
 }
 
 #search-btn {
@@ -1075,13 +1124,13 @@ body[data-filter-disabled="true"]::after {
     width: 400px;
     max-width: 90%;
     max-height: 80vh;
-    background: #FFFFFF;
+    background: var(--modal-bg);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px var(--shadow-color);
     padding: 20px;
     opacity: 0;
     transform: scale(0.95) translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
     overflow: hidden;
 }
 
@@ -1103,13 +1152,14 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #EEEEEE;
+    border-bottom: 1px solid var(--divider-color);
 }
 
 .settings-title {
     font-size: 16px;
     font-weight: 500;
-    color: #333333;
+    color: var(--modal-text);
+    transition: color 0.3s ease;
 }
 
 .settings-close {
@@ -1193,13 +1243,13 @@ body[data-filter-disabled="true"]::after {
     align-items: center;
     height: 48px;
     padding: 0;
-    border-bottom: 1px solid #F5F5F5;
+    border-bottom: 1px solid var(--divider-color);
     cursor: pointer;
     transition: background 0.2s ease;
 }
 
 .setting-item:hover {
-    background: #FAFAFA;
+    background: var(--button-hover);
     margin: 0 -20px;
     padding-left: 20px;
     padding-right: 20px;
@@ -1211,9 +1261,10 @@ body[data-filter-disabled="true"]::after {
 
 .setting-item-text {
     font-size: 14px;
-    color: #333333;
+    color: var(--modal-text);
     flex: 1;
     word-break: break-word;
+    transition: color 0.3s ease;
 }
 
 /* 纯文本操作项样式（无开关） */
@@ -1223,6 +1274,14 @@ body[data-filter-disabled="true"]::after {
 
 .setting-item-action .setting-item-text {
     text-align: left;
+}
+
+/* 深色模式值显示 */
+.setting-item-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-right: 8px;
+    transition: color 0.3s ease;
 }
 
 .status-indicator {
@@ -1450,24 +1509,27 @@ body[data-filter-disabled="true"]::after {
 .add-shortcut-label {
     display: block;
     font-size: 13px;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 6px;
 }
 
 .add-shortcut-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--input-bg);
+    color: var(--modal-text);
 }
 
 .add-shortcut-input:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    background: var(--input-focus-bg);
 }
 
 .add-shortcut-input::placeholder {
@@ -1518,12 +1580,12 @@ body[data-filter-disabled="true"]::after {
 }
 
 .add-shortcut-cancel {
-    background: #f0f0f0;
-    color: #666;
+    background: var(--button-bg);
+    color: var(--text-secondary);
 }
 
 .add-shortcut-cancel:hover {
-    background: #e0e0e0;
+    background: var(--button-hover);
 }
 
 .add-shortcut-save {
@@ -2530,7 +2592,7 @@ body[data-filter-disabled="true"]::after {
 }
 
 .search-engine-item:hover {
-    background: #fafafa;
+    background: var(--button-hover);
 }
 
 .search-engine-item-icon {
@@ -2573,7 +2635,7 @@ body[data-filter-disabled="true"]::after {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 14px;
-    color: #333;
+    color: var(--modal-text);
     display: flex;
     align-items: center;
     gap: 6px;
