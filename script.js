@@ -1541,8 +1541,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     setupInputMethodHandlers();
     setupViewportHandler();
 
-    // 动态加载壁纸（从XML读取id=1的预设壁纸）
+    // 动态加载壁纸（仅在未设置壁纸时加载默认壁纸）
     async function loadWallpaper() {
+        // 检查是否已有用户设置
+        const saved = getLocalStorageItem('wallpaper_settings');
+        if (saved) {
+            // 用户已设置壁纸，由 initWallpaper 处理
+            return;
+        }
+
         try {
             const response = await fetch('wallpaper.xml');
             if (!response.ok) throw new Error('加载壁纸XML失败');
