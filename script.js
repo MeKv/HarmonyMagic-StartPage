@@ -1969,34 +1969,28 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 预设壁纸列表（从XML加载）
     let presetWallpapers = {};
 
-    // 从XML加载预设壁纸
+    // 从XML加载预设壁纸（使用共享函数避免重复请求）
     async function loadPresetWallpapersFromXml() {
-        try {
-            const response = await fetch('wallpaper.xml');
-            if (!response.ok) {
-                throw new Error('加载壁纸XML失败');
-            }
-            const text = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(text, 'text/xml');
-            
-            const wallpaperElements = xmlDoc.querySelectorAll('wallpaper');
-            presetWallpapers = {};
-            
-            wallpaperElements.forEach(wp => {
-                const id = parseInt(wp.getAttribute('id'));
-                const url = wp.querySelector('url')?.textContent || '';
-                presetWallpapers[id] = url;
-            });
-
-            // 渲染预设壁纸项
-            renderPresetWallpaperItems(xmlDoc);
-            
-            // 重新获取元素引用
-            window.wallpaperPresetItems = document.querySelectorAll('.wallpaper-preset-item');
-        } catch (e) {
-            console.error('加载预设壁纸失败:', e);
+        const xmlDoc = await loadWallpaperXml();
+        if (!xmlDoc) {
+            console.error('加载壁纸XML失败');
+            return;
         }
+
+        const wallpaperElements = xmlDoc.querySelectorAll('wallpaper');
+        presetWallpapers = {};
+
+        wallpaperElements.forEach(wp => {
+            const id = parseInt(wp.getAttribute('id'));
+            const url = wp.querySelector('url')?.textContent || '';
+            presetWallpapers[id] = url;
+        });
+
+        // 渲染预设壁纸项
+        renderPresetWallpaperItems(xmlDoc);
+
+        // 重新获取元素引用
+        window.wallpaperPresetItems = document.querySelectorAll('.wallpaper-preset-item');
     }
 
     // 渲染预设壁纸项
