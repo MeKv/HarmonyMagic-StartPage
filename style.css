@@ -1924,6 +1924,10 @@ body[data-filter-disabled="true"]::after {
     color: #e0e0e0;
 }
 
+[data-theme="dark"] .edit-shortcut-collapse-icon {
+    color: #ffffff;
+}
+
 .edit-shortcut-category-content {
     padding: 4px 0;
 }
@@ -2042,6 +2046,7 @@ body[data-filter-disabled="true"]::after {
 /* 深色模式适配 */
 [data-theme="dark"] .edit-shortcut-move-btn {
     background: #404040;
+    color: #ffffff;
 }
 
 [data-theme="dark"] .edit-shortcut-move-btn:hover {
@@ -2925,6 +2930,10 @@ body[data-filter-disabled="true"]::after {
     color: #e0e0e0;
 }
 
+[data-theme="dark"] .search-engine-collapse-icon {
+    color: #ffffff;
+}
+
 .search-engine-category-content {
     padding: 4px 0;
 }
@@ -3025,6 +3034,7 @@ body[data-filter-disabled="true"]::after {
 /* 深色模式适配 */
 [data-theme="dark"] .search-engine-move-btn {
     background: #404040;
+    color: #ffffff;
 }
 
 [data-theme="dark"] .search-engine-move-btn:hover {
