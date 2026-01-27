@@ -432,7 +432,7 @@ body[data-filter-disabled="true"]::after {
 
 /* 深色模式适配 - 圆形搜索框展开时的图标 */
 [data-theme="dark"] .search-box-circle.expanded .search-icon {
-    filter: brightness(1.3);
+    filter: brightness(1.8);
 }
 
 .search-box-center {
@@ -599,7 +599,7 @@ body[data-filter-disabled="true"]::after {
 
 /* 深色模式适配 - 图标变亮以在深色背景上清晰显示 */
 [data-theme="dark"] .search-icon {
-    filter: brightness(1.3);
+    filter: brightness(1.8);
 }
 
 /* 展开状态调整图标位置 */
