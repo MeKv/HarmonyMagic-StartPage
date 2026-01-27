@@ -709,12 +709,12 @@ body[data-filter-disabled="true"]::after {
     height: 48px;
     border-radius: 4px;
     z-index: 1;
-    background: #F5F5F5;
+    background: #F5F5F588;
 }
 
 /* 深色模式适配 - 保持浅灰色背景以显示黑色图标 */
 [data-theme="dark"] .menu-item-bg {
-    background: #E0E0E0;
+    background: #23232388;
 }
 
 /* 图标容器 */
@@ -1298,6 +1298,15 @@ body[data-filter-disabled="true"]::after {
     display: block;
 }
 
+/* 深色模式适配 - 关闭按钮图标变白 */
+[data-theme="dark"] .settings-close svg path {
+    fill: #FFFFFF;
+}
+
+[data-theme="dark"] .settings-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .settings-body {
     max-height: calc(80vh - 60px);
     /* 只有内容溢出时才显示滚动条 */
@@ -1467,6 +1476,15 @@ body[data-filter-disabled="true"]::after {
     display: block;
     width: 20px;
     height: 20px;
+}
+
+/* 深色模式适配 - 关闭按钮图标变白 */
+[data-theme="dark"] .icon-close svg path {
+    fill: #FFFFFF;
+}
+
+[data-theme="dark"] .icon-close:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* 确认对话框样式 */
