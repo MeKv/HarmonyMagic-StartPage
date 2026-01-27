@@ -2662,13 +2662,27 @@ body[data-filter-disabled="true"]::after {
 
 .about-license a,
 .about-icons a {
-    color: #007AFF;
+    color: #9ACD32;
     text-decoration: none;
+    font-weight: 500;
 }
 
 .about-license a:hover,
 .about-icons a:hover {
-    text-decoration: underline;
+    color: #B0DC34;
+    text-decoration: none;
+}
+
+/* Copyright 链接始终浅蓝色 */
+.about-copyright a {
+    color: #5AC8FA !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.about-copyright a:hover {
+    color: #8fd7f8 !important;
+    text-decoration: none;
 }
 
 .about-links {
