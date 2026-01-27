@@ -1911,6 +1911,19 @@ body[data-filter-disabled="true"]::after {
     color: #333;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-category-header {
+    background: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-category-header:hover {
+    background: #4a4a4a;
+}
+
+[data-theme="dark"] .edit-shortcut-category-title {
+    color: #e0e0e0;
+}
+
 .edit-shortcut-category-content {
     padding: 4px 0;
 }
@@ -1942,6 +1955,15 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-item:hover {
     background: #fafafa;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-item {
+    border-color: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-item:hover {
+    background: #3a3a3a;
 }
 
 .edit-shortcut-item-icon {
@@ -1985,6 +2007,16 @@ body[data-filter-disabled="true"]::after {
     flex-shrink: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-item-text {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .preset-tag {
+    background: #505050;
+    color: #e0e0e0;
+}
+
 .edit-shortcut-item-actions {
     display: flex;
     gap: 5px;
@@ -2005,6 +2037,15 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-move-btn:hover {
     background: #e0e0e0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-move-btn {
+    background: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-move-btn:hover {
+    background: #505050;
 }
 
 .edit-shortcut-move-btn:disabled {
@@ -2031,6 +2072,17 @@ body[data-filter-disabled="true"]::after {
     color: #c62828;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-delete {
+    background: #404040;
+    color: #ef5350;
+}
+
+[data-theme="dark"] .edit-shortcut-delete:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
+}
+
 .edit-shortcut-toggle {
     width: 28px;
     height: 28px;
@@ -2048,6 +2100,17 @@ body[data-filter-disabled="true"]::after {
 .edit-shortcut-toggle:hover:not(:disabled) {
     background: #ffebee;
     color: #c62828;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-toggle {
+    background: #404040;
+    color: #ef5350;
+}
+
+[data-theme="dark"] .edit-shortcut-toggle:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
 }
 
 /* 编辑按钮样式 */
@@ -2073,6 +2136,15 @@ body[data-filter-disabled="true"]::after {
 
 .edit-shortcut-edit:hover {
     background: #E3F2FD;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .edit-shortcut-edit {
+    background: #404040;
+}
+
+[data-theme="dark"] .edit-shortcut-edit:hover {
+    background: #3a3a3a;
 }
 
 .edit-shortcut-buttons {
@@ -2840,6 +2912,19 @@ body[data-filter-disabled="true"]::after {
     color: #333;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-category-header {
+    background: #404040;
+}
+
+[data-theme="dark"] .search-engine-category-header:hover {
+    background: #4a4a4a;
+}
+
+[data-theme="dark"] .search-engine-category-title {
+    color: #e0e0e0;
+}
+
 .search-engine-category-content {
     padding: 4px 0;
 }
@@ -2910,6 +2995,11 @@ body[data-filter-disabled="true"]::after {
     gap: 6px;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-item-name {
+    color: #e0e0e0;
+}
+
 .search-engine-item-actions {
     display: flex;
     gap: 5px;
@@ -2930,6 +3020,15 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-move-btn:hover {
     background: #e0e0e0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-move-btn {
+    background: #404040;
+}
+
+[data-theme="dark"] .search-engine-move-btn:hover {
+    background: #505050;
 }
 
 .search-engine-move-btn:disabled {
@@ -2984,6 +3083,28 @@ body[data-filter-disabled="true"]::after {
     background: #f0f0f0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-disable,
+[data-theme="dark"] .search-engine-enable,
+[data-theme="dark"] .search-engine-delete {
+    background: #404040;
+    color: #aaa;
+}
+
+[data-theme="dark"] .search-engine-disable:hover,
+[data-theme="dark"] .search-engine-enable:hover {
+    background: #505050;
+}
+
+[data-theme="dark"] .search-engine-delete {
+    color: #ef5350;
+}
+
+[data-theme="dark"] .search-engine-delete:hover:not(:disabled) {
+    background: #5c3a3a;
+    color: #ef5350;
+}
+
 /* 编辑按钮样式 - 与编辑快捷访问面板一致 */
 .search-engine-edit {
     width: 28px;
@@ -3007,6 +3128,15 @@ body[data-filter-disabled="true"]::after {
 
 .search-engine-edit:hover {
     background: #E3F2FD;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .search-engine-edit {
+    background: #404040;
+}
+
+[data-theme="dark"] .search-engine-edit:hover {
+    background: #3a3a3a;
 }
 
 .search-engine-buttons {
