@@ -2624,6 +2624,11 @@ body[data-filter-disabled="true"]::after {
     margin: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-title p {
+    color: #e0e0e0;
+}
+
 .about-copyright,
 .about-license,
 .about-icons,
@@ -2637,11 +2642,22 @@ body[data-filter-disabled="true"]::after {
     margin: 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-copyright p {
+    color: #b0b0b0;
+}
+
 .about-license p,
 .about-icons p {
     font-size: 14px;
     color: #666;
     margin: 0;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .about-license p,
+[data-theme="dark"] .about-icons p {
+    color: #a0a0a0;
 }
 
 .about-license a,
@@ -2665,6 +2681,11 @@ body[data-filter-disabled="true"]::after {
     margin: 0 0 12px 0;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-links > p {
+    color: #a0a0a0;
+}
+
 .about-link-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -2686,9 +2707,19 @@ body[data-filter-disabled="true"]::after {
     transition: all 0.2s ease;
 }
 
+/* 深色模式适配 */
+[data-theme="dark"] .about-link-btn {
+    border-color: #555;
+}
+
 .about-link-btn:hover {
     background: #8fd7f8;
     border-color: #CCC;
+}
+
+/* 深色模式悬停适配 */
+[data-theme="dark"] .about-link-btn:hover {
+    border-color: #666;
 }
 
 .about-link-btn.primary {
