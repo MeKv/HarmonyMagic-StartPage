@@ -67,7 +67,7 @@
             "id": 11,
             "title": "",
             "icon": "<svg>...</svg>",
-            "url": "https://https://cn.bing.com/search?q={query}",
+            "url": "https://cn.bing.com/search?q={query}",
             "comment": "必应"
         }
     ]
